@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#ffd600</color>
+    <color name="colorPrimaryDark">#ffca28</color>
+    <color name="colorAccent">#f73c80</color>
+    <color name="colorSecondary">#be0001</color>
+    <color name="colorMaterialLight">#ffffff</color>
+    <color name="dsc_secondary_text_material_dark">#d2dfdfdf</color>
+</resources>

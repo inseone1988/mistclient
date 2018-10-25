@@ -1,3 +1,13 @@
 <resources>
-    <string name="app_name">mistclient</string>
+    <string name="app_name">DSC Security</string>
+    <string name="title_activity_log_in">LogIn</string>
+    <string name="user_prompt">Usuario</string>
+    <string name="password_prompt">Contraseña</string>
+    <string name="open_sesion_checkbox">Recordar credenciales</string>
+    <string name="log_in_prompt">Ingresar</string>
+    <string name="dsc_copy">©DSC 2018 </string>
+    <string name="sesion_opened_advice_title">Session advice</string>
+    <string name="sesion_opened_advice">Session wil stay open until you manually close it.</string>
+    <string name="dsc_text_ok">Ok</string>
+    <string name="should_auto_open">should_auto_open</string>
 </resources>

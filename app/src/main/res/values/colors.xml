@@ -7,4 +7,5 @@
     <color name="colorMaterialLight">#ffffff</color>
     <color name="dsc_secondary_text_material_dark">#93ca0000</color>
     <color name="dsc_primary_text_material_dark">#7fffca28</color>
+    <color name="dsc_secondary_light">#a0bd0002</color>
 </resources>

@@ -57,4 +57,19 @@ public class Dialogs {
                 .positiveText(R.string.dsc_text_ok)
                 .show();
     }
+
+    public static void exitAppDialog(Context context,final SimpleDialogCallback cb){
+        new MaterialDialog.Builder(context)
+                .title(R.string.leave_app)
+                .content(R.string.leave_app_advice)
+                .positiveText(R.string.dsc_text_ok)
+                .negativeText(R.string.cancel)
+                .onPositive(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        cb.AccountStayOpen();
+                    }
+                })
+                .show();
+    }
 }

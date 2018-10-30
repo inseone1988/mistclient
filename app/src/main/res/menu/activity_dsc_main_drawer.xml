@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group
+        android:id="@+id/drawer_main_group"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_camera"
+            android:icon="@drawable/ic_baseline_library_books"
+            android:title="@string/report_text"
+            android:checkable="true"/>
+        <item
+            android:id="@+id/nav_gallery"
+            android:icon="@drawable/ic_guard"
+            android:title="@string/oficials"
+            android:checkable="true" />
+        <item
+            android:id="@+id/nav_slideshow"
+            android:icon="@drawable/ic_baseline_bar_chart_24px"
+            android:title="@string/statidistics"
+            android:checkable="true" />
+        <item
+            android:id="@+id/nav_exit_app"
+            android:checkable="true"
+            android:icon="@drawable/ic_baseline_exit_to_app"
+            android:title="@string/exit" />
+    </group>
+
+    <item android:title="@string/feddback">
+        <menu>
+            <item
+                android:id="@+id/nav_share"
+                android:icon="@drawable/ic_baseline_bug_report"
+                android:title="@string/bug_report" />
+            <item
+                android:id="@+id/nav_send"
+                android:icon="@android:drawable/ic_menu_info_details"
+                android:title="@string/about" />
+        </menu>
+    </item>
+
+</menu>

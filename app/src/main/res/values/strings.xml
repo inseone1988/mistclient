@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">DSC Security</string>
-    <string name="title_activity_log_in">LogIn</string>
+    <string name="title_activity_log_in">DSC Security</string>
     <string name="user_prompt">Usuario</string>
     <string name="password_prompt">Contraseña</string>
     <string name="open_sesion_checkbox">Recordar credenciales</string>
@@ -20,4 +20,23 @@
     <string name="server_response_error">Respuesta invalida del servidor. Codigo de estado : %1$s</string>
     <string name="log_in_title">Inicio de sesion</string>
     <string name="failed_login_advice">Usuario o contraseña incorrectos</string>
+    <string name="title_activity_dsc_main">DscMainActivity</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">DHL Supply Chain</string>
+    <string name="nav_header_subtitle">javier.ramirezs@dhl.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Settings</string>
+    <string name="example_text">Hello this is an example text</string>
+    <string name="report_text">Reports</string>
+    <string name="oficials">Force state</string>
+    <string name="feddback">Feedback</string>
+    <string name="bug_report">Bug report</string>
+    <string name="statidistics">Estadisticos</string>
+    <string name="exit">Cerrar Sesion</string>
+    <string name="feedback">Comentarios</string>
+    <string name="about">About this app</string>
+    <string name="leave_app">Salir de la app</string>
+    <string name="leave_app_advice">Desea cerrar su sesion?</string>
+    <string name="cancel">Cancel</string>
 </resources>

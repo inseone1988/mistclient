@@ -10,6 +10,8 @@ import com.android.volley.VolleyError;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import mx.com.vialogika.mistclient.User;
+
 public class Authentication {
 
     public static void authUser(final Context context,String username,String password,final AuthCallbacks cb){
@@ -21,6 +23,7 @@ public class Authentication {
                     if(r.has("success")){
                         boolean valid = r.getBoolean("success");
                         if(valid){
+                            User.saveUserDatatoSP(context,r.getJSONArray("userdata").getJSONObject(0));
                             cb.onAuthenticated();
                         }else{
                             cb.onAuthenticatedFailed();

@@ -7,20 +7,20 @@
         android:id="@+id/drawer_main_group"
         android:checkableBehavior="single">
         <item
-            android:id="@+id/nav_camera"
+            android:id="@+id/nav_reports"
+            android:checkable="true"
             android:icon="@drawable/ic_baseline_library_books"
-            android:title="@string/report_text"
-            android:checkable="true"/>
+            android:title="@string/report_text" />
         <item
-            android:id="@+id/nav_gallery"
+            android:id="@+id/nav_edo"
+            android:checkable="true"
             android:icon="@drawable/ic_guard"
-            android:title="@string/oficials"
-            android:checkable="true" />
+            android:title="@string/oficials" />
         <item
-            android:id="@+id/nav_slideshow"
+            android:id="@+id/nav_stadistics"
+            android:checkable="true"
             android:icon="@drawable/ic_baseline_bar_chart_24px"
-            android:title="@string/statidistics"
-            android:checkable="true" />
+            android:title="@string/statidistics" />
         <item
             android:id="@+id/nav_exit_app"
             android:checkable="true"
@@ -31,11 +31,11 @@
     <item android:title="@string/feddback">
         <menu>
             <item
-                android:id="@+id/nav_share"
+                android:id="@+id/nav_bug_report"
                 android:icon="@drawable/ic_baseline_bug_report"
                 android:title="@string/bug_report" />
             <item
-                android:id="@+id/nav_send"
+                android:id="@+id/nav_about"
                 android:icon="@android:drawable/ic_menu_info_details"
                 android:title="@string/about" />
         </menu>

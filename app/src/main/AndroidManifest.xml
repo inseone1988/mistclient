@@ -35,6 +35,11 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="mx.com.vialogika.mistclient.LogIn" />
         </activity>
+        <activity android:name=".ReportView">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="mx.com.vialogika.mistclient.DscMainActivity" />
+        </activity>
     </application>
 
 </manifest>

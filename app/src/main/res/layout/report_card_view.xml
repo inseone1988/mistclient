@@ -1,21 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/report_cv"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="1dp">
+    android:layout_marginTop="1dp"
+    android:minHeight="100dp"
+    android:padding="5dp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:padding="5dp">
 
         <ImageView
-            android:id="@+id/imageView2"
+            android:id="@+id/report_grade"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.2"
-            app:srcCompat="@drawable/ic_danger_sing_48" />
+            android:tint="@color/dsc_gray" />
 
         <LinearLayout
             android:layout_width="0dp"
@@ -29,22 +33,26 @@
                 android:orientation="horizontal">
 
                 <TextView
-                    android:id="@+id/textView2"
+                    android:id="@+id/report_title"
                     android:layout_width="0dp"
                     android:layout_height="24dp"
                     android:layout_weight="0.5"
+                    android:ellipsize="end"
+                    android:maxLines="1"
                     android:text="@string/incident_tiltle" />
 
                 <TextView
-                    android:id="@+id/textView3"
+                    android:id="@+id/report_timestamp"
                     android:layout_width="0dp"
                     android:layout_height="24dp"
                     android:layout_weight="0.44"
+                    android:ellipsize="end"
+                    android:maxLines="1"
                     android:text="@string/incident_timestamp"
                     android:textSize="10sp" />
 
                 <ImageView
-                    android:id="@+id/imageView3"
+                    android:id="@+id/r_menu"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="0.05"
@@ -53,10 +61,12 @@
             </LinearLayout>
 
             <TextView
-                android:id="@+id/textView4"
+                android:id="@+id/report_exp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="5dp"
+                android:ellipsize="end"
+                android:maxLines="6"
+                android:padding="10dp"
                 android:text="@string/incident_description"
                 android:textSize="12sp" />
         </LinearLayout>

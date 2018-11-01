@@ -29,7 +29,6 @@ public class DscMainActivity extends AppCompatActivity
 
     private Toolbar toolbar;
     private NavigationView navigationView;
-    private FloatingActionButton fab;
     private TextView usernamefield;
     private TextView mailfield;
     private ImageView profileImage;
@@ -53,7 +52,6 @@ public class DscMainActivity extends AppCompatActivity
     private void getItems(){
         navigationView = findViewById(R.id.nav_view);
         toolbar = findViewById(R.id.toolbar);
-        fab = findViewById(R.id.fab);
     }
 
     private void setupDrawer(){
@@ -75,13 +73,7 @@ public class DscMainActivity extends AppCompatActivity
     }
 
     private void setupActionListeners(){
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
+
     }
 
     @Override

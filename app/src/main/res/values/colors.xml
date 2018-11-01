@@ -9,4 +9,7 @@
     <color name="dsc_primary_text_material_dark">#7fffca28</color>
     <color name="dsc_secondary_light">#a0bd0002</color>
     <color name="dsc_gray">#7a7a7a</color>
+    <color name="dsc_success">#91e277</color>
+    <color name="dsc_warning">#fde404</color>
+    <color name="dsc_danger">#fd1004</color>
 </resources>

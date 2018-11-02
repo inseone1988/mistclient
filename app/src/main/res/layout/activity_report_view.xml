@@ -6,4 +6,257 @@
     android:layout_height="match_parent"
     tools:context=".ReportView">
 
+    <ScrollView
+        android:id="@+id/report_content"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/comments"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginEnd="5dp"
+                android:layout_marginRight="5dp">
+
+                <android.support.constraint.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:paddingStart="8dp"
+                    android:paddingLeft="8dp"
+                    android:paddingTop="8dp"
+                    android:paddingEnd="8dp"
+                    android:paddingRight="8dp"
+                    android:paddingBottom="20dp">
+
+                    <ImageView
+                        android:id="@+id/imageView3"
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:layout_marginStart="10dp"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:srcCompat="@drawable/ic_danger_sing_48" />
+
+                    <TextView
+                        android:id="@+id/editor_name"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:paddingStart="10dp"
+                        android:textSize="18sp"
+                        app:layout_constraintLeft_toRightOf="@+id/imageView3"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/date_time"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:paddingStart="15dp"
+                        android:textColor="@color/colorSecondary"
+                        android:textSize="12sp"
+                        app:layout_constraintLeft_toRightOf="@+id/imageView3"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/editor_name" />
+
+                    <TextView
+                        android:id="@+id/exp"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:paddingStart="10dp"
+                        android:paddingTop="5dp"
+                        android:paddingEnd="10dp"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/imageView3" />
+
+                    <TextView
+                        android:id="@+id/t_what"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="15dp"
+                        android:layout_marginTop="10dp"
+                        android:paddingTop="5dp"
+                        android:text="@string/t_what_text"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/exp" />
+
+                    <TextView
+                        android:id="@+id/what_exp"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:paddingTop="5dp"
+                        app:layout_constraintLeft_toRightOf="@+id/t_what"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/exp" />
+
+                    <TextView
+                        android:id="@+id/t_how"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="15dp"
+                        android:paddingTop="5dp"
+                        android:text="@string/t_how_text"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/what_exp" />
+
+                    <TextView
+                        android:id="@+id/how_exp"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:paddingTop="5dp"
+                        app:layout_constraintLeft_toRightOf="@+id/t_how"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/what_exp" />
+
+                    <TextView
+                        android:id="@+id/t_where"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="15dp"
+                        android:paddingTop="5dp"
+                        android:text="@string/t_where_exp"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/how_exp" />
+
+                    <TextView
+                        android:id="@+id/where_exp"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:paddingTop="5dp"
+                        app:layout_constraintLeft_toRightOf="@+id/t_where"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/how_exp" />
+
+                    <TextView
+                        android:id="@+id/t_facts"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:gravity="center"
+                        android:padding="5dp"
+                        android:text="@string/t_facts"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/where_exp" />
+
+                    <TextView
+                        android:id="@+id/exp_facts"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/t_facts" />
+                </android.support.constraint.ConstraintLayout>
+            </android.support.v7.widget.CardView>
+
+            <android.support.v7.widget.CardView
+                android:id="@+id/evidences_card"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="5dp"
+                android:layout_marginBottom="10dp"
+                android:visibility="gone">
+
+                <LinearLayout
+                    android:id="@+id/evidences_container"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:orientation="vertical"
+                    android:padding="10dp"
+                    android:visibility="visible">
+
+                    <TextView
+                        android:id="@+id/event_evidences"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:text="@string/evidences_text"
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+            </android.support.v7.widget.CardView>
+
+            <android.support.v7.widget.CardView
+                android:id="@+id/signatures_card"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:layout_marginEnd="5dp"
+                android:visibility="gone">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:padding="10dp">
+
+                    <TextView
+                        android:id="@+id/textView22"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:text="@string/signatures_text"
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
+
+                    <LinearLayout
+                        android:id="@+id/signatures_container"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"></LinearLayout>
+                </LinearLayout>
+            </android.support.v7.widget.CardView>
+        </LinearLayout>
+    </ScrollView>
+
+    <LinearLayout
+        android:id="@+id/comments"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginBottom="8dp"
+        android:gravity="bottom"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <EditText
+            android:id="@+id/comment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.8"
+            android:ems="10"
+            android:hint="@string/send_message"
+            android:inputType="textPersonName" />
+
+        <ImageButton
+            android:id="@+id/send_comment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.2"
+            app:srcCompat="@android:drawable/ic_menu_send" />
+
+    </LinearLayout>
 </android.support.constraint.ConstraintLayout>

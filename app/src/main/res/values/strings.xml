@@ -43,6 +43,13 @@
     <string name="incident_timestamp">2015-10-25 10:30 AM</string>
     <string name="incident_description">Lorem ipsum dolor sit amet helo this is atesting mesge that hasno sente to al thwe world  odjsbvhp sdbh ñjb vob dosvjbojvs pksdh vok nhok sdnhvojb sdovhboñj ñsdbhvojb kdbvoubj </string>
     <string name="r_menu_archive">Archivar</string>
+    <string name="send_message">Comments</string>
+    <string name="t_what_text">Que paso : </string>
+    <string name="t_how_text">Como paso : </string>
+    <string name="t_where_exp">Donde paso : </string>
+    <string name="t_facts">Hechos : </string>
+    <string name="evidences_text">Evidencias : </string>
+    <string name="signatures_text">Firmas : </string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

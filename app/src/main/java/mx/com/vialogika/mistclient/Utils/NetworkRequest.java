@@ -2,6 +2,9 @@ package mx.com.vialogika.mistclient.Utils;
 
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.widget.ImageView;
 
 import com.android.volley.NetworkError;
 import com.android.volley.NetworkResponse;
@@ -16,6 +19,9 @@ import com.android.volley.toolbox.Volley;
 import org.jetbrains.annotations.Nullable;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.io.IOException;
+import java.net.URL;
 
 public class NetworkRequest {
     public static void authenticateUser(Context context , String user, String password,final NetworkRequestCallbacks cb){
@@ -78,5 +84,17 @@ public class NetworkRequest {
             }
         });
         rq.add(jor);
+    }
+
+    public static Bitmap getImageFromURL(String url){
+        Bitmap image = null;
+        URL link;
+        try{
+            link = new URL(url);
+            image =  BitmapFactory.decodeStream(link.openConnection().getInputStream());
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        return image;
     }
 }

@@ -1,5 +1,6 @@
 package mx.com.vialogika.mistclient;
 
+import android.arch.persistence.room.Room;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.PorterDuff;
@@ -26,6 +27,7 @@ import android.widget.Toast;
 
 import com.android.volley.VolleyError;
 
+import org.jetbrains.annotations.Nullable;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -33,7 +35,10 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
+import mx.com.vialogika.mistclient.Room.AppDatabase;
+import mx.com.vialogika.mistclient.Room.DatabaseOperations;
 import mx.com.vialogika.mistclient.Utils.Color;
+import mx.com.vialogika.mistclient.Utils.DatabaseOperationCallback;
 import mx.com.vialogika.mistclient.Utils.NetworkRequest;
 import mx.com.vialogika.mistclient.Utils.NetworkRequestCallbacks;
 
@@ -47,6 +52,8 @@ import mx.com.vialogika.mistclient.Utils.NetworkRequestCallbacks;
  * create an instance of this fragment.
  */
 public class ReportsFragment extends Fragment {
+
+    DatabaseOperations dbo;
 
     private Integer from = 1;
     private List<Reporte> reportes = new ArrayList<>();
@@ -92,10 +99,23 @@ public class ReportsFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        init();
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+    }
+
+    private void init(){
+        dbo = new DatabaseOperations(getContext().getApplicationContext());
+        dbo.getAllReports(new DatabaseOperationCallback() {
+            @Override
+            public void onOperationSucceded(@Nullable Object response) {
+                if(response != null){
+                    reportes.addAll((List<Reporte>) response);
+                }
+            }
+        });
     }
 
     @Override
@@ -191,6 +211,7 @@ public class ReportsFragment extends Fragment {
     }
 
     private void fetchIncidents(int from){
+        final Context ctx = this.getContext().getApplicationContext();
         new loadIncidents().execute(this.getContext(), new NetworkRequestCallbacks() {
             @Override
             public void onNetworkRequestResponse(Object response) {

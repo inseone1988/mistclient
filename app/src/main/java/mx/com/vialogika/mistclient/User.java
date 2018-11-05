@@ -13,10 +13,9 @@ import org.json.JSONObject;
 
 import java.util.UUID;
 
-@Entity(tableName = "userdata")
+@Entity(tableName = "Users")
 public class User {
     @PrimaryKey
-    @NonNull
     @ColumnInfo(name = "uid")
     public int UID;
 

@@ -74,9 +74,9 @@ public class ReportView extends AppCompatActivity {
         editorName.setText(report.getUsername());
         dateTime.setText(report.getReportTimeStamp());
         exp.setText(report.getReportTitle());
-        whatExp.setText(report.geteWhat());
-        howExp.setText(report.geteHow());
-        whereExp.setText(report.geteWhere());
+        whatExp.setText(report.getEventWhat());
+        howExp.setText(report.getEventHow());
+        whereExp.setText(report.getEventWhere());
         factsExp.setText(report.getReportExplanation());
         loadImages();
     }

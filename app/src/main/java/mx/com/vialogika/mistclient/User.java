@@ -15,8 +15,8 @@ import java.util.UUID;
 
 @Entity(tableName = "Users")
 public class User {
+    @NonNull
     @PrimaryKey
-    @ColumnInfo(name = "uid")
     public int UID;
 
     public String APUUID = UUID.randomUUID().toString();
@@ -25,16 +25,26 @@ public class User {
     public String lastname;
     public String userSite;
 
-    public static void saveUserDatatoSP(Context context,JSONObject userData){
+    @Ignore
+    private Context ctx;
+
+    public static void saveUserDatatoSP(Context context,JSONObject userData,onUserDataSaved cb){
         try{
             SharedPreferences sp = context.getSharedPreferences("LogIn",Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = sp.edit();
             String userFullName = userData.get("user_name").toString() + " " + userData.get("user_fname").toString() + " " + userData.get("user_lname").toString();
             editor.putString("user_login",userData.get("user_mail").toString());
+            editor.putInt("user_id",userData.getInt("user_id"));
+            editor.putInt("user_site",userData.getInt("user_site_id"));
             editor.putString("user_fullname",userFullName);
             editor.apply();
+            cb.dataSaved();
         }catch(JSONException e){
             e.printStackTrace();
         }
+    }
+
+    public interface onUserDataSaved{
+        void dataSaved();
     }
 }

@@ -50,13 +50,14 @@ public class NetworkRequest {
         rq.add(jor);
     }
 
-    public static void fetchIncidents(final Context context,int site, int from,final NetworkRequestCallbacks cb){
+    public static void fetchIncidents(final Context context,int from,int user, int site,final NetworkRequestCallbacks cb){
         //TODO: Consider server will change later
         String url = "https:www.vialogika.com.mx/dscic/raw.php";
         JSONObject params = new JSONObject();
         try{
             params.put("function","getIncidents")
                     .put("from",from)
+                    .put("user",user)
                     .put("site",site);
         }catch(JSONException e){
             e.printStackTrace();

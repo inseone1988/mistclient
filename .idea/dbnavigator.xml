@@ -157,7 +157,7 @@
           <port value="" />
           <database value="" />
           <files>
-            <file path="C:\Users\Javier Ramirez\Documents\AndroidStudio\DeviceExplorer\motorola-moto_e5-192.168.2.4_5555\data\data\mx.com.vialogika.mistclient\databases\Database-wal" schema="main" />
+            <file path="C:\Users\Javier Ramirez\Documents\AndroidStudio\DeviceExplorer\motorola-moto_e5-192.168.2.4_5555\data\data\mx.com.vialogika.mistclient\databases\Database" schema="main" />
           </files>
           <os-authentication value="false" />
           <empty-password value="false" />

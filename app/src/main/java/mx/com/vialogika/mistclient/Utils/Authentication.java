@@ -23,8 +23,12 @@ public class Authentication {
                     if(r.has("success")){
                         boolean valid = r.getBoolean("success");
                         if(valid){
-                            User.saveUserDatatoSP(context,r.getJSONArray("userdata").getJSONObject(0));
-                            cb.onAuthenticated();
+                            User.saveUserDatatoSP(context, r.getJSONArray("userdata").getJSONObject(0), new User.onUserDataSaved() {
+                                @Override
+                                public void dataSaved() {
+                                    cb.onAuthenticated();
+                                }
+                            });
                         }else{
                             cb.onAuthenticatedFailed();
                         }

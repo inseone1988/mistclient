@@ -3,6 +3,7 @@ package mx.com.vialogika.mistclient;
 import android.arch.persistence.room.Room;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -56,6 +57,10 @@ public class ReportsFragment extends Fragment {
     DatabaseOperations dbo;
 
     private Integer from = 1;
+    private int site;
+    private int user;
+    //TODO:Add Method to update the last id after network call update
+    private int lastId;
     private List<Reporte> reportes = new ArrayList<>();
 
     private SwipeRefreshLayout swipeRefreshLayout;
@@ -116,6 +121,21 @@ public class ReportsFragment extends Fragment {
                 }
             }
         });
+        dbo.getLastReportId(new DatabaseOperationCallback() {
+            @Override
+            public void onOperationSucceded(@Nullable Object response) {
+                lastId = (int) response;
+            }
+        });
+        getUserData();
+    }
+
+    private void getUserData(){
+        SharedPreferences sp = getActivity().getSharedPreferences("LogIn", Context.MODE_PRIVATE);
+        if (sp != null){
+            user = sp.getInt("user_id",0);
+            site = sp.getInt("user_site",0);
+        }
     }
 
     @Override
@@ -135,7 +155,7 @@ public class ReportsFragment extends Fragment {
             @Override
             public void onRefresh() {
                 //TODO:Handle swipe event
-                fetchIncidents(1);
+                fetchIncidents(lastId);
             }
         });
     }
@@ -211,13 +231,20 @@ public class ReportsFragment extends Fragment {
     }
 
     private void fetchIncidents(int from){
-        final Context ctx = this.getContext().getApplicationContext();
-        new loadIncidents().execute(this.getContext(), new NetworkRequestCallbacks() {
+        final Context ctx = getContext();
+        new loadIncidents(from,user,site).execute(this.getContext(), new NetworkRequestCallbacks() {
             @Override
             public void onNetworkRequestResponse(Object response) {
                 try{
                     JSONObject JSOresponse = new JSONObject(response.toString());
-                    addReportsToList(JSOresponse.getJSONArray("reports"));
+                    JSONArray reports = JSOresponse.getJSONArray("reports");
+                    if (reports.length() > 0){
+                        addReportsToList(reports);
+                        dbo.addReportsToQueue(reportes);
+                        dbo.saveReports();
+                    }else{
+                        Toast.makeText(ctx,"Timeline up to date",Toast.LENGTH_SHORT).show();
+                    }
                 }catch(JSONException e){
                     e.printStackTrace();
                 }
@@ -317,6 +344,16 @@ public class ReportsFragment extends Fragment {
     }
 
     private class loadIncidents extends AsyncTask<Object,Void,Void>{
+
+        private int mFrom;
+        private int mUser;
+        private int mSite;
+
+        public loadIncidents(int from,int user,int site){
+            this.mFrom = from;
+            this.mUser = user;
+            this.mSite = site;
+        }
         @Override
         protected void onPreExecute() {
 
@@ -334,7 +371,7 @@ public class ReportsFragment extends Fragment {
 
         @Override
         protected Void doInBackground(Object... context) {
-            NetworkRequest.fetchIncidents((Context)context[0], 1, 1,(NetworkRequestCallbacks) context[1]);
+            NetworkRequest.fetchIncidents((Context)context[0],mFrom,mUser,mSite,(NetworkRequestCallbacks) context[1]);
             return null;
         }
     }

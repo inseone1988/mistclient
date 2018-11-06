@@ -57,9 +57,20 @@ public class DatabaseOperations {
                 @Override
                 public void run() {
                     appDatabase.reportDao().saveReports(queue);
+                    //Empty the queue to avoid multiple inserts
+                    queue.clear();
                 }
             }).start();
 
         }
+    }
+
+    public void getLastReportId(final DatabaseOperationCallback cb){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                cb.onOperationSucceded(appDatabase.reportDao().fetchLastReportID());
+            }
+        }).start();
     }
 }

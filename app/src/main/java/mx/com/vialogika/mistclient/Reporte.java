@@ -1,7 +1,6 @@
 package mx.com.vialogika.mistclient;
 
 import android.arch.persistence.room.Entity;
-import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
 import android.support.annotation.NonNull;
 
@@ -15,8 +14,10 @@ public class Reporte implements Serializable
 {
 
     @NonNull
-    @PrimaryKey
+    @PrimaryKey(autoGenerate = true)
     private int reportId;
+
+    private int remReportId;
     private String reportTitle;
     private String reportTimeStamp;
     private String reportExplanation;
@@ -29,15 +30,6 @@ public class Reporte implements Serializable
     private String stringSignatures;
     private String stringSignatureNames;
     private String stringSignatureRoles;
-    @Ignore
-    private String[] evidences;
-    @Ignore
-    private String[] signatures;
-    @Ignore
-    private String[] sigantureNames;
-    @Ignore
-    private String[] signaturesRoles;
-
 
     public Reporte(){
 
@@ -46,7 +38,7 @@ public class Reporte implements Serializable
     public Reporte(JSONObject report){
         //TODO: Modify database to show more than 1000 rows
         try{
-            this.reportId = report.getInt("id");
+            this.remReportId = report.getInt("id");
             this.reportTitle = report.getString("name").equals("null") ? report.getString("what") : report.getString("name");
             this.reportTimeStamp = report.getString("etimestamp");
             this.reportExplanation = report.getString("exp");
@@ -56,15 +48,9 @@ public class Reporte implements Serializable
             this.eventHow = report.getString("how");
             this.eventWhere = report.getString("ewhere");
             this.stringEvidences = report.getString("evidence");
-            this.stringSignatures = report.getString("sigantures");
+            this.stringSignatures = report.getString("signatures");
             this.stringSignatureNames = report.getString("signaturenames");
             this.stringSignatureRoles = report.getString("sroles");
-
-            //TODO: Remove this fields deprecated 05*11*2018
-            this.evidences = report.getString("evidence").split(",");
-            this.signatures = report.getString("signatures").split(",");
-            this.sigantureNames = report.getString("signaturenames").split(",");
-            this.signaturesRoles = report.getString("sroles").split(",");
         }catch(JSONException e){
             e.printStackTrace();
         }
@@ -143,43 +129,75 @@ public class Reporte implements Serializable
     }
 
     public boolean hasEvidences() {
-        return this.evidences.length > 0 ;
+        boolean has = false;
+        if(stringEvidences != null){
+            has = this.stringEvidences.split(",").length > 0;
+        }
+        return has ;
     }
 
+
     public boolean hasSignatures(){
-        return this.signatures.length > 0;
+        boolean has = false;
+        if (this.stringSignatures != null){
+            has =  this.stringSignatures.split(",").length > 0;
+        }
+        return has;
     }
 
     public String[] getEvidences() {
-        return evidences;
-    }
-
-    public void setEvidences(String[] evidences) {
-        this.evidences = evidences;
+        return stringEvidences.split(",");
     }
 
     public String[] getSignatures() {
-        return signatures;
-    }
-
-    public void setSignatures(String[] signatures) {
-        this.signatures = signatures;
+        return stringSignatures.split(",");
     }
 
     public String[] getSigantureNames() {
-        return sigantureNames;
-    }
-
-    public void setSigantureNames(String[] sigantureNames) {
-        this.sigantureNames = sigantureNames;
+        return stringSignatureNames.split(",");
     }
 
     public String[] getSignaturesRoles() {
-        return signaturesRoles;
+        return stringSignatureRoles.split(",");
     }
 
-    public void setSignaturesRoles(String[] signaturesRoles) {
-        this.signaturesRoles = signaturesRoles;
+    public String getStringEvidences() {
+        return stringEvidences;
     }
 
+    public void setStringEvidences(String stringEvidences) {
+        this.stringEvidences = stringEvidences;
+    }
+
+    public String getStringSignatures() {
+        return stringSignatures;
+    }
+
+    public void setStringSignatures(String stringSignatures) {
+        this.stringSignatures = stringSignatures;
+    }
+
+    public String getStringSignatureNames() {
+        return stringSignatureNames;
+    }
+
+    public void setStringSignatureNames(String stringSignatureNames) {
+        this.stringSignatureNames = stringSignatureNames;
+    }
+
+    public String getStringSignatureRoles() {
+        return stringSignatureRoles;
+    }
+
+    public void setStringSignatureRoles(String stringSignatureRoles) {
+        this.stringSignatureRoles = stringSignatureRoles;
+    }
+
+    public int getRemReportId() {
+        return remReportId;
+    }
+
+    public void setRemReportId(int remReportId) {
+        this.remReportId = remReportId;
+    }
 }

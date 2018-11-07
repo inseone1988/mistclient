@@ -69,8 +69,22 @@ public class DatabaseOperations {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                cb.onOperationSucceded(appDatabase.reportDao().fetchLastReportID());
+                int lastid = appDatabase.reportDao().fetchLastReportID();
+                cb.onOperationSucceded(lastid);
             }
         }).start();
+    }
+
+    public void resetReportsTable(){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                appDatabase.reportDao().eraseReportTable();
+            }
+        }).start();
+    }
+
+    public void close(){
+        appDatabase.close();
     }
 }

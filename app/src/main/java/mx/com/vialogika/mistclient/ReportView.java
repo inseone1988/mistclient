@@ -1,6 +1,8 @@
 package mx.com.vialogika.mistclient;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.support.v7.app.ActionBar;
@@ -10,15 +12,24 @@ import android.support.v7.widget.CardView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bogdwellers.pinchtozoom.ImageMatrixTouchHandler;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+import mx.com.vialogika.mistclient.Utils.ChatBubble;
 import mx.com.vialogika.mistclient.Utils.LoadImages;
 import mx.com.vialogika.mistclient.Utils.LoadImagesCallback;
 import mx.com.vialogika.mistclient.Utils.LoadSignatures;
+import mx.com.vialogika.mistclient.Utils.Messages;
 
 public class ReportView extends AppCompatActivity {
 
@@ -31,6 +42,10 @@ public class ReportView extends AppCompatActivity {
     private CardView evCard;
     private CardView sigCard;
     private LinearLayout sigContainer;
+    private LinearLayout comContainer;
+    private ChatBubble chatBubble;
+    private EditText commentEditText;
+    private ImageButton sendCommentButton;
 
 
     @Override
@@ -67,6 +82,10 @@ public class ReportView extends AppCompatActivity {
         evContainer = findViewById(R.id.evidences_container);
         sigCard = findViewById(R.id.signatures_card);
         sigContainer = findViewById(R.id.signatures_container);
+        comContainer = findViewById(R.id.comments_container);
+        chatBubble = new ChatBubble(this,Messages.MESSAGE_INBOUND);
+        commentEditText = findViewById(R.id.comment);
+        sendCommentButton = findViewById(R.id.send_comment);
     }
 
     private void setValues(){
@@ -79,6 +98,47 @@ public class ReportView extends AppCompatActivity {
         whereExp.setText(report.getEventWhere());
         factsExp.setText(report.getReportExplanation());
         loadImages();
+        bubbleExampleSetup();
+    }
+
+    private void setListeners(){
+        sendCommentButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+    }
+
+    private void clearCommentBox(){
+        commentEditText.setText("");
+    }
+
+    private void sendComment(){
+        String comment = commentEditText.getText().toString();
+        if (!comment.equals("")){
+
+        }else{
+            Toast.makeText(this,R.string.comment_is_empty,Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void getCommentInfo(String comment){
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+        String now = df.format(new Date());
+        SharedPreferences sp = getSharedPreferences("LogIn", Context.MODE_PRIVATE);
+        String userAlias = sp.getString("user_login","NotValid");
+        int userId = sp.getInt("user_id",0);
+        if(!userAlias.equals("NotValid" )&& userId != 0){
+
+        }
+    }
+
+    private void bubbleExampleSetup(){
+        ChatBubble example = new ChatBubble(this,Messages.MESSAGE_OUTBOUND);
+        example.setMessageTexts("@someuser","Hello pal, I hope we can going downtown this weekend. Very Nice project by the way","2018-06-11 17:07");
+        comContainer.addView(chatBubble);
+        comContainer.addView(example);
     }
 
     private void setupActionBar(){

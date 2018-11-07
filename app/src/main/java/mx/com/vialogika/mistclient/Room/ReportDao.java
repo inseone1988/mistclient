@@ -16,9 +16,13 @@ public interface ReportDao {
     @Insert
     void saveReports(List<Reporte> reports);
 
-    @Query("SELECT remReportId FROM Reports ORDER BY reportId DESC LIMIT 1")
+    @Query("SELECT remReportId FROM Reports ORDER BY remReportId DESC LIMIT 1")
     int  fetchLastReportID ();
 
     @Query("SELECT * FROM Reports")
     List<Reporte> getAllReports();
+
+    @Query("DELETE FROM Reports")
+    void eraseReportTable();
+
 }

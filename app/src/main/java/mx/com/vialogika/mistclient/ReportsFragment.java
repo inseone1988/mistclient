@@ -21,6 +21,8 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AnimationUtils;
+import android.view.animation.LayoutAnimationController;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
@@ -121,12 +123,7 @@ public class ReportsFragment extends Fragment {
                 }
             }
         });
-        dbo.getLastReportId(new DatabaseOperationCallback() {
-            @Override
-            public void onOperationSucceded(@Nullable Object response) {
-                lastId = (int) response;
-            }
-        });
+        updateLastId();
         getUserData();
     }
 
@@ -136,6 +133,15 @@ public class ReportsFragment extends Fragment {
             user = sp.getInt("user_id",0);
             site = sp.getInt("user_site",0);
         }
+    }
+
+    private void updateLastId(){
+        dbo.getLastReportId(new DatabaseOperationCallback() {
+            @Override
+            public void onOperationSucceded(@Nullable Object response) {
+                lastId = (int) response;
+            }
+        });
     }
 
     @Override
@@ -227,7 +233,14 @@ public class ReportsFragment extends Fragment {
                 e.printStackTrace();
             }
         }
-        rAdapter.notifyDataSetChanged();
+        runLayoutAnimation();
+    }
+
+    private void runLayoutAnimation(){
+        LayoutAnimationController controller = AnimationUtils.loadLayoutAnimation(this.getContext(),R.anim.layout_animation_fall_down);
+        mRecyclerview.setLayoutAnimation(controller);
+        mRecyclerview.getAdapter().notifyDataSetChanged();
+        mRecyclerview.scheduleLayoutAnimation();
     }
 
     private void fetchIncidents(int from){
@@ -242,6 +255,7 @@ public class ReportsFragment extends Fragment {
                         addReportsToList(reports);
                         dbo.addReportsToQueue(reportes);
                         dbo.saveReports();
+                        updateLastId();
                     }else{
                         Toast.makeText(ctx,"Timeline up to date",Toast.LENGTH_SHORT).show();
                     }

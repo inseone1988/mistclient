@@ -21,6 +21,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import mx.com.vialogika.mistclient.Room.DatabaseOperations;
 import mx.com.vialogika.mistclient.Utils.Dialogs;
 import mx.com.vialogika.mistclient.Utils.SimpleDialogCallback;
 
@@ -36,10 +37,13 @@ public class DscMainActivity extends AppCompatActivity
     private String username;
     private String userd;
 
+    private DatabaseOperations dbo;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dsc_main);
+        initdb();
         getSPValues();
         getItems();
         setSupportActionBar(toolbar);
@@ -47,6 +51,10 @@ public class DscMainActivity extends AppCompatActivity
         setupDrawer();
         loadFragment(new ReportsFragment());
         navigationView.setNavigationItemSelectedListener(this);
+    }
+
+    private void initdb(){
+        dbo = new DatabaseOperations(this);
     }
 
     private void getItems(){
@@ -157,15 +165,42 @@ public class DscMainActivity extends AppCompatActivity
         finish();
     }
 
-
+    private void updateAppBarTitle(int fragmentid){
+        int appBarTitle = R.string.title_activity_log_in;
+        switch(fragmentid){
+            case R.id.nav_reports:
+                appBarTitle = R.string.appbar_title_reports;
+                break;
+        }
+        toolbar.setTitle(appBarTitle);
+    }
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
+        switch(id){
+            case R.id.nav_reports:
+                    loadFragment(new ReportsFragment());
+                break;
+            case R.id.nav_edo:
+                Toast.makeText(getBaseContext(),"Edo Fragment",Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.nav_exit_app:
+                Dialogs.exitAppDialog(this, new SimpleDialogCallback() {
+                    @Override
+                    public void AccountStayOpen() {
+                        enableLogin();
+                        dbo.resetReportsTable();
+                        finishApp();
+                    }
+                });
+                break;
+        }
 
-        if (id == R.id.nav_reports) {
+        updateAppBarTitle(id);
+        /**if (id == R.id.nav_reports) {
             // Handle the camera action
         } else if (id == R.id.nav_edo) {
 
@@ -184,7 +219,7 @@ public class DscMainActivity extends AppCompatActivity
 
         } else if (id == R.id.nav_about) {
 
-        }
+        }*/
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);

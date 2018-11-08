@@ -14,7 +14,9 @@ import com.android.volley.Response;
 import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.JsonRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.gson.Gson;
 
 import org.jetbrains.annotations.Nullable;
 import org.json.JSONException;
@@ -23,10 +25,15 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.net.URL;
 
+import mx.com.vialogika.mistclient.Comment;
+
 public class NetworkRequest {
+
+    public static final String SERVER_URL_PREFIX = "https://www.vialogika.com.mx/dscic/";
+
     public static void authenticateUser(Context context , String user, String password,final NetworkRequestCallbacks cb){
         //TODO: Consider server will change later
-        String url = "https:www.vialogika.com.mx/dscic/raw.php";
+        String url = "https://www.vialogika.com.mx/dscic/raw.php";
         JSONObject params = new JSONObject();
         try{
             params.put("function","authUser")
@@ -82,6 +89,58 @@ public class NetworkRequest {
                 if(response != null){
                     Dialogs.invalidServerResponse(context,String.valueOf(response.statusCode));
                 }
+            }
+        });
+        rq.add(jor);
+    }
+
+    public static void saveComment(Context context,Comment comment,final NetworkRequestCallbacks cb){
+        String handler = "raw.php";
+        String url = NetworkRequest.SERVER_URL_PREFIX + handler;
+        JSONObject params = new JSONObject();
+        try{
+            Gson gson = new Gson();
+            JSONObject desComment = new JSONObject(gson.toJson(comment));
+            params.put("function","saveComment");
+            params.put("data",desComment);
+            RequestQueue rq = Volley.newRequestQueue(context);
+            JsonObjectRequest jor = new JsonObjectRequest(Request.Method.POST, url, params, new Response.Listener<JSONObject>() {
+                @Override
+                public void onResponse(JSONObject response) {
+                    cb.onNetworkRequestResponse(response);
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    cb.onNetworkRequestError(error);
+                }
+            });
+            rq.add(jor);
+        }catch(JSONException e){
+            e.printStackTrace();
+        }
+    }
+
+    public static void getEventComments(Context context,int eventid,final NetworkRequestCallbacks cb){
+        String handler = "rawdata.php";
+        String url = NetworkRequest.SERVER_URL_PREFIX + handler;
+        JSONObject params = new JSONObject();
+        RequestQueue rq = Volley.newRequestQueue(context);
+        try{
+            params.put("function","getEventComemnts");
+            params.put("eventid",eventid);
+        }catch(JSONException e){
+            e.printStackTrace();
+        }
+        JsonObjectRequest jor = new JsonObjectRequest(Request.Method.POST, url, params, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                cb.onNetworkRequestResponse(response);
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                cb.onNetworkRequestError(error);
             }
         });
         rq.add(jor);

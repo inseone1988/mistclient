@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import mx.com.vialogika.mistclient.Comment;
 import mx.com.vialogika.mistclient.R;
 
 public class ChatBubble extends LinearLayout {
@@ -108,5 +109,11 @@ public class ChatBubble extends LinearLayout {
         this.message.setText(mMessage);
         this.timestamp.setText(mTimestamp);
 
+    }
+
+    public void setMessageTexts(Comment comment){
+        this.title.setText(comment.getUserName());
+        this.message.setText(comment.getCommentContent());
+        this.timestamp.setText(comment.getCommentTimestamp());
     }
 }

@@ -2,10 +2,13 @@ package mx.com.vialogika.mistclient.Room;
 
 import android.arch.persistence.room.Room;
 import android.content.Context;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import mx.com.vialogika.mistclient.Comment;
 import mx.com.vialogika.mistclient.Reporte;
 import mx.com.vialogika.mistclient.Utils.DatabaseOperationCallback;
 
@@ -80,6 +83,29 @@ public class DatabaseOperations {
             @Override
             public void run() {
                 appDatabase.reportDao().eraseReportTable();
+            }
+        }).start();
+    }
+
+    //Comments related operations
+    public void loadLocalComments(final int eventId, final DatabaseOperationCallback cb){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                List<Comment> localComments = appDatabase.commentDao().getEventComments(eventId);
+                cb.onOperationSucceded(localComments);
+            }
+        }).start();
+    }
+
+    public void saveComments(final List<Comment> comment,final @Nullable DatabaseOperationCallback cb){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                appDatabase.commentDao().saveComments(comment);
+                if (cb != null){
+                    cb.onOperationSucceded(null);
+                }
             }
         }).start();
     }

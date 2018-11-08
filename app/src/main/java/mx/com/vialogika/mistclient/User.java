@@ -44,6 +44,11 @@ public class User {
         }
     }
 
+    public static int userId(Context context){
+        SharedPreferences sp = context.getSharedPreferences("LogIn", Context.MODE_PRIVATE);
+        return sp.getInt("user_id",0);
+    }
+
     public interface onUserDataSaved{
         void dataSaved();
     }

@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -25,6 +26,7 @@ import com.android.volley.VolleyError;
 import com.bogdwellers.pinchtozoom.ImageMatrixTouchHandler;
 import com.google.gson.Gson;
 
+import org.jetbrains.annotations.Nullable;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -37,6 +39,7 @@ import java.util.List;
 import mx.com.vialogika.mistclient.Room.AppDatabase;
 import mx.com.vialogika.mistclient.Room.DatabaseOperations;
 import mx.com.vialogika.mistclient.Utils.ChatBubble;
+import mx.com.vialogika.mistclient.Utils.DatabaseOperationCallback;
 import mx.com.vialogika.mistclient.Utils.LoadImages;
 import mx.com.vialogika.mistclient.Utils.LoadImagesCallback;
 import mx.com.vialogika.mistclient.Utils.LoadSignatures;
@@ -109,12 +112,12 @@ public class ReportView extends AppCompatActivity {
     private void loadComments(){
         final Context ctx = this;
         final DatabaseOperations dbo = new DatabaseOperations(ctx);
-        NetworkRequest.getEventComments(ctx, userId, new NetworkRequestCallbacks() {
+        NetworkRequest.getEventComments(ctx, report.getRemReportId(), new NetworkRequestCallbacks() {
             @Override
             public void onNetworkRequestResponse(Object response) {
                 try{
                     Gson gson = new Gson();
-                    JSONObject resp = new JSONObject((String)response);
+                    JSONObject resp = new JSONObject(response.toString());
                     JSONArray comms = resp.getJSONArray("comments");
                     if (comms.length() > 0){
                         for (int i = 0;i < comms.length();i++){
@@ -131,15 +134,27 @@ public class ReportView extends AppCompatActivity {
 
             @Override
             public void onNetworkRequestError(VolleyError error) {
-
+                dbo.loadLocalComments(report.getRemReportId(), new DatabaseOperationCallback() {
+                    @Override
+                    public void onOperationSucceded(@Nullable Object response) {
+                        if (response != null){
+                            comments.addAll((List<Comment>) response);
+                            loadCommentsToContainer();
+                        }else{
+                            loadCommentsToContainer();
+                        }
+                    }
+                });
             }
         });
     }
 
     private void loadCommentsToContainer(){
+        comContainer.removeAllViews();
         if (comments.size() > 0){
             for (int i = 0;i < comments.size();i++){
-                ChatBubble cb = new ChatBubble(this,Messages.MESSAGE_INBOUND);
+                Comment cm = comments.get(i);
+                ChatBubble cb = new ChatBubble(this,setCommentType(cm.getUserName()));
                 cb.setMessageTexts(comments.get(i));
                 comContainer.addView(cb);
             }
@@ -148,12 +163,18 @@ public class ReportView extends AppCompatActivity {
         }
     }
 
+    private int setCommentType(String username){
+        return User.userName(this).equals(username) ? Messages.MESSAGE_OUTBOUND : Messages.MESSAGE_INBOUND;
+    }
+
     private TextView getNoComments(){
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.WRAP_CONTENT);
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.MATCH_PARENT);
+        params.setMargins(0,25,0,0);
         TextView tv = new TextView(this);
         tv.setLayoutParams(params);
-        tv.setText("Sin comentarios");
-        tv.setTextSize(20);
+        tv.setText(R.string.be_the_first_to_comment);
+        tv.setTextSize(16);
+        tv.setTypeface(null, Typeface.ITALIC);
         tv.setGravity(Gravity.CENTER);
         return tv;
     }
@@ -168,6 +189,8 @@ public class ReportView extends AppCompatActivity {
         whereExp.setText(report.getEventWhere());
         factsExp.setText(report.getReportExplanation());
         loadImages();
+        loadCommentsToContainer();
+        loadComments();
         //TODO:Remove testing method
         //bubbleExampleSetup();
     }
@@ -211,6 +234,8 @@ public class ReportView extends AppCompatActivity {
     }
 
     private void processComment(final Comment comment){
+        comments.add(comment);
+        loadCommentsToContainer();
         final Context ctx = this;
         NetworkRequest.saveComment(this, comment, new NetworkRequestCallbacks() {
             @Override

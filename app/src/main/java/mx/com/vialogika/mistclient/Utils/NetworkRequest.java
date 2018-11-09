@@ -122,7 +122,7 @@ public class NetworkRequest {
     }
 
     public static void getEventComments(Context context,int eventid,final NetworkRequestCallbacks cb){
-        String handler = "rawdata.php";
+        String handler = "raw.php";
         String url = NetworkRequest.SERVER_URL_PREFIX + handler;
         JSONObject params = new JSONObject();
         RequestQueue rq = Volley.newRequestQueue(context);

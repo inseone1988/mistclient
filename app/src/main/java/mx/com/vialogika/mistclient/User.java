@@ -48,6 +48,22 @@ public class User {
         SharedPreferences sp = context.getSharedPreferences("LogIn", Context.MODE_PRIVATE);
         return sp.getInt("user_id",0);
     }
+    public static String userName(Context context){
+        SharedPreferences sp = context.getSharedPreferences("LogIn",Context.MODE_PRIVATE);
+        return sp.getString("user_login","not_valid_user");
+    }
+
+    public static boolean getUserIsLoggedIn(Context context){
+        SharedPreferences sp = context.getSharedPreferences("LogIn",Context.MODE_PRIVATE);
+        return sp.getBoolean("user_is_logged_in",false);
+    }
+
+    public static void setUserIsLoggedIn(Context context,boolean isLoggedIn){
+        SharedPreferences sp = context.getSharedPreferences("LogIn",Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putBoolean("user_is_logged_in",isLoggedIn);
+        editor.apply();
+    }
 
     public interface onUserDataSaved{
         void dataSaved();

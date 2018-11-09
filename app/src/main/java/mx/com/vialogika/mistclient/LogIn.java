@@ -12,6 +12,9 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.evernote.android.job.JobManager;
+
+import mx.com.vialogika.mistclient.Notif.RegisterNotificationChannels;
 import mx.com.vialogika.mistclient.Utils.AuthCallbacks;
 import mx.com.vialogika.mistclient.Utils.Authentication;
 import mx.com.vialogika.mistclient.Utils.Dialogs;
@@ -31,6 +34,8 @@ public class LogIn extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //Create NOtification Channel on Android O +
+        new RegisterNotificationChannels(this);
         init();
         if(!shouldSkipLogin){
             setContentView(R.layout.activity_log_in);
@@ -40,6 +45,7 @@ public class LogIn extends AppCompatActivity {
             //TODO:Here goes code to start main dashboard without prompt for user and password
             startMainActivity();
         }
+
     }
 
     private void init(){
@@ -78,6 +84,7 @@ public class LogIn extends AppCompatActivity {
                         public void onAuthenticated() {
                             clearFields();
                             setKeepSessionOpened(shouldSkipLogin);
+                            User.setUserIsLoggedIn(mcontext,true);
                             startMainActivity();
                         }
 

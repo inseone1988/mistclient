@@ -1,5 +1,6 @@
 package mx.com.vialogika.mistclient;
 
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.Uri;
@@ -8,6 +9,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.app.NotificationManagerCompat;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -21,7 +23,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.evernote.android.job.JobManager;
+
 import mx.com.vialogika.mistclient.Room.DatabaseOperations;
+import mx.com.vialogika.mistclient.Utils.AppJobCreator;
 import mx.com.vialogika.mistclient.Utils.Dialogs;
 import mx.com.vialogika.mistclient.Utils.SimpleDialogCallback;
 
@@ -42,6 +47,7 @@ public class DscMainActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        JobManager.create(this).addJobCreator(new AppJobCreator());
         setContentView(R.layout.activity_dsc_main);
         initdb();
         getSPValues();
@@ -123,6 +129,11 @@ public class DscMainActivity extends AppCompatActivity
         } else {
             super.onBackPressed();
         }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
     }
 
     /**@Override

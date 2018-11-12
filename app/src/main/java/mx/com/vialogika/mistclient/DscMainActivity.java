@@ -25,6 +25,9 @@ import android.widget.Toast;
 
 import com.evernote.android.job.JobManager;
 
+import org.json.JSONObject;
+
+import mx.com.vialogika.mistclient.Notif.AppNotifications;
 import mx.com.vialogika.mistclient.Room.DatabaseOperations;
 import mx.com.vialogika.mistclient.Utils.AppJobCreator;
 import mx.com.vialogika.mistclient.Utils.Dialogs;
@@ -57,6 +60,7 @@ public class DscMainActivity extends AppCompatActivity
         setupDrawer();
         loadFragment(new ReportsFragment());
         navigationView.setNavigationItemSelectedListener(this);
+        showSampleNotification();
     }
 
     private void initdb(){
@@ -84,6 +88,12 @@ public class DscMainActivity extends AppCompatActivity
         };
         drawer.addDrawerListener(toggle);
         toggle.syncState();
+    }
+
+    private void showSampleNotification(){
+        AppNotifications mNotifs = new AppNotifications(this,new JSONObject());
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
+        notificationManager.notify(AppNotifications.TESTIN_NOTIFICATION_HANDLE,mNotifs.testingNotofication().build());
     }
 
     private void setupActionListeners(){

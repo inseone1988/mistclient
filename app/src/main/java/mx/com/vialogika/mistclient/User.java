@@ -53,6 +53,11 @@ public class User {
         return sp.getString("user_login","not_valid_user");
     }
 
+    public static int userSite(Context context){
+        SharedPreferences sp = context.getSharedPreferences("LogIn", Context.MODE_PRIVATE);
+        return sp.getInt("user_site",0);
+    }
+
     public static boolean getUserIsLoggedIn(Context context){
         SharedPreferences sp = context.getSharedPreferences("LogIn",Context.MODE_PRIVATE);
         return sp.getBoolean("user_is_logged_in",false);

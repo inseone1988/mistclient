@@ -2,6 +2,7 @@ package mx.com.vialogika.mistclient;
 
 import android.app.NotificationManager;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
@@ -31,6 +32,7 @@ import mx.com.vialogika.mistclient.Notif.AppNotifications;
 import mx.com.vialogika.mistclient.Room.DatabaseOperations;
 import mx.com.vialogika.mistclient.Utils.AppJobCreator;
 import mx.com.vialogika.mistclient.Utils.Dialogs;
+import mx.com.vialogika.mistclient.Utils.ReportSyncJob;
 import mx.com.vialogika.mistclient.Utils.SimpleDialogCallback;
 
 public class DscMainActivity extends AppCompatActivity
@@ -51,6 +53,7 @@ public class DscMainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         JobManager.create(this).addJobCreator(new AppJobCreator());
+        ReportSyncJob.scheduleJob();
         setContentView(R.layout.activity_dsc_main);
         initdb();
         getSPValues();
@@ -60,7 +63,8 @@ public class DscMainActivity extends AppCompatActivity
         setupDrawer();
         loadFragment(new ReportsFragment());
         navigationView.setNavigationItemSelectedListener(this);
-        showSampleNotification();
+        handleIntent();
+        //showSampleNotification();
     }
 
     private void initdb(){
@@ -70,6 +74,7 @@ public class DscMainActivity extends AppCompatActivity
     private void getItems(){
         navigationView = findViewById(R.id.nav_view);
         toolbar = findViewById(R.id.toolbar);
+        toolbar.setTitle("Inicio");
     }
 
     private void setupDrawer(){
@@ -91,9 +96,16 @@ public class DscMainActivity extends AppCompatActivity
     }
 
     private void showSampleNotification(){
-        AppNotifications mNotifs = new AppNotifications(this,new JSONObject());
+        AppNotifications mNotifs = new AppNotifications(this);
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
         notificationManager.notify(AppNotifications.TESTIN_NOTIFICATION_HANDLE,mNotifs.testingNotofication().build());
+    }
+
+    private void handleIntent(){
+        Intent intent = getIntent();
+        if (intent.hasExtra("loadReportsFragment")){
+            loadFragment(new ReportsFragment());
+        }
     }
 
     private void setupActionListeners(){
@@ -195,6 +207,8 @@ public class DscMainActivity extends AppCompatActivity
         }
         toolbar.setTitle(appBarTitle);
     }
+
+
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override

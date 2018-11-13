@@ -25,7 +25,7 @@
     <show-object-properties value="true" />
     <loaded-nodes>
       <connection connection-id="08c0b568-769d-463c-8f16-d70b6d59f331">
-        <schema name="main" object-types="table, view" />
+        <schema name="main" object-types="table" />
       </connection>
     </loaded-nodes>
   </component>
@@ -40,6 +40,13 @@
   <component name="DBNavigator.Project.DatabaseSessionManager">
     <connection id="6b7d6789-6cc3-4f8f-93c8-695c73c4f026" />
     <connection id="08c0b568-769d-463c-8f16-d70b6d59f331" />
+  </component>
+  <component name="DBNavigator.Project.DatasetFilterManager">
+    <filter-list connection-id="08c0b568-769d-463c-8f16-d70b6d59f331" dataset="main.Reports" active-filter-id="EMPTY_FILTER">
+      <filter id="df0aef67-1750-4cdb-a0e2-8a2a51bf3492" name="1" temporary="false" custom-name="false" type="basic" join-type="AND">
+        <condition column="reportId" operator="&gt;" value="1" active="true" />
+      </filter>
+    </filter-list>
   </component>
   <component name="DBNavigator.Project.EditorStateManager">
     <last-used-providers />

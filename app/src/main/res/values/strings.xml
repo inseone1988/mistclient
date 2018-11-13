@@ -58,7 +58,10 @@
     <string name="comment_is_empty">Escribe algo</string>
     <string name="be_the_first_to_comment">Se el primero en comentar</string>
     <string name="channel_name_report">Reportes</string>
+    <string name="channel_name_edo">Estado de fuerza</string>
     <string name="channel_name_report_description_low">Reportes con prioridad baja</string>
+    <string name="report_notif_title">%1$s Nuevos reportes</string>
+    <string name="channel_name_edo_description_low">Estado de fuerza</string>
     <string name="channel_name_report_description_medium">Reportes con prioridad media</string>
     <string name="channel_name_report_description_high">Reportes con prioridad alta</string>
 

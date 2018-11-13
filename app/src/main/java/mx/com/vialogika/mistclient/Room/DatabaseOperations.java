@@ -5,12 +5,22 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.android.volley.VolleyError;
+import com.google.gson.Gson;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import mx.com.vialogika.mistclient.Comment;
 import mx.com.vialogika.mistclient.Reporte;
+import mx.com.vialogika.mistclient.User;
 import mx.com.vialogika.mistclient.Utils.DatabaseOperationCallback;
+import mx.com.vialogika.mistclient.Utils.NetworkRequest;
+import mx.com.vialogika.mistclient.Utils.NetworkRequestCallbacks;
 
 public class DatabaseOperations {
     Context ctx ;
@@ -68,6 +78,48 @@ public class DatabaseOperations {
         }
     }
 
+    public List<Reporte> syncReports(final Sync cb){
+        final List<Reporte> fetched = new ArrayList<>();
+        getLastReportId(new DatabaseOperationCallback() {
+            @Override
+            public void onOperationSucceded(Object response) {
+                int lastid = (int) response;
+                int userid = User.userId(ctx);
+                int usersite = User.userSite(ctx);
+                NetworkRequest.fetchIncidents(ctx, lastid, userid, usersite, new NetworkRequestCallbacks() {
+                    @Override
+                    public void onNetworkRequestResponse(Object response) {
+                        try{
+                            JSONObject resp = new JSONObject(response.toString());
+                            if (resp.length() > 0){
+                                if (resp.getBoolean("success")){
+                                    JSONArray reports = resp.getJSONArray("reports");
+                                    Gson gson = new Gson();
+                                    if(reports.length() > 0){
+                                        for (int i = 0;i < reports.length();i++){
+                                            Reporte report = new Reporte(reports.getJSONObject(i));
+                                            saveReport(report);
+                                            fetched.add(report);
+                                        }
+                                    }
+                                    //Callback
+                                    cb.onReportSynced(fetched);
+                                }
+                            }
+                        }catch(JSONException e){
+                            e.printStackTrace();
+                        }
+                    }
+                    @Override
+                    public void onNetworkRequestError(VolleyError error) {
+                        error.printStackTrace();
+                    }
+                });
+            }
+        });
+        return fetched;
+    }
+
     public void getLastReportId(final DatabaseOperationCallback cb){
         new Thread(new Runnable() {
             @Override
@@ -112,5 +164,10 @@ public class DatabaseOperations {
 
     public void close(){
         appDatabase.close();
+    }
+
+    public interface Sync{
+        void onReportSynced(List<Reporte> reports);
+
     }
 }

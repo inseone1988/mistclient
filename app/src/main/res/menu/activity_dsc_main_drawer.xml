@@ -17,10 +17,10 @@
             android:icon="@drawable/ic_guard"
             android:title="@string/oficials" />
         <item
-            android:id="@+id/nav_stadistics"
+            android:id="@+id/nav_settings"
             android:checkable="true"
-            android:icon="@drawable/ic_baseline_bar_chart_24px"
-            android:title="@string/statidistics" />
+            android:icon="@drawable/ic_action_settings"
+            android:title="@string/action_settings" />
         <item
             android:id="@+id/nav_exit_app"
             android:checkable="true"

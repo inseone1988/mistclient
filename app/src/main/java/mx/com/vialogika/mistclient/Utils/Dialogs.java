@@ -72,4 +72,14 @@ public class Dialogs {
                 })
                 .show();
     }
+
+    public static MaterialDialog reportFilterDialog(Context context){
+       return new MaterialDialog.Builder(context)
+                .title(R.string.filter_reports)
+                .customView(R.layout.reports_filter_layout,true)
+                .positiveText(R.string.dsc_text_ok)
+                .negativeText(R.string.cancel)
+               .build();
+    }
+
 }

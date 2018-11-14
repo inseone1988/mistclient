@@ -10,6 +10,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.button.MaterialButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -18,16 +19,22 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LayoutAnimationController;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.android.volley.VolleyError;
 
 import org.jetbrains.annotations.Nullable;
@@ -42,8 +49,10 @@ import mx.com.vialogika.mistclient.Room.AppDatabase;
 import mx.com.vialogika.mistclient.Room.DatabaseOperations;
 import mx.com.vialogika.mistclient.Utils.Color;
 import mx.com.vialogika.mistclient.Utils.DatabaseOperationCallback;
+import mx.com.vialogika.mistclient.Utils.Dialogs;
 import mx.com.vialogika.mistclient.Utils.NetworkRequest;
 import mx.com.vialogika.mistclient.Utils.NetworkRequestCallbacks;
+import mx.com.vialogika.mistclient.Utils.ReportFilterDialog;
 
 
 /**
@@ -59,6 +68,7 @@ public class ReportsFragment extends Fragment {
     DatabaseOperations dbo;
 
     private Integer from = 1;
+    private Context ctx = getContext();
     private int site;
     private int user;
     //TODO:Add Method to update the last id after network call update
@@ -150,10 +160,29 @@ public class ReportsFragment extends Fragment {
         // Inflate the layout for this fragment
         View root = inflater.inflate(R.layout.fragment_reports, container, false);
         //Perform initializations an fragment event handlers;
+        setHasOptionsMenu(true);
         getItems(root);
         setupRecyclerView();
         setupListeners();
         return root;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        switch(id){
+            case R.id.action_filter:
+                new ReportFilterDialog(this.getContext()).build().show();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        menu.clear();
+        inflater.inflate(R.menu.reports_summary_menu,menu);
+        super.onCreateOptionsMenu(menu, inflater);
     }
 
     private void setupListeners(){

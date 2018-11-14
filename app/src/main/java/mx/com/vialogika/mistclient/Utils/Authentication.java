@@ -7,6 +7,7 @@ import com.android.volley.NetworkResponse;
 import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -22,13 +23,16 @@ public class Authentication {
                     JSONObject r = new JSONObject(response.toString());
                     if(r.has("success")){
                         boolean valid = r.getBoolean("success");
+                        JSONObject userdata = r.getJSONArray("userdata").getJSONObject(0);
+                        JSONArray usersites = userdata.getJSONArray("manages_sites");
                         if(valid){
-                            User.saveUserDatatoSP(context, r.getJSONArray("userdata").getJSONObject(0), new User.onUserDataSaved() {
+                            User.saveUserDatatoSP(context, userdata, new User.onUserDataSaved() {
                                 @Override
                                 public void dataSaved() {
                                     cb.onAuthenticated();
                                 }
                             });
+                            User.saveUserSites(context,usersites);
                         }else{
                             cb.onAuthenticatedFailed();
                         }

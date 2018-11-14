@@ -60,6 +60,25 @@ public class DatabaseOperations {
         }).start();
     }
 
+    public void saveSites(final List<Site> sites){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                appDatabase.sitesDao().saveSites(sites);
+            }
+        });
+    }
+
+    public void getSiteNames(final simpleOperationCallback cb){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+               List<Site> sites = appDatabase.sitesDao().getSitenames();
+                cb.onOperationFinished(sites);
+            }
+        });
+    }
+
     public void addReportsToQueue(List<Reporte> reportes){
         queue.addAll(reportes);
     }
@@ -168,6 +187,10 @@ public class DatabaseOperations {
 
     public interface Sync{
         void onReportSynced(List<Reporte> reports);
+    }
 
+    public interface simpleOperationCallback{
+        //Generic callback that accpts a result from background operation or generic type return
+        void onOperationFinished(@Nullable Object object);
     }
 }

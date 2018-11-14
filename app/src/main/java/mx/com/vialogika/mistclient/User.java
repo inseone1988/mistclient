@@ -6,12 +6,19 @@ import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 
+import org.jetbrains.annotations.NotNull;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.UUID;
+
+import mx.com.vialogika.mistclient.Room.DatabaseOperations;
+import mx.com.vialogika.mistclient.Room.Site;
 
 @Entity(tableName = "Users")
 public class User {
@@ -42,6 +49,20 @@ public class User {
         }catch(JSONException e){
             e.printStackTrace();
         }
+    }
+
+    public static void saveUserSites(Context context,@NotNull JSONArray sites){
+        ArrayList<Site> lSites = new ArrayList<>();
+        DatabaseOperations dbo = new DatabaseOperations(context);
+        for (int i = 0;i < sites.length();i++){
+            try{
+                JSONObject site = sites.getJSONObject(i);
+                lSites.add(new Site(site));
+            }catch(JSONException e){
+                e.printStackTrace();
+            }
+        }
+        dbo.saveSites(lSites);
     }
 
     public static int userId(Context context){

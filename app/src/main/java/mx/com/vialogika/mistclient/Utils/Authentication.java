@@ -12,19 +12,23 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import mx.com.vialogika.mistclient.User;
+import mx.com.vialogika.mistclient.UserSettings;
 
 public class Authentication {
 
     public static void authUser(final Context context,String username,String password,final AuthCallbacks cb){
+        final UserSettings ustt = new UserSettings(context);
         NetworkRequest.authenticateUser(context, username, password, new NetworkRequestCallbacks() {
             @Override
             public void onNetworkRequestResponse(Object response) {
                 try{
                     JSONObject r = new JSONObject(response.toString());
                     if(r.has("success")){
+
                         boolean valid = r.getBoolean("success");
                         JSONObject userdata = r.getJSONArray("userdata").getJSONObject(0);
                         JSONArray usersites = userdata.getJSONArray("manages_sites");
+                        JSONObject androidsettings = userdata.getJSONObject("android_settings");
                         if(valid){
                             User.saveUserDatatoSP(context, userdata, new User.onUserDataSaved() {
                                 @Override
@@ -33,6 +37,8 @@ public class Authentication {
                                 }
                             });
                             User.saveUserSites(context,usersites);
+                            ustt.mapAndroidSettings(androidsettings);
+                            ustt.save();
                         }else{
                             cb.onAuthenticatedFailed();
                         }

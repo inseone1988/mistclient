@@ -20,7 +20,7 @@ public class Site {
     public Site(JSONObject siteObject){
         try{
             this.siteId = siteObject.getInt("site_id");
-            this.siteName = siteObject.getString("site_alias");
+            this.siteName = siteObject.getString("site_name");
         }catch(JSONException e){
             e.printStackTrace();
         }

@@ -208,7 +208,15 @@ public class DscMainActivity extends AppCompatActivity
         toolbar.setTitle(appBarTitle);
     }
 
-
+    private void clearBeforeExit(){
+        enableLogin();
+        dbo.resetReportsTable();
+        dbo.resetSitesTable();
+        dbo.close();
+        JobManager.instance().cancelAll();
+        User.clearUserSP(this);
+        finishApp();
+    }
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
@@ -220,15 +228,13 @@ public class DscMainActivity extends AppCompatActivity
                     loadFragment(new ReportsFragment());
                 break;
             case R.id.nav_edo:
-                Toast.makeText(getBaseContext(),"Edo Fragment",Toast.LENGTH_SHORT).show();
+                loadFragment(new EdoFragment());
                 break;
             case R.id.nav_exit_app:
                 Dialogs.exitAppDialog(this, new SimpleDialogCallback() {
                     @Override
                     public void AccountStayOpen() {
-                        enableLogin();
-                        dbo.resetReportsTable();
-                        finishApp();
+                        clearBeforeExit();
                     }
                 });
                 break;

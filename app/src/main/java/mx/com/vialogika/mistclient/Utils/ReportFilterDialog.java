@@ -23,7 +23,7 @@ public class ReportFilterDialog extends MaterialDialog.Builder {
     private DatabaseOperations dbo;
     private ArrayList<Site> sites;
     private List<String> siteNames = new ArrayList<>();
-    private ArrayAdapter<String> mAdapter;
+    final private ArrayAdapter<String> mAdapter = new ArrayAdapter<>(context,android.R.layout.simple_spinner_item,siteNames);;
 
     public ReportFilterDialog(Context context){
         super(context);
@@ -43,14 +43,15 @@ public class ReportFilterDialog extends MaterialDialog.Builder {
 
     private void setupSpinner(){
         if (siteNames.size() > 1){
-            mAdapter = new ArrayAdapter<>(context,android.R.layout.simple_spinner_dropdown_item,siteNames);
+            setSpinnerEnabled();
             mAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             mSpinner.setAdapter(mAdapter);
+            mAdapter.notifyDataSetChanged();
         }else{
-            siteNames.add("Loading items");
+            siteNames.add("Loading items...");
             setSpinnerEnabled();
-            mAdapter = new ArrayAdapter<>(context,android.R.layout.simple_spinner_dropdown_item,siteNames);
             mAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            mSpinner.setAdapter(mAdapter);
             mAdapter.notifyDataSetChanged();
         }
 
@@ -61,17 +62,26 @@ public class ReportFilterDialog extends MaterialDialog.Builder {
         dbo.getSiteNames(new DatabaseOperations.simpleOperationCallback() {
             @Override
             public void onOperationFinished(@Nullable Object object) {
-                if (object != null){
-                    mAdapter.clear();
-                    sites = (ArrayList<Site>) object;
-                    getSitenameList();
-                    mAdapter.notifyDataSetChanged();
-                }else{
-                    Toast.makeText(context, "Failed to load data", Toast.LENGTH_SHORT).show();
-                    close();
-                }
+                mapUserSitesToSpinner(object);
             }
         });
+    }
+
+    private void mapUserSitesToSpinner(Object object){
+        if (object != null){
+            mAdapter.clear();
+            sites = (ArrayList<Site>) object;
+            if (sites.size() > 0){
+                getSitenameList();
+            }else{
+              siteNames.add("No sites found");
+            }
+            mAdapter.notifyDataSetChanged();
+            setSpinnerEnabled();
+        }else{
+            Toast.makeText(context, "Failed to load data", Toast.LENGTH_SHORT).show();
+            close();
+        }
     }
 
     private void getSitenameList(){
@@ -83,6 +93,8 @@ public class ReportFilterDialog extends MaterialDialog.Builder {
     private void setSpinnerEnabled(){
         if(siteNames.size() == 1){
             mSpinner.setEnabled(false);
+        }else{
+            mSpinner.setEnabled(true);
         }
     }
 

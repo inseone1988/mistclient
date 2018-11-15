@@ -65,8 +65,9 @@ public class DatabaseOperations {
             @Override
             public void run() {
                 appDatabase.sitesDao().saveSites(sites);
+
             }
-        });
+        }).start();
     }
 
     public void getSiteNames(final simpleOperationCallback cb){
@@ -75,8 +76,9 @@ public class DatabaseOperations {
             public void run() {
                List<Site> sites = appDatabase.sitesDao().getSitenames();
                 cb.onOperationFinished(sites);
+
             }
-        });
+        }).start();
     }
 
     public void addReportsToQueue(List<Reporte> reportes){
@@ -91,6 +93,8 @@ public class DatabaseOperations {
                     appDatabase.reportDao().saveReports(queue);
                     //Empty the queue to avoid multiple inserts
                     queue.clear();
+
+
                 }
             }).start();
 
@@ -158,6 +162,15 @@ public class DatabaseOperations {
         }).start();
     }
 
+    public void resetSitesTable(){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                appDatabase.sitesDao().deleteSitesTable();
+            }
+        }).start();
+    }
+
     //Comments related operations
     public void loadLocalComments(final int eventId, final DatabaseOperationCallback cb){
         new Thread(new Runnable() {
@@ -165,6 +178,7 @@ public class DatabaseOperations {
             public void run() {
                 List<Comment> localComments = appDatabase.commentDao().getEventComments(eventId);
                 cb.onOperationSucceded(localComments);
+
             }
         }).start();
     }
@@ -177,6 +191,7 @@ public class DatabaseOperations {
                 if (cb != null){
                     cb.onOperationSucceded(null);
                 }
+
             }
         }).start();
     }

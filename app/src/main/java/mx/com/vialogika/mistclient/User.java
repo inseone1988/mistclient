@@ -91,6 +91,12 @@ public class User {
         editor.apply();
     }
 
+    public static void clearUserSP(Context context){
+        SharedPreferences sp = context.getSharedPreferences("LogIn",Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sp.edit();
+        editor.clear().apply();
+    }
+
     public interface onUserDataSaved{
         void dataSaved();
     }

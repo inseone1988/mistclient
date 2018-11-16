@@ -101,6 +101,8 @@ public class DatabaseOperations {
         }
     }
 
+
+
     public List<Reporte> syncReports(final Sync cb){
         final List<Reporte> fetched = new ArrayList<>();
         getLastReportId(new DatabaseOperationCallback() {
@@ -198,6 +200,34 @@ public class DatabaseOperations {
 
     public void close(){
         appDatabase.close();
+    }
+
+    public void archiveReport(final int reportId){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                appDatabase.reportDao().setReportArchived(reportId);
+            }
+        }).start();
+    }
+
+    public void activeReport(final int reportId){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                appDatabase.reportDao().setReportActive(reportId);
+            }
+        }).start();
+    }
+
+    public void getArchivedReports(final DatabaseOperationCallback cb){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                List<Reporte> archived = appDatabase.reportDao().getArchivedReports();
+                cb.onOperationSucceded(archived);
+            }
+        }).start();
     }
 
     public interface Sync{

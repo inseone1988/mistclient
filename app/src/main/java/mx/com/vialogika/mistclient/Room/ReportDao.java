@@ -19,10 +19,19 @@ public interface ReportDao {
     @Query("SELECT remReportId FROM Reports ORDER BY remReportId DESC LIMIT 1")
     int  fetchLastReportID ();
 
-    @Query("SELECT * FROM Reports")
+    @Query("SELECT * FROM Reports WHERE reportStatus != 'Archived'")
     List<Reporte> getAllReports();
 
     @Query("DELETE FROM Reports")
     void eraseReportTable();
+
+    @Query("UPDATE Reports SET reportStatus = 'Archived' WHERE remReportId = :id")
+    void setReportArchived(int id);
+
+    @Query("SELECT * FROM Reports WHERE reportStatus = 'Archived'")
+    List<Reporte> getArchivedReports();
+
+    @Query("UPDATE Reports SET reportStatus = 'Active' WHERE remReportId = :id")
+    void setReportActive(int id);
 
 }

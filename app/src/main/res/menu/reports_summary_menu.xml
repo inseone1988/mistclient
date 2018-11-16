@@ -7,4 +7,7 @@
         android:icon="@drawable/ic_action_filter"
         android:title="@string"
         app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/archived_reports"
+        android:title="@string/view_reports_archived" />
 </menu>

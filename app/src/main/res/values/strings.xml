@@ -43,6 +43,7 @@
     <string name="incident_timestamp">2015-10-25 10:30 AM</string>
     <string name="incident_description">Lorem ipsum dolor sit amet helo this is atesting mesge that hasno sente to al thwe world  odjsbvhp sdbh ñjb vob dosvjbojvs pksdh vok nhok sdnhvojb sdovhboñj ñsdbhvojb kdbvoubj </string>
     <string name="r_menu_archive">Archivar</string>
+    <string name="r_menu_share">Enviar</string>
     <string name="send_message">Agregar comentario</string>
     <string name="t_what_text">Que paso : </string>
     <string name="t_how_text">Como paso : </string>
@@ -68,6 +69,13 @@
     <string name="sttings">Configuracion</string>
     <string name="filter_reports">Filtrar reportes</string>
     <string name="site">Site</string>
+    <string name="view_reports_archived">Reportes archivados</string>
+    <string name="report_flag_title">Marcar reporte como : </string>
+    <string-array name="flag_options">
+        <item>Resuelto</item>
+        <item>Pendiente</item>
+        <item>Asignado</item>
+    </string-array>
     <string-array name="sites">
         <item>Macrocentro</item>
         <item>Nave 6</item>

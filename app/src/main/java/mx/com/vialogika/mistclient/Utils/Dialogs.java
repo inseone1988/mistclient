@@ -3,6 +3,8 @@ package mx.com.vialogika.mistclient.Utils;
 import android.content.Context;
 import android.content.res.Resources;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.view.View;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -80,6 +82,26 @@ public class Dialogs {
                 .positiveText(R.string.dsc_text_ok)
                 .negativeText(R.string.cancel)
                .build();
+    }
+
+    public static MaterialDialog reportflagDialog(Context context,final GenericDialogCallback cb){
+        return new MaterialDialog.Builder(context)
+                .title(R.string.report_flag_title)
+                .items(R.array.flag_options)
+                .itemsCallbackSingleChoice(-1, new MaterialDialog.ListCallbackSingleChoice() {
+                    @Override
+                    public boolean onSelection(MaterialDialog dialog, View itemView, int which, CharSequence text) {
+                        cb.onActionDone(which);
+                        return false;
+                    }
+                })
+                .positiveText(R.string.dsc_text_ok)
+                .negativeText(R.string.cancel)
+                .show();
+    }
+
+    public interface GenericDialogCallback{
+        void onActionDone(@Nullable Object params);
     }
 
 }

@@ -174,6 +174,18 @@ public class ReportsFragment extends Fragment {
             case R.id.action_filter:
                 new ReportFilterDialog(this.getContext()).build().show();
                 break;
+            case R.id.archived_reports:
+                dbo.getArchivedReports(new DatabaseOperationCallback() {
+                    @Override
+                    public void onOperationSucceded(@Nullable Object response) {
+                        reportes.clear();
+                        reportes.addAll((List<Reporte>) response);
+                    }
+                });
+                if (reportes.size() > 0){
+                    runLayoutAnimation();
+                }
+                break;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -199,8 +211,32 @@ public class ReportsFragment extends Fragment {
         mRecyclerview.setHasFixedSize(true);
         rLayoutManager = new LinearLayoutManager(this.getContext());
         mRecyclerview.setLayoutManager(rLayoutManager);
-        rAdapter = new ReportAdapter(reportes,this.getContext());
+        rAdapter = new ReportAdapter(reportes, this.getContext(), new ReportActions() {
+            @Override
+            public void onReportArchived(int position) {
+                removeItem(position);
+            }
+
+            @Override
+            public void onReportShare(int position) {
+
+            }
+
+            @Override
+            public void onReportFlagged(int position) {
+
+            }
+        });
         mRecyclerview.setAdapter(rAdapter);
+        if (reportes.size() > 0){
+            rAdapter.notifyDataSetChanged();
+        }
+    }
+
+    private void removeItem(int position){
+        reportes.remove(position);
+        rAdapter.notifyItemRemoved(position);
+        rAdapter.notifyItemRangeChanged(position,reportes.size());
     }
 
     private void getItems(View rootView){
@@ -231,6 +267,17 @@ public class ReportsFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+    }
+
+    @Override
+    public void onPause() {
+        dbo.close();
+        super.onPause();
     }
 
     @Override
@@ -303,8 +350,14 @@ public class ReportsFragment extends Fragment {
 
     public class ReportAdapter extends RecyclerView.Adapter<ReportAdapter.ReportViewHolder>{
 
+        final public static int REPORT_ACTION_MENU_GROUP = 0;
+        final public static int REPORT_ACTION_ARCHIVE = 987654;
+        final public static int REPORT_ACTION_SHARE = 321987;
+        final public static int REPORT_ACTION_FLAG = 654321;
+
         private List<Reporte> mDataset;
         private Context context;
+        private ReportActions actionCallbacks;
 
         public class ReportViewHolder extends RecyclerView.ViewHolder{
 
@@ -322,9 +375,10 @@ public class ReportsFragment extends Fragment {
             }
         }
 
-        public ReportAdapter(List<Reporte> reports,Context ctx){
-            mDataset = reports;
-            context = ctx;
+        public ReportAdapter(List<Reporte> reports,Context ctx,ReportActions actions){
+            this.actionCallbacks = actions;
+            this.mDataset = reports;
+            this.context = ctx;
         }
 
         @NonNull
@@ -336,8 +390,6 @@ public class ReportsFragment extends Fragment {
 
             return new ReportViewHolder(itemview);
         }
-
-
 
         @Override
         public void onBindViewHolder(@NonNull final ReportViewHolder holder,final int i) {
@@ -363,13 +415,37 @@ public class ReportsFragment extends Fragment {
                 @Override
                 public void onClick(View v) {
                     PopupMenu menu = new PopupMenu(context,holder.reportmenu);
+                    Menu mMenu = menu.getMenu();
+                    setupMenu(mMenu);
                     menu.inflate(R.menu.report_menu);
                     menu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                         @Override
                         public boolean onMenuItemClick(MenuItem item) {
                             switch(item.getItemId()){
-                                case R.id.r_menu_archive:
-                                    Toast.makeText(context,"Report is archived",Toast.LENGTH_SHORT).show();
+                                case REPORT_ACTION_ARCHIVE:
+                                    DatabaseOperations dbo = new DatabaseOperations(context);
+                                    if(!report.getReportStatus().equals("Archived")){
+                                        dbo.archiveReport(report.getRemReportId());
+                                        Toast.makeText(context,"Report is archived",Toast.LENGTH_SHORT).show();
+                                    }else{
+                                        dbo.activeReport(report.getRemReportId());
+                                        Toast.makeText(context, "Report restored", Toast.LENGTH_SHORT).show();
+                                    }
+                                    actionCallbacks.onReportArchived(i);
+                                    break;
+                                case REPORT_ACTION_SHARE:
+                                    actionCallbacks.onReportShare(i);
+                                    Toast.makeText(context, "Share report", Toast.LENGTH_SHORT).show();
+                                    break;
+                                case REPORT_ACTION_FLAG:
+                                    actionCallbacks.onReportFlagged(i);
+                                    Dialogs.reportflagDialog(context, new Dialogs.GenericDialogCallback() {
+                                        @Override
+                                        public void onActionDone(@android.support.annotation.Nullable Object params) {
+                                            int selected = (int) params;
+                                            Toast.makeText(context, String.valueOf(selected), Toast.LENGTH_SHORT).show();
+                                        }
+                                    });
                                     break;
                             }
                             return false;
@@ -380,10 +456,31 @@ public class ReportsFragment extends Fragment {
             });
         }
 
+        private void setupMenu(Menu menu){
+            menu.clear();
+            UserSettings us = new UserSettings(getContext());
+            if (us.isCanArchiveReports()){
+                menu.add(REPORT_ACTION_MENU_GROUP,REPORT_ACTION_ARCHIVE, Menu.NONE,"Archivar / Des");
+            }
+            if (us.isCanShareReports()){
+                menu.add(REPORT_ACTION_MENU_GROUP,REPORT_ACTION_SHARE, Menu.NONE,"Enviar");
+            }
+            if (us.isCanFlagReports()){
+                menu.add(REPORT_ACTION_MENU_GROUP,REPORT_ACTION_FLAG,Menu.NONE,"Marcar");
+            }
+        }
+
         @Override
         public int getItemCount() {
             return mDataset.size();
         }
+    }
+
+    public interface ReportActions{
+        void onReportArchived(int position);
+        void onReportShare(int position);
+        void onReportFlagged(int position);
+
     }
 
     private class loadIncidents extends AsyncTask<Object,Void,Void>{

@@ -30,6 +30,7 @@ public class Reporte implements Serializable
     private String stringSignatures;
     private String stringSignatureNames;
     private String stringSignatureRoles;
+    private String reportStatus = "active";
 
     public Reporte(){
 
@@ -199,5 +200,13 @@ public class Reporte implements Serializable
 
     public void setRemReportId(int remReportId) {
         this.remReportId = remReportId;
+    }
+
+    public String getReportStatus() {
+        return reportStatus;
+    }
+
+    public void setReportStatus(String reportStatus) {
+        this.reportStatus = reportStatus;
     }
 }

@@ -146,6 +146,33 @@ public class NetworkRequest {
         rq.add(jor);
     }
 
+    public static void flagReport(Context context,int eventid,String flag,int userid,final NetworkRequestCallbacks cb){
+        String handler = "raw.php";
+        String url = SERVER_URL_PREFIX + handler;
+        JSONObject params = new JSONObject();
+        RequestQueue rq = Volley.newRequestQueue(context);
+        try{
+            params.put("function","flagReport");
+            params.put("eventid",eventid);
+            params.put("flag",flag);
+        }catch(JSONException e ){
+            e.printStackTrace();
+        }
+        JsonObjectRequest jor = new JsonObjectRequest(Request.Method.POST, url, params, new Response.Listener<JSONObject>() {
+            @Override
+                public void onResponse(JSONObject response) {
+
+                cb.onNetworkRequestResponse(response);
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                cb.onNetworkRequestError(error);
+            }
+        });
+        rq.add(jor);
+    }
+
     public static Bitmap getImageFromURL(String url){
         Bitmap image = null;
         URL link;

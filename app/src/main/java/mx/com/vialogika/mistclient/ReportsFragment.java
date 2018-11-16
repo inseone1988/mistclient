@@ -223,7 +223,40 @@ public class ReportsFragment extends Fragment {
             }
 
             @Override
-            public void onReportFlagged(int position) {
+            public void onReportFlagged(int selected,int reportId) {
+                String reportFlag = null;
+                switch (selected){
+                    case Reporte.REPORT_FLAG_ASIGNED:
+                        reportFlag = "REPORT_ASIGNED";
+                        break;
+                    case Reporte.REPORT_FLAG_PENDING:
+                        reportFlag = "REPORT_PENDING";
+                        break;
+                    case Reporte.REPORT_FLAG_RESOLVED:
+                        reportFlag = "REPORT_RESOLVED";
+                        break;
+                }
+                if (reportFlag != null){
+                    NetworkRequest.flagReport(ctx, reportId, reportFlag, user, new NetworkRequestCallbacks() {
+                        @Override
+                        public void onNetworkRequestResponse(Object response) {
+                            try{
+                                JSONObject rep = new JSONObject(response.toString());
+                                if (rep.getBoolean("success")){
+                                    Toast.makeText(ctx, "Marcado correctamente", Toast.LENGTH_SHORT).show();
+                                }
+                            }catch(JSONException e){
+                                e.printStackTrace();
+                            }
+
+                        }
+
+                        @Override
+                        public void onNetworkRequestError(VolleyError error) {
+
+                        }
+                    });
+                }
 
             }
         });
@@ -438,12 +471,12 @@ public class ReportsFragment extends Fragment {
                                     Toast.makeText(context, "Share report", Toast.LENGTH_SHORT).show();
                                     break;
                                 case REPORT_ACTION_FLAG:
-                                    actionCallbacks.onReportFlagged(i);
+
                                     Dialogs.reportflagDialog(context, new Dialogs.GenericDialogCallback() {
                                         @Override
                                         public void onActionDone(@android.support.annotation.Nullable Object params) {
                                             int selected = (int) params;
-                                            Toast.makeText(context, String.valueOf(selected), Toast.LENGTH_SHORT).show();
+                                            actionCallbacks.onReportFlagged(selected,report.getRemReportId());
                                         }
                                     });
                                     break;
@@ -479,7 +512,7 @@ public class ReportsFragment extends Fragment {
     public interface ReportActions{
         void onReportArchived(int position);
         void onReportShare(int position);
-        void onReportFlagged(int position);
+        void onReportFlagged(int selected,int reportid);
 
     }
 

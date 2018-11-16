@@ -1,6 +1,7 @@
 package mx.com.vialogika.mistclient;
 
 import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
 import android.support.annotation.NonNull;
 
@@ -12,6 +13,14 @@ import java.io.Serializable;
 @Entity(tableName = "Reports")
 public class Reporte implements Serializable
 {
+
+
+    @Ignore
+    final public static int REPORT_FLAG_RESOLVED = 0;
+    @Ignore
+    final public static int REPORT_FLAG_PENDING = 1;
+    @Ignore
+    final public static int REPORT_FLAG_ASIGNED = 2;
 
     @NonNull
     @PrimaryKey(autoGenerate = true)
@@ -31,6 +40,7 @@ public class Reporte implements Serializable
     private String stringSignatureNames;
     private String stringSignatureRoles;
     private String reportStatus = "active";
+    private String reportFlag;
 
     public Reporte(){
 
@@ -208,5 +218,13 @@ public class Reporte implements Serializable
 
     public void setReportStatus(String reportStatus) {
         this.reportStatus = reportStatus;
+    }
+
+    public int getReportFlag() {
+        return reportFlag;
+    }
+
+    public void setReportFlag(int reportFlag) {
+        this.reportFlag = reportFlag;
     }
 }

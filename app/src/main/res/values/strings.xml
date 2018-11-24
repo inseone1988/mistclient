@@ -29,7 +29,7 @@
     <string name="action_settings">Settings</string>
     <string name="example_text">Hello this is an example text</string>
     <string name="report_text">Reportes</string>
-    <string name="oficials">Estado de fuerza</string>
+    <string name="oficials">Guardias</string>
     <string name="feddback">Feedback</string>
     <string name="bug_report">Bug report</string>
     <string name="statidistics">Estadisticos</string>
@@ -43,7 +43,7 @@
     <string name="incident_timestamp">2015-10-25 10:30 AM</string>
     <string name="incident_description">Lorem ipsum dolor sit amet helo this is atesting mesge that hasno sente to al thwe world  odjsbvhp sdbh ñjb vob dosvjbojvs pksdh vok nhok sdnhvojb sdovhboñj ñsdbhvojb kdbvoubj </string>
     <string name="r_menu_archive">Archivar</string>
-    <string name="r_menu_share">Enviar</string>
+    <string name="r_menu_share">Enviar/Asignar</string>
     <string name="send_message">Agregar comentario</string>
     <string name="t_what_text">Que paso : </string>
     <string name="t_how_text">Como paso : </string>
@@ -71,6 +71,22 @@
     <string name="site">Site</string>
     <string name="view_reports_archived">Reportes archivados</string>
     <string name="report_flag_title">Marcar reporte como : </string>
+    <string name="report_status">Resuelto</string>
+    <string name="report_status_flag_default">Sin Resolver</string>
+    <string name="report_status_flag_pending">Pendiente</string>
+    <string name="report_status_flag_resolved">Resuelto</string>
+    <string name="report_status_flag_asigned">Asignado</string>
+    <string name="report_share">Separe por punto y coma cada usuario / mail.</string>
+    <string name="report_share_hint">Introduzca usuario o mail</string>
+    <string name="report_share_message_hint">Mensaje (Opcional)</string>
+    <string name="report_share_message">A new report has been addressed to you. %1$s</string>
+    <string name="radio_button_text_enviar">Notificar</string>
+    <string name="radio_button_text_asignar">Asignar</string>
+    <string name="radio_button_text_ro">Ver</string>
+    <string name="edo_reports">Reporte estado de fuerza</string>
+    <string name="edo_reports_settings">Administracion</string>
+    <string name="site_name">Site name</string>
+    <string name="refresh">Refresh</string>
     <string-array name="flag_options">
         <item>Resuelto</item>
         <item>Pendiente</item>
@@ -82,5 +98,7 @@
     </string-array>
     <string name="site_select_title">Seleccione site : </string>
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello edo fuerza fragment</string>
+    <string name="hello_blank_fragment">Hello groups fragment</string>
+    <string name="hello_guard_fragment">Hello guard fragment</string>
+    <string name="hello_apostamientos_fragment">Hello apostamientos fragment</string>
 </resources>

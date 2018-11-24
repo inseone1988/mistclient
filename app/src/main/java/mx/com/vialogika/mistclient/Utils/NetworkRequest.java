@@ -19,13 +19,16 @@ import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
 
 import org.jetbrains.annotations.Nullable;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.Arrays;
 
 import mx.com.vialogika.mistclient.Comment;
+import mx.com.vialogika.mistclient.Room.DatabaseOperations;
 
 public class NetworkRequest {
 
@@ -57,15 +60,23 @@ public class NetworkRequest {
         rq.add(jor);
     }
 
-    public static void fetchIncidents(final Context context,int from,int user, int site,final NetworkRequestCallbacks cb){
+    public static void fetchIncidents(final Context context,String mode,int from,int user, int site,final NetworkRequestCallbacks cb){
         //TODO: Consider server will change later
         String url = "https:www.vialogika.com.mx/dscic/raw.php";
         JSONObject params = new JSONObject();
         try{
-            params.put("function","getIncidents")
-                    .put("from",from)
-                    .put("user",user)
-                    .put("site",site);
+            if (mode.equals("FETCH")){
+                params.put("function","getIncidents")
+                        .put("from",from)
+                        .put("user",user)
+                        .put("site",site);
+            }else{
+                DatabaseOperations dbo = new DatabaseOperations(context);
+                int[] toUpdate = dbo.repToUpdate();
+                JSONArray indexes = new JSONArray(Arrays.asList(toUpdate));
+                params.put("function","updateIncidents")
+                        .put("reports",indexes);
+            }
         }catch(JSONException e){
             e.printStackTrace();
         }
@@ -154,6 +165,7 @@ public class NetworkRequest {
         try{
             params.put("function","flagReport");
             params.put("eventid",eventid);
+            params.put("userid","userid");
             params.put("flag",flag);
         }catch(JSONException e ){
             e.printStackTrace();
@@ -171,6 +183,57 @@ public class NetworkRequest {
             }
         });
         rq.add(jor);
+    }
+
+    public static void getUserAutocomplete(Context context,String term,final NetworkRequestCallbacks cb){
+        String handler = "raw.php";
+        String url = SERVER_URL_PREFIX + handler;
+        JSONObject params = new JSONObject();
+        try{
+            params.put("function","userAutocomplete");
+            params.put("term",term);
+            RequestQueue rq = Volley.newRequestQueue(context);
+            JsonObjectRequest jor = new JsonObjectRequest(Request.Method.POST, url, params, new Response.Listener<JSONObject>() {
+                @Override
+                public void onResponse(JSONObject response) {
+                    cb.onNetworkRequestResponse(response);
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    cb.onNetworkRequestError(error);
+                }
+            });
+            rq.add(jor);
+        }catch(JSONException e){
+            e.printStackTrace();
+        }
+    }
+
+    public static void shareReport(Context context,int userid,int reportid, String users,final NetworkRequestCallbacks cb){
+        String handler = "raw.php";
+        String url = SERVER_URL_PREFIX +handler;
+        JSONObject params = new JSONObject();
+        try{params.put("function","shareReport");
+            params.put("userstoshare",users);
+            params.put("reportid",reportid);
+            params.put("userid",userid);
+            RequestQueue rq = Volley.newRequestQueue(context);
+            JsonObjectRequest jor = new JsonObjectRequest(Request.Method.POST, url, params, new Response.Listener<JSONObject>() {
+                @Override
+                public void onResponse(JSONObject response) {
+                    cb.onNetworkRequestResponse(response);
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    cb.onNetworkRequestError(error);
+                }
+            });
+            rq.add(jor);
+        }catch(JSONException e){
+            e.printStackTrace();
+        }
     }
 
     public static Bitmap getImageFromURL(String url){

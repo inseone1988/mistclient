@@ -218,6 +218,15 @@ public class DscMainActivity extends AppCompatActivity
         finishApp();
     }
 
+    private void doOnBackground(final runTaskCallback cb){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                cb.doInBackgroung();
+            }
+        }).start();
+    }
+
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
@@ -265,5 +274,9 @@ public class DscMainActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    public interface runTaskCallback{
+        void doInBackgroung();
     }
 }

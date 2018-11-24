@@ -4,10 +4,18 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.view.KeyEvent;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
+import android.widget.EditText;
+import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import mx.com.vialogika.mistclient.R;
 
@@ -97,6 +105,18 @@ public class Dialogs {
                 })
                 .positiveText(R.string.dsc_text_ok)
                 .negativeText(R.string.cancel)
+                .show();
+    }
+
+    public static MaterialDialog shareReportDialog(Context context,int userid,int reportid){
+        return new ReportShareDialog(context,reportid,userid).show();
+    }
+
+    public static MaterialDialog malformedJSONDialog(Context context,String error){
+        return new MaterialDialog.Builder(context)
+                .title("Error en datos")
+                .content("No se ha podido obtener uno o mas datos necesarios. Error : " + error)
+                .positiveText(R.string.dsc_text_ok)
                 .show();
     }
 

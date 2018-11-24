@@ -46,6 +46,7 @@ public class Authentication {
                         cb.onAuthenticatedFailed();
                     }
                 }catch(JSONException e){
+                    Dialogs.malformedJSONDialog(context,e.getMessage());
                     e.printStackTrace();
                 }
             }

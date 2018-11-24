@@ -40,6 +40,7 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="mx.com.vialogika.mistclient.DscMainActivity" />
         </activity>
+        <activity android:name=".EdoSettings"></activity>
     </application>
 
 </manifest>

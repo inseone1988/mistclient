@@ -1,6 +1,5 @@
 package mx.com.vialogika.mistclient;
 
-import android.arch.persistence.room.Room;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -10,7 +9,6 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.design.button.MaterialButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -26,15 +24,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LayoutAnimationController;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.afollestad.materialdialogs.MaterialDialog;
 import com.android.volley.VolleyError;
 
 import org.jetbrains.annotations.Nullable;
@@ -45,7 +40,6 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-import mx.com.vialogika.mistclient.Room.AppDatabase;
 import mx.com.vialogika.mistclient.Room.DatabaseOperations;
 import mx.com.vialogika.mistclient.Utils.Color;
 import mx.com.vialogika.mistclient.Utils.DatabaseOperationCallback;
@@ -219,7 +213,7 @@ public class ReportsFragment extends Fragment {
 
             @Override
             public void onReportShare(int position) {
-
+               Dialogs.shareReportDialog(getContext(),user,position);
             }
 
             @Override
@@ -237,13 +231,13 @@ public class ReportsFragment extends Fragment {
                         break;
                 }
                 if (reportFlag != null){
-                    NetworkRequest.flagReport(ctx, reportId, reportFlag, user, new NetworkRequestCallbacks() {
+                    NetworkRequest.flagReport(getContext(), reportId, reportFlag, user, new NetworkRequestCallbacks() {
                         @Override
                         public void onNetworkRequestResponse(Object response) {
                             try{
                                 JSONObject rep = new JSONObject(response.toString());
                                 if (rep.getBoolean("success")){
-                                    Toast.makeText(ctx, "Marcado correctamente", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(getContext(), "Marcado correctamente", Toast.LENGTH_SHORT).show();
                                 }
                             }catch(JSONException e){
                                 e.printStackTrace();
@@ -396,7 +390,7 @@ public class ReportsFragment extends Fragment {
 
             CardView cardView;
             ImageView reportGrade,reportmenu;
-            TextView reportTitle,reportTimeStamp,reportDescription;
+            TextView reportTitle,reportTimeStamp,reportDescription,reportStatus;
             ReportViewHolder(View itemview){
                 super(itemview);
                 cardView = itemView.findViewById(R.id.report_cv);
@@ -405,6 +399,7 @@ public class ReportsFragment extends Fragment {
                 reportTimeStamp = itemview.findViewById(R.id.report_timestamp);
                 reportDescription = itemview.findViewById(R.id.report_exp);
                 reportmenu = itemview.findViewById(R.id.r_menu);
+                reportStatus = itemview.findViewById(R.id.report_status);
             }
         }
 
@@ -432,6 +427,7 @@ public class ReportsFragment extends Fragment {
             //Loading default drawable changes color of all dataset, so we make a new drawable every time
             Drawable drawable = ContextCompat.getDrawable(getContext(),R.drawable.ic_danger_sing_48);
             drawable.mutate().setColorFilter(color, PorterDuff.Mode.SRC_IN);
+            setReportStatusDisplay(holder.reportStatus,report.getReportFlag());
             holder.reportGrade.setImageDrawable(drawable);
             holder.reportTitle.setText(report.getReportTitle());
             holder.reportTimeStamp.setText(report.getReportTimeStamp());
@@ -459,19 +455,18 @@ public class ReportsFragment extends Fragment {
                                     DatabaseOperations dbo = new DatabaseOperations(context);
                                     if(!report.getReportStatus().equals("Archived")){
                                         dbo.archiveReport(report.getRemReportId());
-                                        Toast.makeText(context,"Report is archived",Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(context,"Reporte archivado",Toast.LENGTH_SHORT).show();
                                     }else{
                                         dbo.activeReport(report.getRemReportId());
-                                        Toast.makeText(context, "Report restored", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(context, "Reporte ", Toast.LENGTH_SHORT).show();
                                     }
                                     actionCallbacks.onReportArchived(i);
                                     break;
                                 case REPORT_ACTION_SHARE:
-                                    actionCallbacks.onReportShare(i);
+                                    actionCallbacks.onReportShare(report.getRemReportId());
                                     Toast.makeText(context, "Share report", Toast.LENGTH_SHORT).show();
                                     break;
                                 case REPORT_ACTION_FLAG:
-
                                     Dialogs.reportflagDialog(context, new Dialogs.GenericDialogCallback() {
                                         @Override
                                         public void onActionDone(@android.support.annotation.Nullable Object params) {
@@ -487,6 +482,23 @@ public class ReportsFragment extends Fragment {
                     menu.show();
                 }
             });
+        }
+
+        private void setReportStatusDisplay(TextView tv, String reportFlag){
+            switch(reportFlag){
+                case "REPORT_PENDING":
+                    tv.setText(R.string.report_status_flag_pending);
+                    break;
+                case "REPORT_ASIGNED":
+                    tv.setText(R.string.report_status_flag_asigned);
+                    break;
+                case "REPORT_RESOLVED":
+                    tv.setText(R.string.report_status_flag_resolved);
+                    break;
+                    default:
+                        tv.setText(R.string.report_status_flag_default);
+
+            }
         }
 
         private void setupMenu(Menu menu){
@@ -544,7 +556,7 @@ public class ReportsFragment extends Fragment {
 
         @Override
         protected Void doInBackground(Object... context) {
-            NetworkRequest.fetchIncidents((Context)context[0],mFrom,mUser,mSite,(NetworkRequestCallbacks) context[1]);
+            NetworkRequest.fetchIncidents((Context)context[0],"FETCH",mFrom,mUser,mSite,(NetworkRequestCallbacks) context[1]);
             return null;
         }
     }

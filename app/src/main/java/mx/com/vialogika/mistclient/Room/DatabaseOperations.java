@@ -111,7 +111,7 @@ public class DatabaseOperations {
                 int lastid = (int) response;
                 int userid = User.userId(ctx);
                 int usersite = User.userSite(ctx);
-                NetworkRequest.fetchIncidents(ctx, lastid, userid, usersite, new NetworkRequestCallbacks() {
+                NetworkRequest.fetchIncidents(ctx,"FETCH" ,lastid, userid, usersite, new NetworkRequestCallbacks() {
                     @Override
                     public void onNetworkRequestResponse(Object response) {
                         try{
@@ -119,7 +119,6 @@ public class DatabaseOperations {
                             if (resp.length() > 0){
                                 if (resp.getBoolean("success")){
                                     JSONArray reports = resp.getJSONArray("reports");
-                                    Gson gson = new Gson();
                                     if(reports.length() > 0){
                                         for (int i = 0;i < reports.length();i++){
                                             Reporte report = new Reporte(reports.getJSONObject(i));
@@ -140,9 +139,66 @@ public class DatabaseOperations {
                         error.printStackTrace();
                     }
                 });
+                NetworkRequest.fetchIncidents(ctx, "UPDATE", lastid, userid, usersite, new NetworkRequestCallbacks() {
+                    @Override
+                    public void onNetworkRequestResponse(Object response) {
+                        try{
+                            JSONObject resp = new JSONObject(response.toString());
+                            if (resp.length() > 0){
+                                if (resp.getBoolean("success")){
+                                    final JSONArray reports = resp.getJSONArray("reports");
+                                    if(reports.length() > 0){
+                                        for (int i = 0;i < reports.length();i++){
+                                            final JSONObject cReport = reports.getJSONObject(i);
+                                            getReport(cReport.getInt("id"), new DatabaseOperationCallback() {
+                                                @Override
+                                                public void onOperationSucceded(@Nullable Object response) {
+                                                    if (response != null){
+                                                        Reporte report = (Reporte) response;
+                                                        if (report != null){
+                                                            report.updateReportData(cReport);
+                                                            saveReport(report);
+                                                        }else{
+                                                            report = new Reporte(cReport);
+                                                            saveReport(report);
+                                                        }
+                                                    }
+                                                }
+                                            });
+
+                                        }
+                                    }
+                                }
+                            }
+                        }catch(JSONException e){
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void onNetworkRequestError(VolleyError error) {
+                        error.printStackTrace();
+                    }
+                });
             }
         });
+        close();
         return fetched;
+    }
+
+    public void updateReport(Reporte report){
+        appDatabase.reportDao().updateReport(report);
+    }
+
+    public void getReport(final int uid,final DatabaseOperationCallback cb){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+            Reporte mReport = appDatabase.reportDao().getReport(uid);
+            cb.onOperationSucceded(mReport);
+            }
+        }).start();
+
     }
 
     public void getLastReportId(final DatabaseOperationCallback cb){
@@ -228,6 +284,10 @@ public class DatabaseOperations {
                 cb.onOperationSucceded(archived);
             }
         }).start();
+    }
+
+    public int[] repToUpdate(){
+        return appDatabase.reportDao().getIndexToUpdate();
     }
 
     public interface Sync{

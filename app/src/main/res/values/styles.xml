@@ -23,6 +23,10 @@
         <item name="android:textColorSecondary">@color/dsc_secondary_text_material_dark</item>
     </style>
 
+    <style name="viewPagerTitleStrip">
+        <item name="android:textSize">20sp</item>
+    </style>
+
     <style name="AppTheme.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>

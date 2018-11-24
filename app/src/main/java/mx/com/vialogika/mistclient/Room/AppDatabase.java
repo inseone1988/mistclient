@@ -11,4 +11,6 @@ public abstract class AppDatabase extends RoomDatabase {
     public abstract ReportDao reportDao();
     public abstract CommentDao commentDao();
     public abstract SitesDao sitesDao();
+    public abstract GuardDao guardDao();
+    public abstract ApostamientoDao apostamientoDao();
 }

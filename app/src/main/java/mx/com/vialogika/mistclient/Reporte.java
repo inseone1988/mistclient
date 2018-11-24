@@ -40,7 +40,7 @@ public class Reporte implements Serializable
     private String stringSignatureNames;
     private String stringSignatureRoles;
     private String reportStatus = "active";
-    private String reportFlag;
+    private String reportFlag = "NO_FLAGS";
 
     public Reporte(){
 
@@ -62,6 +62,28 @@ public class Reporte implements Serializable
             this.stringSignatures = report.getString("signatures");
             this.stringSignatureNames = report.getString("signaturenames");
             this.stringSignatureRoles = report.getString("sroles");
+            this.reportFlag = report.getString("rflag");
+        }catch(JSONException e){
+            e.printStackTrace();
+        }
+    }
+
+    public void updateReportData(JSONObject report){
+        try{
+            this.remReportId = report.getInt("id");
+            this.reportTitle = report.getString("name").equals("null") ? report.getString("what") : report.getString("name");
+            this.reportTimeStamp = report.getString("etimestamp");
+            this.reportExplanation = report.getString("exp");
+            this.reportGrade = report.getString("risk");
+            this.username = report.getString("user");
+            this.eventWhat = report.getString("what");
+            this.eventHow = report.getString("how");
+            this.eventWhere = report.getString("ewhere");
+            this.stringEvidences = report.getString("evidence");
+            this.stringSignatures = report.getString("signatures");
+            this.stringSignatureNames = report.getString("signaturenames");
+            this.stringSignatureRoles = report.getString("sroles");
+            this.reportFlag = report.getString("rflag");
         }catch(JSONException e){
             e.printStackTrace();
         }
@@ -220,11 +242,11 @@ public class Reporte implements Serializable
         this.reportStatus = reportStatus;
     }
 
-    public int getReportFlag() {
+    public String getReportFlag() {
         return reportFlag;
     }
 
-    public void setReportFlag(int reportFlag) {
+    public void setReportFlag(String reportFlag) {
         this.reportFlag = reportFlag;
     }
 }

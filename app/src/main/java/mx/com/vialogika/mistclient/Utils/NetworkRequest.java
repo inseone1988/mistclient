@@ -273,6 +273,32 @@ public class NetworkRequest {
         }
     }
 
+    public static  void getProviderNames(Context context,String serachterm,final NetworkRequestCallbacks cb){
+        String handler = "raw.php";
+        String url = SERVER_URL_PREFIX + handler;
+        JSONObject params = new JSONObject();
+        try{
+            params.put("function","getProviderName");
+            params.put("searchterm",serachterm);
+            RequestQueue rq = Volley.newRequestQueue(context);
+            JsonObjectRequest jor = new JsonObjectRequest(Request.Method.POST, url, params, new Response.Listener<JSONObject>() {
+                @Override
+                public void onResponse(JSONObject response) {
+                    cb.onNetworkRequestResponse(response);
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    cb.onNetworkRequestError(error);
+                }
+            });
+            rq.add(jor);
+        }catch(JSONException e){
+            e.printStackTrace();
+        }
+
+    }
+
     public static Bitmap getImageFromURL(String url){
         Bitmap image = null;
         URL link;

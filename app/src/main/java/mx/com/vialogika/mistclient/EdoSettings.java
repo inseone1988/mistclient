@@ -18,7 +18,7 @@ import mx.com.vialogika.mistclient.Room.DatabaseOperations;
 import mx.com.vialogika.mistclient.Room.Site;
 import mx.com.vialogika.mistclient.Utils.EdoPagerAdapter;
 
-public class EdoSettings extends AppCompatActivity implements EdoClients.OnFragmentInteractionListener, EdoGuards.OnFragmentInteractionListener, EdoApostamientos.OnFragmentInteractionListener {
+public class EdoSettings extends AppCompatActivity implements EdoClients.OnFragmentInteractionListener, EdoGuards.OnFragmentInteractionListener, EdoApostamientos.OnFragmentInteractionListener,EdoProviders.OnFragmentInteractionListener {
 
     private Spinner menuSpinner;
     private List<String> mSites = new ArrayList<>();

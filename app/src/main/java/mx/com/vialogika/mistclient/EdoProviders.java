@@ -3,10 +3,19 @@ package mx.com.vialogika.mistclient;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import mx.com.vialogika.mistclient.Room.DatabaseOperations;
+import mx.com.vialogika.mistclient.Utils.Provider;
+import mx.com.vialogika.mistclient.Utils.ProviderSelectDialog;
 
 
 /**
@@ -18,6 +27,15 @@ import android.view.ViewGroup;
  * create an instance of this fragment.
  */
 public class EdoProviders extends Fragment {
+
+    private List<Provider> providers = new ArrayList<>();
+    private FloatingActionButton fab;
+    private DatabaseOperations dbo;
+
+    private RecyclerView rv;
+    private RecyclerView.Adapter adapter;
+    private RecyclerView.LayoutManager layoutManager;
+
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -64,7 +82,29 @@ public class EdoProviders extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_edo_providers, container, false);
+        View rootview = inflater.inflate(R.layout.fragment_edo_providers, container, false);
+        getitems(rootview);
+        setupListeners();
+        return rootview;
+    }
+
+    private void getitems(View rootview){
+        fab = rootview.findViewById(R.id.prov_fab);
+        rv = rootview.findViewById(R.id.provider_rv);
+    }
+    private void setupListeners(){
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new ProviderSelectDialog(getContext(), new ProviderSelectDialog.providerDialogCallbacks() {
+                    @Override
+                    public void onProviderSaved(Provider provider) {
+                        providers.add(provider);
+                        adapter.notifyDataSetChanged();
+                    }
+                }).show();
+            }
+        });
     }
 
     // TODO: Rename method, update argument and hook method into UI event

@@ -8,6 +8,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 import mx.com.vialogika.mistclient.EdoApostamientos;
 import mx.com.vialogika.mistclient.EdoClients;
 import mx.com.vialogika.mistclient.EdoGuards;
+import mx.com.vialogika.mistclient.EdoProviders;
 
 public class EdoPagerAdapter extends FragmentPagerAdapter {
 
@@ -29,7 +30,7 @@ public class EdoPagerAdapter extends FragmentPagerAdapter {
             case 2:
                 return EdoClients.newInstance("Hello","Hello");
             case 3:
-                return EdoClients.newInstance("hello","hello");
+                return EdoProviders.newInstance("hello","hello");
         }
         return null;
     }

@@ -28,6 +28,7 @@ import mx.com.vialogika.mistclient.Utils.DatabaseOperationCallback;
 import mx.com.vialogika.mistclient.Utils.Depuracion;
 import mx.com.vialogika.mistclient.Utils.NetworkRequest;
 import mx.com.vialogika.mistclient.Utils.NetworkRequestCallbacks;
+import mx.com.vialogika.mistclient.Utils.Provider;
 import mx.com.vialogika.mistclient.Utils.SimpleDialogCallback;
 
 public class DatabaseOperations {
@@ -539,6 +540,23 @@ public class DatabaseOperations {
             public void run() {
                 List<Guard> guards = appDatabase.guardDao().getGuardsFromSite(siteid);
                 cb.onOperationSucceded(guards);
+            }
+        }).start();
+    }
+
+    public void saveProvider(final Provider provider, final doInBackgroundOperation dbcb, final UIThreadOperation uicb){
+        final Handler handler = new Handler(Looper.getMainLooper());
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                final long saved = appDatabase.providerDao().saveProvider(provider);
+                dbcb.onOperationFinished(saved);
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        uicb.onOperationFinished(saved);
+                    }
+                });
             }
         }).start();
     }

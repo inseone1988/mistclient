@@ -95,6 +95,10 @@
     <string name="ap_place">Lugar : %1$s</string>
     <string name="client_key">Clave : %1$s</string>
     <string name="client_social">Razon social : %1$s</string>
+    <string name="provider_alias">Clave : %1$s</string>
+    <string name="provider_social">R. Social : %1$s</string>
+    <string name="provider_type">Tipo : %1$s</string>
+    <string name="provider_title">Buscar proveedor : </string>
     <string-array name="flag_options">
         <item>Resuelto</item>
         <item>Pendiente</item>

@@ -6,7 +6,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
 import mx.com.vialogika.mistclient.EdoApostamientos;
-import mx.com.vialogika.mistclient.EdoGroups;
+import mx.com.vialogika.mistclient.EdoClients;
 import mx.com.vialogika.mistclient.EdoGuards;
 
 public class EdoPagerAdapter extends FragmentPagerAdapter {
@@ -27,14 +27,16 @@ public class EdoPagerAdapter extends FragmentPagerAdapter {
             case 1:
                 return EdoApostamientos.newInstance("Hello","Hello");
             case 2:
-                return EdoGroups.newInstance("Hello","Hello");
+                return EdoClients.newInstance("Hello","Hello");
+            case 3:
+                return EdoClients.newInstance("hello","hello");
         }
         return null;
     }
 
     @Override
     public int getCount() {
-        return 3;
+        return 4;
     }
 
     @Nullable
@@ -49,7 +51,10 @@ public class EdoPagerAdapter extends FragmentPagerAdapter {
                 title = "Apostamientos";
                 break;
             case 2:
-                title = "Grupos";
+                title = "Clientes";
+                break;
+            case 3:
+                title = "Proveedores";
                 break;
         }
         return title;

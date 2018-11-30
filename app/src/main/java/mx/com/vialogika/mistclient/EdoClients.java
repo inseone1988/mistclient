@@ -16,12 +16,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Spinner;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import mx.com.vialogika.mistclient.Adapters.ApostamientoAdapter;
+import mx.com.vialogika.mistclient.Adapters.ClientAdapter;
 import mx.com.vialogika.mistclient.Room.DatabaseOperations;
 import mx.com.vialogika.mistclient.Room.Site;
 
@@ -29,23 +28,23 @@ import mx.com.vialogika.mistclient.Room.Site;
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link EdoApostamientos.OnFragmentInteractionListener} interface
+ * {@link EdoClients.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link EdoApostamientos#newInstance} factory method to
+ * Use the {@link EdoClients#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class EdoApostamientos extends Fragment {
+public class EdoClients extends Fragment {
 
-
-    private Spinner siteSelekct;
-    private List<Apostamiento> apostamientosList = new ArrayList<>();
-    private List<Site> sites = new ArrayList<>();
+    private List<Client> clients = new ArrayList<>();
+    private Spinner siteSelect;
     private DatabaseOperations dbo;
 
-
-    private RecyclerView recyclerView;
+    private RecyclerView rv;
     private RecyclerView.Adapter adapter;
-    RecyclerView.LayoutManager layoutManager;
+    private RecyclerView.LayoutManager layoutManager;
+
+    private List<Site> sites = new ArrayList<>();
+
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -58,7 +57,7 @@ public class EdoApostamientos extends Fragment {
 
     private OnFragmentInteractionListener mListener;
 
-    public EdoApostamientos() {
+    public EdoClients() {
         // Required empty public constructor
     }
 
@@ -68,11 +67,11 @@ public class EdoApostamientos extends Fragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment EdoApostamientos.
+     * @return A new instance of fragment EdoClients.
      */
     // TODO: Rename and change types and number of parameters
-    public static EdoApostamientos newInstance(String param1, String param2) {
-        EdoApostamientos fragment = new EdoApostamientos();
+    public static EdoClients newInstance(String param1, String param2) {
+        EdoClients fragment = new EdoClients();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -92,74 +91,28 @@ public class EdoApostamientos extends Fragment {
         setHasOptionsMenu(true);
     }
 
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        MenuItem item = menu.findItem(R.id.site_select_spinner);
-        siteSelekct = (Spinner) item.getActionView();
-        setSpinnerOnSiteSelected();
-        super.onCreateOptionsMenu(menu, inflater);
-    }
-
-    private void setSpinnerOnSiteSelected(){
-        siteSelekct.setOnItemSelectedListener(
-                new AdapterView.OnItemSelectedListener() {
-                    @Override
-                    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                        String selected = siteSelekct.getSelectedItem().toString();
-                        loadApostamientos(selected);
-                        Toast.makeText(getContext(), selected, Toast.LENGTH_SHORT).show();
-                    }
-
-                    @Override
-                    public void onNothingSelected(AdapterView<?> parent) {
-
-                    }
-                }
-        );
-    }
-
-    private void loadSites(){
-        dbo.getSiteNames(new DatabaseOperations.simpleOperationCallback() {
-            @Override
-            public void onOperationFinished(@android.support.annotation.Nullable Object object) {
-                if (object != null){
-                    sites.addAll((List<Site>) object);
-                }
-            }
-        }, new DatabaseOperations.UIThreadOperation() {
-            @Override
-            public void onOperationFinished(@android.support.annotation.Nullable Object object) {
-
-            }
-        });
-    }
-
-    private void loadApostamientos(String site){
+    private void loadClients(String site){
         clearAdapter();
-        dbo.getApostamientos(siteId(site),new DatabaseOperations.doInBackgroundOperation() {
+        dbo.getClientsBySiteId(siteId(site), new DatabaseOperations.doInBackgroundOperation() {
             @Override
             public void onOperationFinished(@Nullable Object object) {
-                if (object != null){
-                    apostamientosList.addAll((List<Apostamiento>) object);
-                    Log.d("Room","Loaded :" + apostamientosList.size() + " Apostamientos");
-                }
-
+                clients.addAll((List<Client>)object);
             }
         }, new DatabaseOperations.UIThreadOperation() {
             @Override
             public void onOperationFinished(@Nullable Object object) {
-                reloadAdapter();
+                updateAdapter();
             }
         });
     }
 
     private void clearAdapter(){
-        apostamientosList.clear();
+        clients.clear();
         adapter.notifyDataSetChanged();
     }
 
-    private void reloadAdapter(){
-        if (apostamientosList.size() > 0){
+    private void updateAdapter(){
+        if (clients.size() > 0){
             adapter.notifyDataSetChanged();
         }
     }
@@ -167,23 +120,23 @@ public class EdoApostamientos extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        View rootview = inflater.inflate(R.layout.fragment_edo_groups, container, false);
         // Inflate the layout for this fragment
-        View  rootview = inflater.inflate(R.layout.fragment_edo_apostamientos, container, false);
         getItems(rootview);
         init();
         return rootview;
     }
 
-    private void getItems(View rootView){
-        recyclerView = rootView.findViewById(R.id.apostrv);
-        recyclerView.setHasFixedSize(true);
+    private void getItems(View rootview){
+        rv = rootview.findViewById(R.id.clients_rv);
+        rv.setHasFixedSize(true);
     }
 
     private void init(){
         layoutManager = new LinearLayoutManager(getContext());
-        recyclerView.setLayoutManager(layoutManager);
-        adapter = new ApostamientoAdapter(apostamientosList);
-        recyclerView.setAdapter(adapter);
+        rv.setLayoutManager(layoutManager);
+        adapter = new ClientAdapter(clients);
+        rv.setAdapter(adapter);
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -202,6 +155,52 @@ public class EdoApostamientos extends Fragment {
             throw new RuntimeException(context.toString()
                     + " must implement OnFragmentInteractionListener");
         }
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        MenuItem item = menu.findItem(R.id.site_select_spinner);
+        siteSelect = (Spinner) item.getActionView();
+        setSpinnerOnSiteSelected();
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    private void setSpinnerOnSiteSelected(){
+        siteSelect.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String selected = siteSelect.getSelectedItem().toString();
+                loadClients(selected);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void loadSites(){
+        dbo.getSiteNames(new DatabaseOperations.simpleOperationCallback() {
+            @Override
+            public void onOperationFinished(@android.support.annotation.Nullable Object object) {
+                if (object != null){
+                    sites.addAll((List<Site>) object);
+                    Log.d("Room","Loaded : " + sites.size() + "clientes");
+                }
+            }
+        }, new DatabaseOperations.UIThreadOperation() {
+            @Override
+            public void onOperationFinished(@android.support.annotation.Nullable Object object) {
+
+            }
+        });
     }
 
     private int siteId(String site){

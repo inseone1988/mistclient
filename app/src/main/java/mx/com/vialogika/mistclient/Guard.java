@@ -11,59 +11,99 @@ import org.json.JSONObject;
 public class Guard {
     @PrimaryKey(autoGenerate = true)
     private int localId;
-    private String pId;
-    private String created;
-    private int providerId;
-    private String gType;
-    private String gPosition;
-    private String gName;
-    private String gFname;
-    private String gLname;
-    private int gId;
-    private boolean gStatus;
-    private String baja;
+    private int idpersons;
+    private String personCreated;
+    private int personProviderid;
+    private String personType;
+    private String personPosition;
+    private String personName;
+    private String personFname;
+    private String personLname;
+    private String personProfilePhotoPath;
+    private int guardId;
+    private int guardProviderId;
+    private int guardPersonId;
+    private String guardSite;
+    private String guardRange;
+    private String guardHash;
+    private String guardPhotoPath;
+    private int guardStatus;
+    private String guardBajaTimestamp;
 
     public Guard() {
     }
 
-    public Guard(JSONObject guard){
-        try{
-            this.pId = guard.getString("guard_hash");
-            this.created = guard.getString("person_created");
-            this.providerId = guard.getInt("person_providerid");
-            this.gType = guard.getString("guard_range");
-            this.gPosition = guard.getString("person_position");
-            this.gName = guard.getString("person_name");
-            this.gFname = guard.getString("person_fname");
-            this.gLname = guard.getString("person_lname");
-            this.gId = guard.getInt("guard_id");
-            this.gStatus = guard.getBoolean("guard_status");
-            this.baja = guard.getString("guard_baja_timestamp");
-
-        }catch(JSONException e){
+    public Guard(JSONObject guard) {
+        try {
+            this.idpersons = guard.getInt("idpersons");
+            this.personCreated = guard.getString("person_created");
+            this.personProviderid = guard.getInt("person_providerid");
+            this.personType = guard.getString("person_type");
+            this.personPosition = guard.getString("person_position");
+            this.personName = guard.getString("person_name");
+            this.personFname = guard.getString("person_fname");
+            this.personLname = guard.getString("person_lname");
+            this.personProfilePhotoPath = guard.getString("person_profile_photo_path");
+            this.guardId = guard.getInt("guard_id");
+            this.guardProviderId = guard.getInt("guard_provider_id");
+            this.guardPersonId = guard.getInt("guard_person_id");
+            this.guardSite = guard.getString("guard_site");
+            this.guardRange = guard.getString("guard_range");
+            this.guardHash = guard.getString("guard_hash");
+            this.guardPhotoPath = guard.getString("guard_photo_path");
+            this.guardStatus = guard.getInt("guard_status");
+            this.guardBajaTimestamp = guard.getString("guard_baja_timestamp");
+        } catch (JSONException e) {
             e.printStackTrace();
         }
     }
 
-    public JSONObject mapData(){
-        JSONObject guard = new JSONObject();
-        try{
+    public void upadteGuard(Guard guard){
+        this.idpersons = guard.getIdpersons();
+        this.personCreated = getPersonCreated();
+        this.personProviderid = guard.getPersonProviderid();
+        this.personType = guard.personType;
+        this.personPosition = guard.getPersonPosition();
+        this.personName = guard.getPersonName();
+        this.personFname = guard.getPersonFname();
+        this.personLname = guard.getPersonLname();
+        this.personProfilePhotoPath = getPersonProfilePhotoPath();
+        this.guardId = guard.getGuardId();
+        this.guardProviderId = guard.getGuardProviderId();
+        this.guardPersonId = guard.getGuardPersonId();
+        this.guardSite = guard.getGuardSite();
+        this.guardRange = guard.getGuardRange();
+        this.guardHash = guard.getGuardHash();
+        this.guardPhotoPath = getGuardPhotoPath();
+        this.guardStatus = guard.getGuardStatus();
+        this.guardBajaTimestamp = guard.getGuardBajaTimestamp();
+    }
 
-            guard.put("guard_hash",this.pId);
-            guard.put("person_created",this.created);
-            guard.put("person_providerid",this.providerId);
-            guard.put("guard_range",this.gType);
-            guard.put("person_position",this.gPosition);
-            guard.put("person_name",this.gName);
-            guard.put("person_fname",this.gFname);
-            guard.put("person_lname",this.gLname);
-            guard.put("guard_id",this.gId);
-            guard.put("guard_status",this.gStatus);
-            guard.put("guard_baja_timestamp",this.baja);
-        }catch(JSONException e){
+    public JSONObject mapData() {
+        JSONObject data = new JSONObject();
+        try {
+            data.put("idpersons", this.idpersons);
+            data.put("person_created", this.personCreated);
+            data.put("person_providerid", this.personProviderid);
+            data.put("person_type", this.personType);
+            data.put("person_position", this.personPosition);
+            data.put("person_name", this.personName);
+            data.put("person_fname", this.personFname);
+            data.put("person_lname", this.personLname);
+            data.put("person_profile_photo_path", this.personProfilePhotoPath);
+            data.put("guard_id", this.guardId);
+            data.put("guard_provider_id", this.guardProviderId);
+            data.put("guard_person_id", this.guardPersonId);
+            data.put("guard_site", this.guardSite);
+            data.put("guard_range", this.guardRange);
+            data.put("guard_hash", this.guardHash);
+            data.put("guard_photo_path", this.guardPhotoPath);
+            data.put("guard_status", this.guardStatus);
+            data.put("guard_baja_timestamp", this.guardBajaTimestamp);
+        } catch (JSONException e) {
             e.printStackTrace();
         }
-        return guard;
+        return data;
     }
 
     public int getLocalId() {
@@ -74,91 +114,155 @@ public class Guard {
         this.localId = localId;
     }
 
-    public String getpId() {
-        return pId;
+    public int getIdpersons() {
+        return idpersons;
     }
 
-    public void setpId(String pId) {
-        this.pId = pId;
+    public void setIdpersons(int idpersons) {
+        this.idpersons = idpersons;
     }
 
-    public String getCreated() {
-        return created;
+    public String getPersonCreated() {
+        return personCreated;
     }
 
-    public void setCreated(String created) {
-        this.created = created;
+    public void setPersonCreated(String personCreated) {
+        this.personCreated = personCreated;
     }
 
-    public int getProviderId() {
-        return providerId;
+    public int getPersonProviderid() {
+        return personProviderid;
     }
 
-    public void setProviderId(int providerId) {
-        this.providerId = providerId;
+    public void setPersonProviderid(int personProviderid) {
+        this.personProviderid = personProviderid;
     }
 
-    public String getgType() {
-        return gType;
+    public String getPersonType() {
+        return personType;
     }
 
-    public void setgType(String gType) {
-        this.gType = gType;
+    public void setPersonType(String personType) {
+        this.personType = personType;
     }
 
-    public String getgPosition() {
-        return gPosition;
+    public String getPersonPosition() {
+        return personPosition;
     }
 
-    public void setgPosition(String gPosition) {
-        this.gPosition = gPosition;
+    public void setPersonPosition(String personPosition) {
+        this.personPosition = personPosition;
     }
 
-    public String getgName() {
-        return gName;
+    public String getPersonName() {
+        return personName;
     }
 
-    public void setgName(String gName) {
-        this.gName = gName;
+    public void setPersonName(String personName) {
+        this.personName = personName;
     }
 
-    public String getgFname() {
-        return gFname;
+    public String getPersonFname() {
+        return personFname;
     }
 
-    public void setgFname(String gFname) {
-        this.gFname = gFname;
+    public void setPersonFname(String personFname) {
+        this.personFname = personFname;
     }
 
-    public String getgLname() {
-        return gLname;
+    public String getPersonLname() {
+        return personLname;
     }
 
-    public void setgLname(String gLname) {
-        this.gLname = gLname;
+    public void setPersonLname(String personLname) {
+        this.personLname = personLname;
     }
 
-    public int getgId() {
-        return gId;
+    public String getPersonProfilePhotoPath() {
+        return personProfilePhotoPath;
     }
 
-    public void setgId(int gId) {
-        this.gId = gId;
+    public void setPersonProfilePhotoPath(String personProfilePhotoPath) {
+        this.personProfilePhotoPath = personProfilePhotoPath;
     }
 
-    public boolean isgStatus() {
-        return gStatus;
+    public int getGuardId() {
+        return guardId;
     }
 
-    public void setgStatus(boolean gStatus) {
-        this.gStatus = gStatus;
+    public void setGuardId(int guardId) {
+        this.guardId = guardId;
     }
 
-    public String getBaja() {
-        return baja;
+    public int getGuardProviderId() {
+        return guardProviderId;
     }
 
-    public void setBaja(String baja) {
-        this.baja = baja;
+    public void setGuardProviderId(int guardProviderId) {
+        this.guardProviderId = guardProviderId;
+    }
+
+    public int getGuardPersonId() {
+        return guardPersonId;
+    }
+
+    public void setGuardPersonId(int guardPersonId) {
+        this.guardPersonId = guardPersonId;
+    }
+
+    public String getGuardSite() {
+        return guardSite;
+    }
+
+    public void setGuardSite(String guardSite) {
+        this.guardSite = guardSite;
+    }
+
+    public String getGuardRange() {
+        return guardRange;
+    }
+
+    public void setGuardRange(String guardRange) {
+        this.guardRange = guardRange;
+    }
+
+    public String getGuardHash() {
+        return guardHash;
+    }
+
+    public void setGuardHash(String guardHash) {
+        this.guardHash = guardHash;
+    }
+
+    public String getGuardPhotoPath() {
+        return guardPhotoPath;
+    }
+
+    public void setGuardPhotoPath(String guardPhotoPath) {
+        this.guardPhotoPath = guardPhotoPath;
+    }
+
+    public int getGuardStatus() {
+        return guardStatus;
+    }
+
+    public void setGuardStatus(int guardStatus) {
+        this.guardStatus = guardStatus;
+    }
+
+    public String getGuardBajaTimestamp() {
+        return guardBajaTimestamp;
+    }
+
+    public void setGuardBajaTimestamp(String guardBajaTimestamp) {
+        this.guardBajaTimestamp = guardBajaTimestamp;
+    }
+
+    public String getGuardFname(){
+        return personName + " " + personFname + " " + personLname;
+    }
+
+    public boolean isActive(){
+        return guardStatus == 1;
     }
 }

@@ -8,6 +8,10 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.util.Log;
+
+import com.android.volley.VolleyError;
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
@@ -15,10 +19,15 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import mx.com.vialogika.mistclient.Room.DatabaseOperations;
 import mx.com.vialogika.mistclient.Room.Site;
+import mx.com.vialogika.mistclient.Utils.DatabaseOperationCallback;
+import mx.com.vialogika.mistclient.Utils.Depuracion;
+import mx.com.vialogika.mistclient.Utils.NetworkRequest;
+import mx.com.vialogika.mistclient.Utils.NetworkRequestCallbacks;
 
 @Entity(tableName = "Users")
 public class User {
@@ -51,18 +60,23 @@ public class User {
         }
     }
 
-    public static void saveUserSites(Context context,@NotNull JSONArray sites){
-        ArrayList<Site> lSites = new ArrayList<>();
-        DatabaseOperations dbo = new DatabaseOperations(context);
-        for (int i = 0;i < sites.length();i++){
-            try{
-                JSONObject site = sites.getJSONObject(i);
-                lSites.add(new Site(site));
-            }catch(JSONException e){
-                e.printStackTrace();
+    public static void saveUserSites(Context context,final @NotNull JSONArray sites){
+        final List<Site> lSites = new ArrayList<>();
+        final DatabaseOperations dbo = new DatabaseOperations(context);
+        dbo.emptySitesTable(new DatabaseOperationCallback() {
+            @Override
+            public void onOperationSucceded(@org.jetbrains.annotations.Nullable Object response) {
+                for (int i = 0;i < sites.length();i++){
+                    try{
+                        lSites.add(new Site(sites.getJSONObject(i)));
+                    }catch(JSONException e){
+                        e.printStackTrace();
+                    }
+                }
+                dbo.saveSites(lSites);
             }
-        }
-        dbo.saveSites(lSites);
+        });
+
     }
 
     public static int userId(Context context){

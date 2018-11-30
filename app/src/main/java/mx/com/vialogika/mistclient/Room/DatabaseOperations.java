@@ -2,8 +2,11 @@ package mx.com.vialogika.mistclient.Room;
 
 import android.arch.persistence.room.Room;
 import android.content.Context;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 import com.android.volley.VolleyError;
 import com.google.gson.Gson;
@@ -15,12 +18,17 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
+import mx.com.vialogika.mistclient.Apostamiento;
+import mx.com.vialogika.mistclient.Client;
 import mx.com.vialogika.mistclient.Comment;
+import mx.com.vialogika.mistclient.Guard;
 import mx.com.vialogika.mistclient.Reporte;
 import mx.com.vialogika.mistclient.User;
 import mx.com.vialogika.mistclient.Utils.DatabaseOperationCallback;
+import mx.com.vialogika.mistclient.Utils.Depuracion;
 import mx.com.vialogika.mistclient.Utils.NetworkRequest;
 import mx.com.vialogika.mistclient.Utils.NetworkRequestCallbacks;
+import mx.com.vialogika.mistclient.Utils.SimpleDialogCallback;
 
 public class DatabaseOperations {
     Context ctx ;
@@ -60,6 +68,16 @@ public class DatabaseOperations {
         }).start();
     }
 
+    public void emptySitesTable(final DatabaseOperationCallback cb){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                appDatabase.sitesDao().emptySitesTable();
+                cb.onOperationSucceded("");
+            }
+        }).start();
+    }
+
     public void saveSites(final List<Site> sites){
         new Thread(new Runnable() {
             @Override
@@ -70,13 +88,39 @@ public class DatabaseOperations {
         }).start();
     }
 
-    public void getSiteNames(final simpleOperationCallback cb){
+    public void getSiteNames(final simpleOperationCallback cb,final UIThreadOperation uicb){
+        final Handler mainHandler = new Handler(Looper.getMainLooper());
         new Thread(new Runnable() {
             @Override
             public void run() {
-               List<Site> sites = appDatabase.sitesDao().getSitenames();
+               final List<Site> sites = appDatabase.sitesDao().getSitenames();
                 cb.onOperationFinished(sites);
+                mainHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        uicb.onOperationFinished(sites);
+                    }
+                });
+            }
+        }).start();
 
+    }
+
+    public void getSite(final int id, final simpleOperationCallback cb){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Site site = appDatabase.sitesDao().getSite(id);
+                cb.onOperationFinished(site);
+            }
+        }).start();
+    }
+
+    public void updateSite(final Site site){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                appDatabase.sitesDao().updateSite(site);
             }
         }).start();
     }
@@ -186,8 +230,44 @@ public class DatabaseOperations {
         return fetched;
     }
 
+    public void getApostamientos(final int siteid, final doInBackgroundOperation bgo, final UIThreadOperation uicb){
+        final Handler handler = new Handler(Looper.getMainLooper());
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                List<Apostamiento> apts = appDatabase.apostamientoDao().getApostamientosBySiteId(siteid);
+                bgo.onOperationFinished(apts);
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                       uicb.onOperationFinished(bgo);
+                    }
+                });
+            }
+        }).start();
+    }
+
     public void updateReport(Reporte report){
         appDatabase.reportDao().updateReport(report);
+    }
+
+    public void getClientsBySiteId(final int siteId,final doInBackgroundOperation dbcb,final UIThreadOperation uicb){
+        final Handler handler = new Handler(Looper.getMainLooper());
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                final List<Client> clients = appDatabase.clientDao().getClientsBySiteId(siteId);
+                dbcb.onOperationFinished(clients);
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        uicb.onOperationFinished(clients);
+                    }
+                });
+            }
+        }).start();
+
     }
 
     public void getReport(final int uid,final DatabaseOperationCallback cb){
@@ -255,7 +335,9 @@ public class DatabaseOperations {
     }
 
     public void close(){
-        appDatabase.close();
+        if (appDatabase.isOpen()){
+            appDatabase.close();
+        }
     }
 
     public void archiveReport(final int reportId){
@@ -286,8 +368,179 @@ public class DatabaseOperations {
         }).start();
     }
 
+    public void getGuard(final int personid, final DatabaseOperationCallback cb){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Guard guard = appDatabase.guardDao().getGuardByPersonId(personid);
+                cb.onOperationSucceded(guard);
+            }
+        }).start();
+    }
+
+    public void saveGuard(final Guard guard){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                appDatabase.guardDao().saveGuard(guard);
+            }
+        }).start();
+    }
+
+    public void emptyGuardsTable(final DatabaseOperationCallback cb){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                 int affected = appDatabase.guardDao().emptyGuards();
+                cb.onOperationSucceded(affected);
+            }
+        }).start();
+    }
+
+    public void syncEdoData(JSONObject response){
+            List<Guard> guards = new ArrayList<>();
+            List<Client> clients = new ArrayList<>();
+            List<Apostamiento> apostamientos = new ArrayList<>();
+            try{
+                JSONArray g = response.getJSONArray("guards");
+                JSONArray c = response.getJSONArray("clients");
+                JSONArray p = response.getJSONArray("places");
+                for (int i = 0;i < g.length();i++){
+                    guards.add(new Guard(g.getJSONObject(i)));
+                }
+                for (int i = 0; i < c.length();i++){
+                    clients.add(new Client(c.getJSONObject(i)));
+                }
+                for (int i = 0; i < p.length();i++){
+                    apostamientos.add(new Apostamiento(p.getJSONObject(i)));
+                }
+                syncGuards(guards);
+                syncClients(clients);
+                syncApostamientos(apostamientos);
+            }catch(JSONException e){
+                e.printStackTrace();
+            }
+    }
+
+    public void syncGuards(final List<Guard> guards){
+        emptyGuardsTable(new DatabaseOperationCallback() {
+            @Override
+            public void onOperationSucceded(@org.jetbrains.annotations.Nullable Object response) {
+                saveGuards(guards, new DatabaseOperationCallback() {
+                    @Override
+                    public void onOperationSucceded(@org.jetbrains.annotations.Nullable Object response) {
+                        long[] affected = (long[]) response;
+                        Log.d(Depuracion.DEBUG_ROOM_MESSAGE,"Saved guards " + affected.length);
+                    }
+                });
+            }
+        });
+    }
+
+    public void syncClients(final List<Client> clients){
+        emptyClientsTable(new DatabaseOperationCallback() {
+            @Override
+            public void onOperationSucceded(@org.jetbrains.annotations.Nullable Object response) {
+                saveClients(clients, new DatabaseOperationCallback() {
+                    @Override
+                    public void onOperationSucceded(@org.jetbrains.annotations.Nullable Object response) {
+                        long[] affected = (long[]) response;
+                        Log.d(Depuracion.DEBUG_ROOM_MESSAGE,"Saved clients " + affected.length);
+                    }
+                });
+            }
+        });
+    }
+
+    public void syncApostamientos(final List<Apostamiento> apostamientos){
+        emptyApostamientosTable(new DatabaseOperationCallback() {
+            @Override
+            public void onOperationSucceded(@org.jetbrains.annotations.Nullable Object response) {
+                saveApostamientos(apostamientos, new DatabaseOperationCallback() {
+                    @Override
+                    public void onOperationSucceded(@org.jetbrains.annotations.Nullable Object response) {
+                        long[] affectde = (long[]) response;
+                        Log.d(Depuracion.DEBUG_ROOM_MESSAGE,"Saved apostamientos " + affectde.length);
+                    }
+                });
+
+            }
+        });
+    }
+
+
+    public void saveApostamientos(final List<Apostamiento> apostamientos,final DatabaseOperationCallback cb){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                long[] affected = appDatabase.apostamientoDao().saveApostamientos(apostamientos);
+                cb.onOperationSucceded(affected);
+            }
+        }).start();
+    }
+
+    public void emptyApostamientosTable(final DatabaseOperationCallback cb){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                int affected = appDatabase.apostamientoDao().emptyApostamientosTable();
+                cb.onOperationSucceded(affected);
+            }
+        }).start();
+    }
+
+    public void emptyClientsTable(final DatabaseOperationCallback cb){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                int affected = appDatabase.clientDao().emptyClientsTable();
+                cb.onOperationSucceded(affected);
+            }
+        }).start();
+    }
+
+    public void saveGuards(final List<Guard> guards,final DatabaseOperationCallback cb){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                long[] saved = appDatabase.guardDao().saveGuards(guards);
+                cb.onOperationSucceded(saved);
+            }
+        }).start();
+    }
+
+    public void saveClients(final List<Client> clients, final DatabaseOperationCallback cb){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                long[] saved = appDatabase.clientDao().saveClients(clients);
+                cb.onOperationSucceded(saved);
+            }
+        }).start();
+    }
+
+    public void savePlaces(final List<Apostamiento> apostamientos,final DatabaseOperationCallback  cb){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                long[] saved = appDatabase.apostamientoDao().saveApostamientos(apostamientos);
+                cb.onOperationSucceded(saved);
+            }
+        }).start();
+    }
+
     public int[] repToUpdate(){
         return appDatabase.reportDao().getIndexToUpdate();
+    }
+
+    public void getGuardsFromSite(final int siteid, final DatabaseOperationCallback cb){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                List<Guard> guards = appDatabase.guardDao().getGuardsFromSite(siteid);
+                cb.onOperationSucceded(guards);
+            }
+        }).start();
     }
 
     public interface Sync{
@@ -296,6 +549,14 @@ public class DatabaseOperations {
 
     public interface simpleOperationCallback{
         //Generic callback that accpts a result from background operation or generic type return
+        void onOperationFinished(@Nullable Object object);
+    }
+
+    public interface doInBackgroundOperation{
+        void onOperationFinished(@Nullable Object object);
+    }
+
+    public interface UIThreadOperation{
         void onOperationFinished(@Nullable Object object);
     }
 }

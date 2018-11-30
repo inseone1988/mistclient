@@ -14,10 +14,10 @@ import mx.com.vialogika.mistclient.Guard;
 @Dao
 public interface GuardDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    int saveGuard(Guard guard);
+    long saveGuard(Guard guard);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    int[] saveGuards(List<Guard> guards);
+    long[] saveGuards(List<Guard> guards);
 
     @Update
     void updateGuard(Guard guard);
@@ -25,7 +25,16 @@ public interface GuardDao {
     @Delete
     void deleteGuard(Guard guard);
 
-    @Query("SELECT * FROM Guards WHERE localId = :id")
+    @Query("SELECT * FROM Guards WHERE guardId = :id")
     Guard getGuard(int id);
+
+     @Query("SELECT * FROM Guards WHERE guardPersonId = :id")
+    Guard getGuardByPersonId(int id);
+
+     @Query("DELETE FROM Guards")
+    int emptyGuards();
+
+     @Query("SELECT * FROM Guards WHERE guardSite = :id AND guardStatus = 1 ORDER BY personName")
+    List<Guard> getGuardsFromSite(int id);
 
 }

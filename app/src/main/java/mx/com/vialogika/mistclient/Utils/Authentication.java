@@ -26,10 +26,10 @@ public class Authentication {
                     if(r.has("success")){
 
                         boolean valid = r.getBoolean("success");
-                        JSONObject userdata = r.getJSONArray("userdata").getJSONObject(0);
-                        JSONArray usersites = userdata.getJSONArray("manages_sites");
-                        JSONObject androidsettings = userdata.getJSONObject("android_settings");
                         if(valid){
+                            JSONObject userdata = r.getJSONArray("userdata").getJSONObject(0);
+                            JSONArray usersites = userdata.getJSONArray("manages_sites");
+                            JSONObject androidsettings = userdata.getJSONObject("android_settings");
                             User.saveUserDatatoSP(context, userdata, new User.onUserDataSaved() {
                                 @Override
                                 public void dataSaved() {

@@ -2,6 +2,7 @@ package mx.com.vialogika.mistclient;
 
 
 import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
 
 import org.json.JSONException;
@@ -12,93 +13,106 @@ public class Apostamiento {
 
     @PrimaryKey(autoGenerate = true)
     private int localId;
-    private int remId;
-    private int clId;
-    private String apName;
-    private String apAlias;
-    private String apType;
-    private int sId;
+    private int plantillaPlaceId;
+    private String plantillaPlaceClientId;
+    private String plantillaPlaceApostamientoName;
+    private String plantillaPlaceApostamientoAlias;
+    private String plantillaPlaceType;
+    private int plantillaPlaceSiteId;
+    private String clientName;
 
     public Apostamiento() {
     }
 
-    public Apostamiento(JSONObject apostamiento){
-        try{
-            this.remId = apostamiento.getInt("plantilla_place_id");
-            this.clId = apostamiento.getInt("plantilla_place_client_id");
-            this.apName = apostamiento.getString("plantilla_place_apostamiento_name");
-            this.apAlias = apostamiento.getString("plantilla_place_apostaamiento_alias");
-            this.apType = apostamiento.getString("plantilla_place_type");
-            this.sId = apostamiento.getInt("plantilla_place_site_id");
-        }catch(JSONException e){
+    public Apostamiento(JSONObject apostamiento) {
+        try {
+            this.plantillaPlaceId = apostamiento.getInt("plantilla_place_id");
+            this.plantillaPlaceClientId = apostamiento.getString("plantilla_place_client_id");
+            this.plantillaPlaceApostamientoName = apostamiento.getString("plantilla_place_apostamiento_name");
+            this.plantillaPlaceApostamientoAlias = apostamiento.getString("plantilla_place_apostamiento_alias");
+            this.plantillaPlaceType = apostamiento.getString("plantilla_place_type");
+            this.plantillaPlaceSiteId = apostamiento.getInt("plantilla_place_site_id");
+        } catch (JSONException e) {
             e.printStackTrace();
         }
     }
 
-    public JSONObject mapData(){
-        JSONObject ap = new JSONObject();
-        try{
-            ap.put("plantilla_place_id",this.remId);
-            ap.put("plantilla_place_client_id",this.clId);
-            ap.put("plantilla_place_apostamiento_name",this.apName);
-            ap.put("plantilla_place_apostamiento_alias",this.apAlias);
-            ap.put("plantilla_place_type",this.apType);
-            ap.put("plantilla_place_site_id",this.sId);
-        }catch(JSONException e){
+    public JSONObject mapData() {
+        JSONObject data = new JSONObject();
+        try {
+            data.put("plantilla_place_id", this.plantillaPlaceId);
+            data.put("plantilla_place_client_id", this.plantillaPlaceClientId);
+            data.put("plantilla_place_apostamiento_name", this.plantillaPlaceApostamientoName);
+            data.put("plantilla_place_apostamiento_alias", this.plantillaPlaceApostamientoAlias);
+            data.put("plantilla_place_type", this.plantillaPlaceType);
+            data.put("plantilla_place_site_id", this.plantillaPlaceSiteId);
+        } catch (JSONException e) {
             e.printStackTrace();
         }
-        return ap;
+        return data;
     }
 
     public int getLocalId() {
         return localId;
     }
 
-    public int getRemId() {
-        return remId;
+    public void setLocalId(int localId) {
+        this.localId = localId;
     }
 
-    public void setRemId(int remId) {
-        this.remId = remId;
+    public int getPlantillaPlaceId() {
+        return plantillaPlaceId;
     }
 
-    public int getClId() {
-        return clId;
+    public void setPlantillaPlaceId(int plantillaPlaceId) {
+        this.plantillaPlaceId = plantillaPlaceId;
     }
 
-    public void setClId(int clId) {
-        this.clId = clId;
+    public String getPlantillaPlaceClientId() {
+        return plantillaPlaceClientId;
     }
 
-    public String getApName() {
-        return apName;
+    public void setPlantillaPlaceClientId(String plantillaPlaceClientId) {
+        this.plantillaPlaceClientId = plantillaPlaceClientId;
     }
 
-    public void setApName(String apName) {
-        this.apName = apName;
+    public String getPlantillaPlaceApostamientoName() {
+        return plantillaPlaceApostamientoName;
     }
 
-    public String getApAlias() {
-        return apAlias;
+    public void setPlantillaPlaceApostamientoName(String plantillaPlaceApostamientoName) {
+        this.plantillaPlaceApostamientoName = plantillaPlaceApostamientoName;
     }
 
-    public void setApAlias(String apAlias) {
-        this.apAlias = apAlias;
+    public String getPlantillaPlaceApostamientoAlias() {
+        return plantillaPlaceApostamientoAlias;
     }
 
-    public String getApType() {
-        return apType;
+    public void setPlantillaPlaceApostamientoAlias(String plantillaPlaceApostamientoAlias) {
+        this.plantillaPlaceApostamientoAlias = plantillaPlaceApostamientoAlias;
     }
 
-    public void setApType(String apType) {
-        this.apType = apType;
+    public String getPlantillaPlaceType() {
+        return plantillaPlaceType;
     }
 
-    public int getsId() {
-        return sId;
+    public void setPlantillaPlaceType(String plantillaPlaceType) {
+        this.plantillaPlaceType = plantillaPlaceType;
     }
 
-    public void setsId(int sId) {
-        this.sId = sId;
+    public int getPlantillaPlaceSiteId() {
+        return plantillaPlaceSiteId;
+    }
+
+    public void setPlantillaPlaceSiteId(int plantillaPlaceSiteId) {
+        this.plantillaPlaceSiteId = plantillaPlaceSiteId;
+    }
+
+    public String getClientName() {
+        return clientName;
+    }
+
+    public void setClientName(String clientName) {
+        this.clientName = clientName;
     }
 }

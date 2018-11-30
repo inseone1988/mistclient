@@ -87,6 +87,14 @@
     <string name="edo_reports_settings">Administracion</string>
     <string name="site_name">Site name</string>
     <string name="refresh">Refresh</string>
+    <string name="guard_created">Alta : %1$s</string>
+    <string name="ap_created">Fecha de creacion : %1$s</string>
+    <string name="ap_client">Cliente : %1$s</string>
+    <string name="ap_type">Tipo de apostamiento : %1$s</string>
+    <string name="ap_key_name">Clave : %1$s</string>
+    <string name="ap_place">Lugar : %1$s</string>
+    <string name="client_key">Clave : %1$s</string>
+    <string name="client_social">Razon social : %1$s</string>
     <string-array name="flag_options">
         <item>Resuelto</item>
         <item>Pendiente</item>

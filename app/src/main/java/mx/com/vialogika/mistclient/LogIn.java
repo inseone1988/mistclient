@@ -12,12 +12,18 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.android.volley.VolleyError;
 import com.evernote.android.job.JobManager;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import mx.com.vialogika.mistclient.Notif.RegisterNotificationChannels;
 import mx.com.vialogika.mistclient.Utils.AuthCallbacks;
 import mx.com.vialogika.mistclient.Utils.Authentication;
 import mx.com.vialogika.mistclient.Utils.Dialogs;
+import mx.com.vialogika.mistclient.Utils.NetworkRequest;
+import mx.com.vialogika.mistclient.Utils.NetworkRequestCallbacks;
 import mx.com.vialogika.mistclient.Utils.SimpleDialogCallback;
 
 public class LogIn extends AppCompatActivity {
@@ -85,6 +91,7 @@ public class LogIn extends AppCompatActivity {
                             clearFields();
                             setKeepSessionOpened(shouldSkipLogin);
                             User.setUserIsLoggedIn(mcontext,true);
+                            loadAppData();
                             startMainActivity();
                         }
 
@@ -95,6 +102,29 @@ public class LogIn extends AppCompatActivity {
                         }
                     });
                 }
+            }
+        });
+    }
+
+    private void loadAppData(){
+        UserSettings us = new UserSettings(this);
+        NetworkRequest.getSiteEdoInfo(this, null, null, us.getManagesSites(), new NetworkRequestCallbacks() {
+            @Override
+            public void onNetworkRequestResponse(Object response) {
+                try{
+                    JSONObject resp = new JSONObject(response.toString());
+                    if (resp.getBoolean("success")){
+
+                    }
+                }catch(JSONException e){
+                    e.printStackTrace();
+                }
+
+            }
+
+            @Override
+            public void onNetworkRequestError(VolleyError error) {
+
             }
         });
     }

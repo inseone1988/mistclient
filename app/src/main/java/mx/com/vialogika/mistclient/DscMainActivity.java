@@ -158,6 +158,12 @@ public class DscMainActivity extends AppCompatActivity
         super.onStop();
     }
 
+    @Override
+    protected void onResume() {
+        Toast.makeText(this, "OnResume", Toast.LENGTH_SHORT).show();
+        super.onResume();
+    }
+
     /**@Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         menu.clear();

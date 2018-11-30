@@ -12,4 +12,6 @@
     <color name="dsc_success">#91e277</color>
     <color name="dsc_warning">#fde404</color>
     <color name="dsc_danger">#fd1004</color>
+    <color name="inactive">#f44242</color>
+    <color name="active">#42f48f</color>
 </resources>

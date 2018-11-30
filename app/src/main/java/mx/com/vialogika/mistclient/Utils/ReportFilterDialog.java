@@ -64,7 +64,7 @@ public class ReportFilterDialog extends MaterialDialog.Builder {
             public void onOperationFinished(@Nullable Object object) {
                 mapUserSitesToSpinner(object);
             }
-        });
+        },null);
     }
 
     private void mapUserSitesToSpinner(Object object){

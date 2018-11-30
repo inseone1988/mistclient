@@ -25,7 +25,9 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Date;
 
 import mx.com.vialogika.mistclient.Comment;
 import mx.com.vialogika.mistclient.Room.DatabaseOperations;
@@ -222,6 +224,41 @@ public class NetworkRequest {
             JsonObjectRequest jor = new JsonObjectRequest(Request.Method.POST, url, params, new Response.Listener<JSONObject>() {
                 @Override
                 public void onResponse(JSONObject response) {
+                    cb.onNetworkRequestResponse(response);
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    cb.onNetworkRequestError(error);
+                }
+            });
+            rq.add(jor);
+        }catch(JSONException e){
+            e.printStackTrace();
+        }
+    }
+
+    public static void getSiteEdoInfo(final Context context, @Nullable String from, @Nullable String to, String sites, final NetworkRequestCallbacks cb){
+        String handler = "raw.php";
+        String url = SERVER_URL_PREFIX + handler;
+        JSONObject params = new JSONObject();
+        if (from == null){
+            from = new SimpleDateFormat("yyyy-MM-dd 00:00:00").format(new Date());
+        }
+        if (to == null){
+            to = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
+        }
+        try{
+            params.put("function","getEdoData");
+            params.put("from",from);
+            params.put("to",to);
+            params.put("siteid",sites);
+            RequestQueue rq = Volley.newRequestQueue(context);
+            JsonObjectRequest jor = new JsonObjectRequest(Request.Method.POST, url, params, new Response.Listener<JSONObject>() {
+                @Override
+                public void onResponse(JSONObject response) {
+                    DatabaseOperations dbo = new DatabaseOperations(context);
+                    dbo.syncEdoData(response);
                     cb.onNetworkRequestResponse(response);
                 }
             }, new Response.ErrorListener() {

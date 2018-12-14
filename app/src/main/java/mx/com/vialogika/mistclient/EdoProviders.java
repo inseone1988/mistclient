@@ -3,8 +3,10 @@ package mx.com.vialogika.mistclient;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +15,8 @@ import android.view.ViewGroup;
 import java.util.ArrayList;
 import java.util.List;
 
+import mx.com.vialogika.mistclient.Adapters.ClientAdapter;
+import mx.com.vialogika.mistclient.Adapters.ProviderAdapter;
 import mx.com.vialogika.mistclient.Room.DatabaseOperations;
 import mx.com.vialogika.mistclient.Utils.Provider;
 import mx.com.vialogika.mistclient.Utils.ProviderSelectDialog;
@@ -76,6 +80,8 @@ public class EdoProviders extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+        dbo = new DatabaseOperations(getContext());
+        getSavedProviders();
     }
 
     @Override
@@ -84,14 +90,37 @@ public class EdoProviders extends Fragment {
         // Inflate the layout for this fragment
         View rootview = inflater.inflate(R.layout.fragment_edo_providers, container, false);
         getitems(rootview);
+        init();
         setupListeners();
         return rootview;
+    }
+
+    private void getSavedProviders(){
+        dbo.loadProviders(new DatabaseOperations.doInBackgroundOperation() {
+            @Override
+            public void onOperationFinished(@Nullable Object object) {
+                providers.addAll((List<Provider>) object);
+            }
+        }, new DatabaseOperations.UIThreadOperation() {
+            @Override
+            public void onOperationFinished(@Nullable Object object) {
+                adapter.notifyDataSetChanged();
+            }
+        });
     }
 
     private void getitems(View rootview){
         fab = rootview.findViewById(R.id.prov_fab);
         rv = rootview.findViewById(R.id.provider_rv);
     }
+
+    private void init(){
+        layoutManager = new LinearLayoutManager(getContext());
+        rv.setLayoutManager(layoutManager);
+        adapter = new ProviderAdapter(providers);
+        rv.setAdapter(adapter);
+    }
+
     private void setupListeners(){
         fab.setOnClickListener(new View.OnClickListener() {
             @Override

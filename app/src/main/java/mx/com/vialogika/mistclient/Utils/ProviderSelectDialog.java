@@ -1,6 +1,7 @@
 package mx.com.vialogika.mistclient.Utils;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.NonNull;
@@ -8,6 +9,7 @@ import android.support.annotation.Nullable;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
@@ -132,7 +134,7 @@ public class ProviderSelectDialog extends MaterialDialog.Builder {
                         public void onOperationFinished(@Nullable Object object) {
                             long saved = (long) object;
                             if (saved != 0){
-                                Toast.makeText(context, "Provider saved", Toast.LENGTH_SHORT).show();
+                                Log.d("Room " ,"Saved provider with id :" + String.valueOf(saved));
                             }
                         }
                     }, new DatabaseOperations.UIThreadOperation() {
@@ -147,6 +149,13 @@ public class ProviderSelectDialog extends MaterialDialog.Builder {
                     Toast.makeText(context, "Must select a provider", Toast.LENGTH_SHORT).show();
                 }
 
+            }
+        });
+        onNeutral(new MaterialDialog.SingleButtonCallback() {
+            @Override
+            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                new RegisterProviderDialog(dialog.getContext()).show();
+                dialog.hide();
             }
         });
     }

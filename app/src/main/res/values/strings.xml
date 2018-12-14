@@ -99,6 +99,7 @@
     <string name="provider_social">R. Social : %1$s</string>
     <string name="provider_type">Tipo : %1$s</string>
     <string name="provider_title">Buscar proveedor : </string>
+    <string name="dsc_save">Guardar</string>
     <string-array name="flag_options">
         <item>Resuelto</item>
         <item>Pendiente</item>
@@ -113,4 +114,8 @@
     <string name="hello_blank_fragment">Hello groups fragment</string>
     <string name="hello_guard_fragment">Hello guard fragment</string>
     <string name="hello_apostamientos_fragment">Hello apostamientos fragment</string>
+    <string name="new_provider">Nuevo proveedor</string>
+    <string name="rs_provider_hint">Razon social</string>
+    <string name="alias_provider_hint">Nombre clave del proveedor</string>
+    <string name="rfc_provider_hint">RFC del proveedor</string>
 </resources>

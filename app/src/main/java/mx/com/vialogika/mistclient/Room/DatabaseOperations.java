@@ -561,6 +561,23 @@ public class DatabaseOperations {
         }).start();
     }
 
+    public void loadProviders(final doInBackgroundOperation bo,final UIThreadOperation uiop){
+        final Handler handler = new Handler(Looper.getMainLooper());
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                final List<Provider> providers = appDatabase.providerDao().getProviders();
+                bo.onOperationFinished(providers);
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        uiop.onOperationFinished(providers);
+                    }
+                });
+            }
+        }).start();
+    }
+
     public interface Sync{
         void onReportSynced(List<Reporte> reports);
     }

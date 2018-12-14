@@ -19,6 +19,10 @@ public class ProviderAdapter extends RecyclerView.Adapter<ProviderAdapter.ProvVi
 
     private List<Provider> dataset;
 
+    public ProviderAdapter(List<Provider> providers){
+        this.dataset = providers;
+    }
+
     public static class ProvViewHolder extends RecyclerView.ViewHolder{
         CardView cv;
         TextView fletter,provAlias,provSocial,provType;
@@ -45,9 +49,9 @@ public class ProviderAdapter extends RecyclerView.Adapter<ProviderAdapter.ProvVi
     public void onBindViewHolder(@NonNull ProvViewHolder provViewHolder, int i) {
         Provider provider = dataset.get(i);
         Resources res = provViewHolder.cv.getContext().getResources();
-        String phprovAlias = res.getString(R.string.provider_alias);
-        String phprovSocial = res.getString((R.string.provider_social));
-        String phprovType = res.getString(R.string.provider_type);
+        String phprovAlias = String.format(res.getString(R.string.provider_alias),provider.getProviderAlias());
+        String phprovSocial = String.format(res.getString((R.string.provider_social)),provider.getProviderSocial());
+        String phprovType = String.format(res.getString(R.string.provider_type),provider.getProviderClass());
         String letter = Character.toString(getFLetter(provider.getProviderAlias()));
         provViewHolder.fletter.setText(letter);
         provViewHolder.provAlias.setText(phprovAlias);

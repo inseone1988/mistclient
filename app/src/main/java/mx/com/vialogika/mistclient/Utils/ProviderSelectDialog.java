@@ -6,6 +6,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.button.MaterialButton;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -17,6 +18,7 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.afollestad.materialdialogs.internal.MDButton;
 import com.android.volley.VolleyError;
 
 import org.json.JSONArray;
@@ -43,15 +45,18 @@ public class ProviderSelectDialog extends MaterialDialog.Builder {
 
     private providerDialogCallbacks cb;
 
+    private MaterialDialog dialog;
+
     public ProviderSelectDialog(Context context,providerDialogCallbacks mcb){
         super(context);
         this.cb = mcb;
         this.title = "Buscar proveedor";
-        this.positiveText("OK");
         this.neutralText("Nuevo proveedor");
         this.customView(R.layout.provider_autocomplete,false);
+        this.positiveText(R.string.dsc_text_ok);
         atv = customView.findViewById(R.id.provider_search_term);
         atv.setThreshold(3);
+
         asa = new AutoSuggestAdapter(context,android.R.layout.simple_dropdown_item_1line);
         handler = new Handler(new Handler.Callback() {
             @Override
@@ -106,12 +111,13 @@ public class ProviderSelectDialog extends MaterialDialog.Builder {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 String selected = atv.getText().toString();
                 provSelected = getProvider(selected);
+                positiveText(R.string.dsc_text_ok);
             }
         });
         atv.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
+                positiveText("");
             }
 
             @Override
@@ -158,6 +164,10 @@ public class ProviderSelectDialog extends MaterialDialog.Builder {
                 dialog.hide();
             }
         });
+    }
+
+    private void showPositiveText(MaterialDialog.Builder builder){
+        builder.positiveText(R.string.dsc_text_ok);
     }
 
     private Provider getProvider(String name){

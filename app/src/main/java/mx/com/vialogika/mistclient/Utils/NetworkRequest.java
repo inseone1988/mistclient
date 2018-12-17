@@ -28,6 +28,7 @@ import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.logging.Handler;
 
 import mx.com.vialogika.mistclient.Comment;
 import mx.com.vialogika.mistclient.Room.DatabaseOperations;
@@ -297,6 +298,31 @@ public class NetworkRequest {
             e.printStackTrace();
         }
 
+    }
+
+    public static void saveNewProvider(Context context,Provider provider,final NetworkRequestCallbacks cb){
+        String handler = "raw.php";
+        String url = SERVER_URL_PREFIX + handler;
+        JSONObject params = new JSONObject();
+        RequestQueue rq = Volley.newRequestQueue(context);
+        try{
+            params.put("function","saveProvider");
+            params.put("data",provider.mapData());
+            JsonObjectRequest jor = new JsonObjectRequest(Request.Method.POST, url, params, new Response.Listener<JSONObject>() {
+                @Override
+                public void onResponse(JSONObject response) {
+                    cb.onNetworkRequestResponse(response);
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    cb.onNetworkRequestError(error);
+                }
+            });
+            rq.add(jor);
+        }catch(JSONException e ){
+            e.printStackTrace();
+        }
     }
 
     public static Bitmap getImageFromURL(String url){

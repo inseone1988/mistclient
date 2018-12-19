@@ -43,6 +43,7 @@
                 android:value="mx.com.vialogika.mistclient.DscMainActivity" />
         </activity>
         <activity android:name=".EdoSettings" />
+        <activity android:name=".GuardsEdoReports"></activity>
     </application>
 
 </manifest>

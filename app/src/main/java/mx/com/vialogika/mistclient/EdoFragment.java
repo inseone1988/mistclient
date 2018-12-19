@@ -76,6 +76,7 @@ public class EdoFragment extends Fragment {
 
     private void getitems(View rootview){
         edoConfig = rootview.findViewById(R.id.edo_settings);
+        edoReports = rootview.findViewById(R.id.edost);
     }
 
     private void setlisteners(){
@@ -85,6 +86,17 @@ public class EdoFragment extends Fragment {
                 loadEdoConfigAcdtivity();
             }
         });
+        edoReports.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                loadGuardReportsActivity();
+            }
+        });
+    }
+
+    private void loadGuardReportsActivity(){
+        Intent intent = new Intent(this.getActivity(),GuardsEdoReports.class);
+        startActivity(intent);
     }
 
     private void loadEdoConfigAcdtivity(){

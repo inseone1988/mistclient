@@ -22,6 +22,7 @@ import mx.com.vialogika.mistclient.Apostamiento;
 import mx.com.vialogika.mistclient.Client;
 import mx.com.vialogika.mistclient.Comment;
 import mx.com.vialogika.mistclient.Guard;
+import mx.com.vialogika.mistclient.GuardForceState;
 import mx.com.vialogika.mistclient.Reporte;
 import mx.com.vialogika.mistclient.User;
 import mx.com.vialogika.mistclient.Utils.DatabaseOperationCallback;
@@ -572,6 +573,51 @@ public class DatabaseOperations {
                     @Override
                     public void run() {
                         uiop.onOperationFinished(providers);
+                    }
+                });
+            }
+        }).start();
+    }
+
+    public void getEdoReports(final String from,final String to,final doInBackgroundOperation dbo,final UIThreadOperation uiop){
+        final Handler handler = new Handler(Looper.getMainLooper());
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                final List<GuardForceState> list = appDatabase.guardEdoReportDao().stateList(from,to);
+                dbo.onOperationFinished(list);
+                //TODO:Main thread
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        uiop.onOperationFinished(list);
+                    }
+                });
+            }
+        }).start();
+    }
+
+    public void syncEdoReports(final List<GuardForceState> stateList, final doInBackgroundOperation bo, final UIThreadOperation uiThreadOperation){
+        final Handler handler = new Handler(Looper.getMainLooper());
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                final List<GuardForceState> alreadySaved = new ArrayList<>();
+                for (int i = 0; i < stateList.size();i++){
+                    GuardForceState item = stateList.get(i);
+                    long saved = appDatabase.guardEdoReportDao().alreadySaved(item.getId());
+                    if (saved == 0 ){
+                        long id = appDatabase.guardEdoReportDao().saveGRDReport(item);
+                        if (id != 0){
+                            alreadySaved.add(item);
+                        }
+                    }
+                }
+                bo.onOperationFinished(alreadySaved);
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        uiThreadOperation.onOperationFinished(alreadySaved);
                     }
                 });
             }

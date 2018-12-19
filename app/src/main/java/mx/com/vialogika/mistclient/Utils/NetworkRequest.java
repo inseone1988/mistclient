@@ -26,11 +26,14 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 import java.util.logging.Handler;
 
 import mx.com.vialogika.mistclient.Comment;
+import mx.com.vialogika.mistclient.GuardForceState;
 import mx.com.vialogika.mistclient.Room.DatabaseOperations;
 
 public class NetworkRequest {
@@ -323,6 +326,55 @@ public class NetworkRequest {
         }catch(JSONException e ){
             e.printStackTrace();
         }
+    }
+
+    public static void getEdoFuerza(final Context context, String from, String to, int siteid, final DatabaseOperations.doInBackgroundOperation dib, final DatabaseOperations.UIThreadOperation uiop){
+        String handler = "raw.php";
+        String url = SERVER_URL_PREFIX + handler;
+        JSONObject params = new JSONObject();
+        try{
+            params.put("function","getEdo");
+            params.put("from",from);
+            params.put("to",to);
+            params.put("siteid",siteid);
+        }catch(JSONException e){
+            e.printStackTrace();
+        }
+        RequestQueue rq = Volley.newRequestQueue(context);
+        JsonObjectRequest jor = new JsonObjectRequest(Request.Method.POST, url, params, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                try{
+                    if (response.getBoolean("success")){
+                        JSONArray payload = response.getJSONArray("payload");
+                        DatabaseOperations dbo = new DatabaseOperations(context);
+                        List<GuardForceState> responsedata = new ArrayList<>();
+                        for (int i = 0; i < payload.length(); i++) {
+                            responsedata.add(new GuardForceState(new JSONObject(payload.get(i).toString())));
+                        }
+                        dbo.syncEdoReports(responsedata, new DatabaseOperations.doInBackgroundOperation() {
+                            @Override
+                            public void onOperationFinished(@android.support.annotation.Nullable Object object) {
+                                dib.onOperationFinished(object);
+                            }
+                        }, new DatabaseOperations.UIThreadOperation() {
+                            @Override
+                            public void onOperationFinished(@android.support.annotation.Nullable Object object) {
+                                uiop.onOperationFinished(object);
+                            }
+                        });
+                    }
+                }catch(JSONException e){
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        });
+        rq.add(jor);
     }
 
     public static Bitmap getImageFromURL(String url){

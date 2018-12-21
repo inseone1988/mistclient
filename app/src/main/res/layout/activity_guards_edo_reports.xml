@@ -16,6 +16,78 @@
 
         <android.support.v7.widget.CardView
             android:layout_width="0dp"
+            android:layout_height="80dp"
+            android:layout_margin="5dp"
+            android:layout_weight="0.5"
+            android:minHeight="70dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="5dp"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.5"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/monthdisplay"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="0.3"
+                        android:background="@drawable/ic_weekly_calendar"
+                        android:gravity="center"
+                        android:text="December"
+                        android:textColor="@color/colorMaterialLight" />
+
+                    <TextView
+                        android:id="@+id/daydisplay"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="0.7"
+                        android:background="@color/calendar_light"
+                        android:gravity="center"
+                        android:text="31"
+                        android:textSize="35sp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.5"
+                    android:orientation="vertical"
+                    android:padding="3dp">
+
+                    <TextView
+                        android:id="@+id/textView3"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="0.3"
+                        android:background="@color/salmon"
+                        android:gravity="center"
+                        android:text="Grupos"
+                        android:textColor="@color/colorMaterialLight"
+                        android:textSize="12sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/groupnumbers"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="0.7"
+                        android:gravity="center"
+                        android:text="0"
+                        android:textSize="35sp" />
+                </LinearLayout>
+            </LinearLayout>
+        </android.support.v7.widget.CardView>
+
+        <android.support.v7.widget.CardView
+            android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_margin="5dp"
             android:layout_weight="0.5"
@@ -27,29 +99,23 @@
                 android:layout_margin="5dp"
                 android:orientation="horizontal">
 
-                <TextView
-                    android:id="@+id/textView3"
+                <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="0.3"
-                    android:gravity="center"
-                    android:text="1"
-                    android:textSize="35sp" />
+                    android:layout_weight="0.5"
+                    android:orientation="vertical">
+
+                </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="0.7"
-                    android:orientation="vertical"></LinearLayout>
+                    android:layout_weight="0.5"
+                    android:orientation="vertical">
+
+                </LinearLayout>
             </LinearLayout>
         </android.support.v7.widget.CardView>
-
-        <android.support.v7.widget.CardView
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_margin="5dp"
-            android:layout_weight="0.5"
-            android:minHeight="70dp" />
 
     </LinearLayout>
 
@@ -107,6 +173,7 @@
                         android:gravity="center" />
 
                 </LinearLayout>
+
             </LinearLayout>
 
         </android.support.v7.widget.CardView>

@@ -275,4 +275,8 @@ public class GuardForceState {
     public void setApName(String apName) {
         this.apName = apName;
     }
+
+    public int getProviderId(){
+        return Integer.valueOf(this.edoFuerzaProviderId);
+    }
 }

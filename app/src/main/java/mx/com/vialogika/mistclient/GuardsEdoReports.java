@@ -13,10 +13,12 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -37,6 +39,7 @@ public class GuardsEdoReports extends AppCompatActivity {
     private List<String>          grupos      = new ArrayList<>();
     private List<Provider>        proveedores = new ArrayList<>();
     private List<GuardForceState> edo         = new ArrayList<>();
+    private List<GuardForceState> filter = new ArrayList<>();
 
     private RecyclerView               recyclerView;
     private RecyclerView.Adapter       rvAdapter;
@@ -45,8 +48,11 @@ public class GuardsEdoReports extends AppCompatActivity {
     private int    siteid;
     private String from;
     private String to;
+    private String providerfilter;
+    private String groupFiltr;
     private String currentSite;
 
+    private TextView dayDisplay,monthDisplay,groupNumber;
     private Spinner menuSpinner, providerSpinner, groupSpinner;
     private ArrayAdapter<String> adapter;
     private ArrayAdapter<String> providerAdapter;
@@ -61,6 +67,8 @@ public class GuardsEdoReports extends AppCompatActivity {
         getItems();
         getSiteList();
         getProviders();
+        displayDate(null);
+        loadEdo();
     }
 
 
@@ -95,16 +103,20 @@ public class GuardsEdoReports extends AppCompatActivity {
         to = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
         adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, mSites);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
     }
 
     private void getItems() {
-        recyclerView = findViewById(R.id.edo_view);
+        recyclerView  = findViewById(R.id.edo_view);
         layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
         rvAdapter = new EdoGuardAdapter(edo);
         recyclerView.setAdapter(rvAdapter);
+        dayDisplay      = findViewById(R.id.daydisplay     );
+        monthDisplay    = findViewById(R.id.monthdisplay   );
+        groupNumber = findViewById(R.id.groupnumbers);
         providerSpinner = findViewById(R.id.spinnerProvider);
-        groupSpinner = findViewById(R.id.spinnerGroup);
+        groupSpinner    = findViewById(R.id.spinnerGroup   );
         providerAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, providers);
         providerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         groupAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, grupos);
@@ -121,11 +133,26 @@ public class GuardsEdoReports extends AppCompatActivity {
                 proveedores.addAll((List<Provider>) object);
             }
         });
+    }
 
+    private void displayDate(@Nullable Date date){
+        Calendar c = Calendar.getInstance();
+        c.setTime(new Date());
+        if (date != null){
+            c.setTime(date);
+        }
+        monthDisplay.setText(getMonthName(c.get(Calendar.MONTH)));
+        dayDisplay.setText(String.valueOf(c.get(Calendar.DAY_OF_MONTH)));
+    }
+
+    private String getMonthName(int month){
+        String[] months = {"Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"};
+        return months[month];
     }
 
     private void getSortLists() {
         providers.clear();
+        grupos.clear();
         String pinit = "";
         String ginit = "";
         for (int i = 0; i < edo.size(); i++) {
@@ -137,6 +164,7 @@ public class GuardsEdoReports extends AppCompatActivity {
             if (!item.getEdoFuerzaTurno().equals(ginit)) {
                 grupos.add(item.getEdoFuerzaTurno());
             }
+            updateGCounter();
             pinit = providerName;
             ginit = item.getEdoFuerzaTurno();
         }
@@ -145,12 +173,20 @@ public class GuardsEdoReports extends AppCompatActivity {
         groupAdapter.notifyDataSetChanged();
     }
 
+    private void updateGCounter(){
+        groupNumber.setText(String.valueOf(grupos.size()));
+    }
+
     private void setFilterSpinnersIfEnabled() {
         if (providers.size() <= 1) {
             providerSpinner.setEnabled(false);
-            groupSpinner.setEnabled(false);
+
         } else {
             providerSpinner.setEnabled(true);
+        }
+        if (grupos.size() <= 1){
+            groupSpinner.setEnabled(false);
+        }else{
             groupSpinner.setEnabled(true);
         }
     }
@@ -216,6 +252,60 @@ public class GuardsEdoReports extends AppCompatActivity {
 
             }
         });
+        providerSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                providerfilter = providerSpinner.getSelectedItem().toString();
+                filterResults();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+        groupSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                groupFiltr = groupSpinner.getSelectedItem().toString();
+                filterResults();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+    }
+
+    private void filterResults(){
+        edo.clear();
+        for (int i = 0; i < filter.size(); i++) {
+            GuardForceState current = filter.get(i);
+            int pid = getProviderIDByName(providerfilter);
+            if (current.getProviderId() == pid && current.getEdoFuerzaTurno().equals(groupFiltr)){
+                edo.add(current);
+            }
+            rvAdapter.notifyDataSetChanged();
+        }
+    }
+
+    private Provider getProviderById(int id){
+        for (int i = 0; i < proveedores.size(); i++) {
+            if (proveedores.get(i).getProviderId() == id){
+                return proveedores.get(i);
+            }
+        }
+        return null;
+    }
+
+    private int getProviderIDByName(String providerName){
+        for (int i = 0; i < proveedores.size(); i++) {
+            if (proveedores.get(i).getProviderAlias().equals(providerName)){
+                return proveedores.get(i).getProviderId();
+            }
+        }
+        return 0;
     }
 
     private void loadEdo() {
@@ -225,6 +315,7 @@ public class GuardsEdoReports extends AppCompatActivity {
                 if (object != null) {
                     edo.clear();
                     edo.addAll((List<GuardForceState>) object);
+                    filter.addAll((List<GuardForceState>) object);
                 }
             }
         }, new DatabaseOperations.UIThreadOperation() {
@@ -232,6 +323,7 @@ public class GuardsEdoReports extends AppCompatActivity {
             public void onOperationFinished(@Nullable Object object) {
                 rvAdapter.notifyDataSetChanged();
                 getSortLists();
+                updateGCounter();
             }
         });
     }
@@ -240,8 +332,7 @@ public class GuardsEdoReports extends AppCompatActivity {
         NetworkRequest.getEdoFuerza(this, from, to, siteid, new DatabaseOperations.doInBackgroundOperation() {
             @Override
             public void onOperationFinished(@Nullable Object object) {
-                edo.clear();
-                edo.addAll((List<GuardForceState>) object);
+
             }
         }, new DatabaseOperations.UIThreadOperation() {
             @Override
@@ -259,6 +350,7 @@ public class GuardsEdoReports extends AppCompatActivity {
                 from = new SimpleDateFormat("yyyy-MM-dd").format(datefrom);
                 to = new SimpleDateFormat("yyyy-MM-dd").format(dateto);
                 loadEdo();
+                displayDate(datefrom);
             }
         });
         datepicker.show(getSupportFragmentManager(), "datePicker");

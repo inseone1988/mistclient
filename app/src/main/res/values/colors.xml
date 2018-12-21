@@ -15,4 +15,6 @@
     <color name="inactive">#f44242</color>
     <color name="active">#42f48f</color>
     <color name="dsc_light_gray">#dcdcdc</color>
+    <color name="calendar_light">#e3e9f5</color>
+    <color name="salmon">#fd6464</color>
 </resources>

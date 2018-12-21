@@ -56,7 +56,9 @@
     <filter-list connection-id="08c0b568-769d-463c-8f16-d70b6d59f331" dataset="main.Clients" active-filter-id="EMPTY_FILTER" />
   </component>
   <component name="DBNavigator.Project.EditorStateManager">
-    <last-used-providers />
+    <last-used-providers>
+      <object-type object-type="TABLE" editor-provider="DATA" />
+    </last-used-providers>
   </component>
   <component name="DBNavigator.Project.MethodExecutionManager">
     <method-browser />

@@ -26,4 +26,5 @@ public interface ProviderDao {
 
     @Query("SELECT * FROM Providers WHERE providerId = :id")
     Provider getProviderById(int id);
+
 }

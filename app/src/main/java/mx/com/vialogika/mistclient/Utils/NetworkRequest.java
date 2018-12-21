@@ -282,7 +282,7 @@ public class NetworkRequest {
         String url = SERVER_URL_PREFIX + handler;
         JSONObject params = new JSONObject();
         try{
-            params.put("function","getProviderName");
+            params.put("function","getApName");
             params.put("searchterm",serachterm);
             RequestQueue rq = Volley.newRequestQueue(context);
             JsonObjectRequest jor = new JsonObjectRequest(Request.Method.POST, url, params, new Response.Listener<JSONObject>() {

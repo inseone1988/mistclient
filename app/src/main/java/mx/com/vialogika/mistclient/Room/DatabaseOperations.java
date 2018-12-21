@@ -4,12 +4,10 @@ import android.arch.persistence.room.Room;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.android.volley.VolleyError;
-import com.google.gson.Gson;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -30,7 +28,6 @@ import mx.com.vialogika.mistclient.Utils.Depuracion;
 import mx.com.vialogika.mistclient.Utils.NetworkRequest;
 import mx.com.vialogika.mistclient.Utils.NetworkRequestCallbacks;
 import mx.com.vialogika.mistclient.Utils.Provider;
-import mx.com.vialogika.mistclient.Utils.SimpleDialogCallback;
 
 public class DatabaseOperations {
     Context ctx ;
@@ -585,6 +582,13 @@ public class DatabaseOperations {
             @Override
             public void run() {
                 final List<GuardForceState> list = appDatabase.guardEdoReportDao().stateList(from,to);
+                for (int i = 0; i < list.size(); i++) {
+                    GuardForceState item = list.get(i);
+                    Guard guardinfo = appDatabase.guardDao().getGuardByHash(item.getEdoFuerzaGuardId());
+                    Apostamiento apostamiento = appDatabase.apostamientoDao().getApostamientobyId(Integer.valueOf(item.getEdoFuerzaPlaceId()));
+                    item.setGuardName(guardinfo.getGuardFullname());
+                    item.setApName(apostamiento.getPlantillaPlaceApostamientoAlias());
+                }
                 dbo.onOperationFinished(list);
                 //TODO:Main thread
                 handler.post(new Runnable() {
@@ -597,7 +601,18 @@ public class DatabaseOperations {
         }).start();
     }
 
+    public void getProviders(final doInBackgroundOperation cb){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                List<Provider> allProviders = appDatabase.providerDao().getProviders();
+                cb.onOperationFinished(allProviders);
+            }
+        }).start();
+    }
+
     public void syncEdoReports(final List<GuardForceState> stateList, final doInBackgroundOperation bo, final UIThreadOperation uiThreadOperation){
+        //Nunca se debe usar estos datos para vista porque estan incompletos solo para sincronizar
         final Handler handler = new Handler(Looper.getMainLooper());
         new Thread(new Runnable() {
             @Override

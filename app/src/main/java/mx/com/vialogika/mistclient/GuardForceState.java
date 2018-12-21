@@ -1,6 +1,7 @@
 package mx.com.vialogika.mistclient;
 
 import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
 
 import org.json.JSONException;
@@ -12,7 +13,7 @@ public class GuardForceState {
     @PrimaryKey(autoGenerate = true)
     private int localId;
 
-    private int id;
+    private int    id;
     private String edoFuerzaPlantillaId;
     private String edoFuerzaProviderId;
     private String edoFuerzaSiteId;
@@ -25,12 +26,16 @@ public class GuardForceState {
     private String edoFuerzaReported;
     private String edoFuerzaTurno;
     private String providerIncidencesUuid;
-    private int providerIncidencesId;
+    private int    providerIncidencesId;
     private String providerIncidencesDatetime;
     private String providerIncidencesName;
     private String providerIncidencesType;
     private String providerIncidencesRequestedby;
     private String providerIncidencesObs;
+    @Ignore
+    private String guardName;
+    @Ignore
+    private String apName;
 
     public GuardForceState() {
 
@@ -39,25 +44,25 @@ public class GuardForceState {
     public GuardForceState(JSONObject item) {
         try {
             String piid = item.getString("provider_incidences_id");
-            this.id = item.getInt("id");
-            this.edoFuerzaPlantillaId = item.getString("edo_fuerza_plantilla_id");
-            this.edoFuerzaProviderId = item.getString("edo_fuerza_provider_id");
-            this.edoFuerzaSiteId = item.getString("edo_fuerza_site_id");
-            this.edoFuerzaPlaceId = item.getString("edo_fuerza_place_id");
-            this.edoFuerzaGuardId = item.getString("edo_fuerza_guard_id");
-            this.edoFuerzaIncidenceId = item.getString("edo_fuerza_incidence_id");
-            this.edoFuerzaCoveredGuardId = item.getString("edo_fuerza_covered_guard_id");
-            this.edoFuerzaGuardJob = item.getString("edo_fuerza_guard_job");
-            this.edoFuerzaDate = item.getString("edo_fuerza_date");
-            this.edoFuerzaReported = item.getString("edo_fuerza_reported");
-            this.edoFuerzaTurno = item.getString("edo_fuerza_turno");
-            this.providerIncidencesUuid = item.getString("provider_incidences_uuid");
-            this.providerIncidencesId = piid.equals("null") ? 0:item.getInt("provider_incidences_id");
-            this.providerIncidencesDatetime = item.getString("provider_incidences_datetime");
-            this.providerIncidencesName = item.getString("provider_incidences_name");
-            this.providerIncidencesType = item.getString("provider_incidences_type");
+            this.id                            = item.getInt("id");
+            this.edoFuerzaPlantillaId          = item.getString("edo_fuerza_plantilla_id"        );
+            this.edoFuerzaProviderId           = item.getString("edo_fuerza_provider_id"         );
+            this.edoFuerzaSiteId               = item.getString("edo_fuerza_site_id"             );
+            this.edoFuerzaPlaceId              = item.getString("edo_fuerza_place_id"            );
+            this.edoFuerzaGuardId              = item.getString("edo_fuerza_guard_id"            );
+            this.edoFuerzaIncidenceId          = item.getString("edo_fuerza_incidence_id"        );
+            this.edoFuerzaCoveredGuardId       = item.getString("edo_fuerza_covered_guard_id"    );
+            this.edoFuerzaGuardJob             = item.getString("edo_fuerza_guard_job"           );
+            this.edoFuerzaDate                 = item.getString("edo_fuerza_date"                );
+            this.edoFuerzaReported             = item.getString("edo_fuerza_reported"            );
+            this.edoFuerzaTurno                = item.getString("edo_fuerza_turno"               );
+            this.providerIncidencesUuid        = item.getString("provider_incidences_uuid"       );
+            this.providerIncidencesId          = piid.equals("null") ? 0 : item.getInt("provider_incidences_id");
+            this.providerIncidencesDatetime    = item.getString("provider_incidences_datetime"   );
+            this.providerIncidencesName        = item.getString("provider_incidences_name"       );
+            this.providerIncidencesType        = item.getString("provider_incidences_type"       );
             this.providerIncidencesRequestedby = item.getString("provider_incidences_requestedby");
-            this.providerIncidencesObs = item.getString("provider_incidences_obs");
+            this.providerIncidencesObs         = item.getString("provider_incidences_obs"        );
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -66,29 +71,33 @@ public class GuardForceState {
     public JSONObject mapData() {
         JSONObject obj = new JSONObject();
         try {
-            obj.put("id", this.id);
-            obj.put("edo_fuerza_plantilla_id", this.edoFuerzaPlantillaId);
-            obj.put("edo_fuerza_provider_id", this.edoFuerzaProviderId);
-            obj.put("edo_fuerza_site_id", this.edoFuerzaSiteId);
-            obj.put("edo_fuerza_place_id", this.edoFuerzaPlaceId);
-            obj.put("edo_fuerza_guard_id", this.edoFuerzaGuardId);
-            obj.put("edo_fuerza_incidence_id", this.edoFuerzaIncidenceId);
-            obj.put("edo_fuerza_covered_guard_id", this.edoFuerzaCoveredGuardId);
-            obj.put("edo_fuerza_guard_job", this.edoFuerzaGuardJob);
-            obj.put("edo_fuerza_date", this.edoFuerzaDate);
-            obj.put("edo_fuerza_reported", this.edoFuerzaReported);
-            obj.put("edo_fuerza_turno", this.edoFuerzaTurno);
-            obj.put("provider_incidences_uuid", this.providerIncidencesUuid);
-            obj.put("provider_incidences_id", this.providerIncidencesId);
-            obj.put("provider_incidences_datetime", this.providerIncidencesDatetime);
-            obj.put("provider_incidences_name", this.providerIncidencesName);
-            obj.put("provider_incidences_type", this.providerIncidencesType);
+            obj.put("id", this.id                                                        );
+            obj.put("edo_fuerza_plantilla_id", this.edoFuerzaPlantillaId                 );
+            obj.put("edo_fuerza_provider_id", this.edoFuerzaProviderId                   );
+            obj.put("edo_fuerza_site_id", this.edoFuerzaSiteId                           );
+            obj.put("edo_fuerza_place_id", this.edoFuerzaPlaceId                         );
+            obj.put("edo_fuerza_guard_id", this.edoFuerzaGuardId                         );
+            obj.put("edo_fuerza_incidence_id", this.edoFuerzaIncidenceId                 );
+            obj.put("edo_fuerza_covered_guard_id", this.edoFuerzaCoveredGuardId          );
+            obj.put("edo_fuerza_guard_job", this.edoFuerzaGuardJob                       );
+            obj.put("edo_fuerza_date", this.edoFuerzaDate                                );
+            obj.put("edo_fuerza_reported", this.edoFuerzaReported                        );
+            obj.put("edo_fuerza_turno", this.edoFuerzaTurno                              );
+            obj.put("provider_incidences_uuid", this.providerIncidencesUuid              );
+            obj.put("provider_incidences_id", this.providerIncidencesId                  );
+            obj.put("provider_incidences_datetime", this.providerIncidencesDatetime      );
+            obj.put("provider_incidences_name", this.providerIncidencesName              );
+            obj.put("provider_incidences_type", this.providerIncidencesType              );
             obj.put("provider_incidences_requestedby", this.providerIncidencesRequestedby);
-            obj.put("provider_incidences_obs", this.providerIncidencesObs);
+            obj.put("provider_incidences_obs", this.providerIncidencesObs                );
         } catch (JSONException e) {
             e.printStackTrace();
         }
         return obj;
+    }
+
+    public boolean hasIncidence(){
+        return !this.edoFuerzaIncidenceId.equals("null");
     }
 
     public int getLocalId() {
@@ -249,5 +258,21 @@ public class GuardForceState {
 
     public void setProviderIncidencesObs(String providerIncidencesObs) {
         this.providerIncidencesObs = providerIncidencesObs;
+    }
+
+    public String getGuardName() {
+        return guardName;
+    }
+
+    public void setGuardName(String guardName) {
+        this.guardName = guardName;
+    }
+
+    public String getApName() {
+        return apName;
+    }
+
+    public void setApName(String apName) {
+        this.apName = apName;
     }
 }

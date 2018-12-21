@@ -2,6 +2,7 @@ package mx.com.vialogika.mistclient;
 
 
 import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
 
 import org.json.JSONException;
@@ -29,6 +30,8 @@ public class Guard {
     private String guardPhotoPath;
     private int guardStatus;
     private String guardBajaTimestamp;
+    @Ignore
+    private String guardFullname;
 
     public Guard() {
     }
@@ -264,5 +267,13 @@ public class Guard {
 
     public boolean isActive(){
         return guardStatus == 1;
+    }
+
+    public String getGuardFullname() {
+        return this.personName + " " + personFname + " " + personLname;
+    }
+
+    public void setGuardFullname(String guardFullname) {
+        this.guardFullname = guardFullname;
     }
 }

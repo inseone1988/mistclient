@@ -37,4 +37,7 @@ public interface GuardDao {
      @Query("SELECT * FROM Guards WHERE guardSite = :id AND guardStatus = 1 ORDER BY personName")
     List<Guard> getGuardsFromSite(int id);
 
+     @Query ("SELECT * FROM Guards WHERE guardHash = :hash")
+    Guard getGuardByHash(String hash);
+
 }

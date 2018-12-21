@@ -14,4 +14,5 @@
     <color name="dsc_danger">#fd1004</color>
     <color name="inactive">#f44242</color>
     <color name="active">#42f48f</color>
+    <color name="dsc_light_gray">#dcdcdc</color>
 </resources>

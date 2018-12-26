@@ -3,6 +3,7 @@ package mx.com.vialogika.mistclient;
 import android.arch.persistence.room.Entity;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -26,6 +27,7 @@ import mx.com.vialogika.mistclient.Adapters.EdoGuardAdapter;
 import mx.com.vialogika.mistclient.Pickers.DatePickerFragment;
 import mx.com.vialogika.mistclient.Room.DatabaseOperations;
 import mx.com.vialogika.mistclient.Room.Site;
+import mx.com.vialogika.mistclient.Utils.ApostamientoDetailsDialog;
 import mx.com.vialogika.mistclient.Utils.NetworkRequest;
 import mx.com.vialogika.mistclient.Utils.Provider;
 
@@ -45,14 +47,14 @@ public class GuardsEdoReports extends AppCompatActivity {
     private RecyclerView.Adapter       rvAdapter;
     private RecyclerView.LayoutManager layoutManager;
 
-    private int    siteid;
+    private int    siteid,groupRequired;
     private String from;
     private String to;
     private String providerfilter;
     private String groupFiltr;
     private String currentSite;
 
-    private TextView dayDisplay,monthDisplay,groupNumber;
+    private TextView dayDisplay,monthDisplay,groupNumber,reportedCount,requiredCount;
     private Spinner menuSpinner, providerSpinner, groupSpinner;
     private ArrayAdapter<String> adapter;
     private ArrayAdapter<String> providerAdapter;
@@ -99,11 +101,17 @@ public class GuardsEdoReports extends AppCompatActivity {
     }
 
     private void init() {
-        from = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
-        to = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
+        todaydates();
         adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, mSites);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
+    }
+
+    private void todaydates(){
+        Calendar c = Calendar.getInstance();
+        c.add(Calendar.DAY_OF_MONTH,1);
+        from = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
+        to = new SimpleDateFormat("yyyy-MM-dd").format(c.getTime());
     }
 
     private void getItems() {
@@ -115,6 +123,8 @@ public class GuardsEdoReports extends AppCompatActivity {
         dayDisplay      = findViewById(R.id.daydisplay     );
         monthDisplay    = findViewById(R.id.monthdisplay   );
         groupNumber = findViewById(R.id.groupnumbers);
+        reportedCount = findViewById(R.id.reportedcount);
+        requiredCount = findViewById(R.id.requiredcount);
         providerSpinner = findViewById(R.id.spinnerProvider);
         groupSpinner    = findViewById(R.id.spinnerGroup   );
         providerAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, providers);
@@ -145,6 +155,26 @@ public class GuardsEdoReports extends AppCompatActivity {
         dayDisplay.setText(String.valueOf(c.get(Calendar.DAY_OF_MONTH)));
     }
 
+    private void getGroupRequired(){
+        dbo.getSiteGuardsRequired(siteid, new DatabaseOperations.doInBackgroundOperation() {
+            @Override
+            public void onOperationFinished(@Nullable Object object) {
+                groupRequired = (int) object;
+            }
+        }, new DatabaseOperations.UIThreadOperation() {
+            @Override
+            public void onOperationFinished(@Nullable Object object) {
+                updateGroupCounters();
+            }
+        });
+    }
+
+    private void updateGroupCounters(){
+        reportedCount.setText(String.valueOf(edo.size()));
+        requiredCount.setText(String.valueOf(groupRequired));
+        groupNumber.setText(String.valueOf(grupos.size()));
+    }
+
     private String getMonthName(int month){
         String[] months = {"Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"};
         return months[month];
@@ -155,8 +185,8 @@ public class GuardsEdoReports extends AppCompatActivity {
         grupos.clear();
         String pinit = "";
         String ginit = "";
-        for (int i = 0; i < edo.size(); i++) {
-            GuardForceState item         = edo.get(i);
+        for (int i = 0; i < filter.size(); i++) {
+            GuardForceState item         = filter.get(i);
             String          providerName = getProviderNameById(Integer.valueOf(item.getEdoFuerzaProviderId()));
             if (!providerName.equals(pinit)) {
                 providers.add(providerName);
@@ -164,10 +194,10 @@ public class GuardsEdoReports extends AppCompatActivity {
             if (!item.getEdoFuerzaTurno().equals(ginit)) {
                 grupos.add(item.getEdoFuerzaTurno());
             }
-            updateGCounter();
             pinit = providerName;
             ginit = item.getEdoFuerzaTurno();
         }
+        updateGCounter();
         setFilterSpinnersIfEnabled();
         providerAdapter.notifyDataSetChanged();
         groupAdapter.notifyDataSetChanged();
@@ -244,7 +274,7 @@ public class GuardsEdoReports extends AppCompatActivity {
                 currentSite = menuSpinner.getSelectedItem().toString();
                 siteid = sites.get(position).getSiteId();
                 loadEdo();
-                Toast.makeText(GuardsEdoReports.this, "Site id : " + siteid, Toast.LENGTH_SHORT).show();
+               // Toast.makeText(GuardsEdoReports.this, "Site id : " + siteid, Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -276,6 +306,12 @@ public class GuardsEdoReports extends AppCompatActivity {
 
             }
         });
+        requiredCount.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showAPDetailsDialog();
+            }
+        });
     }
 
     private void filterResults(){
@@ -286,6 +322,7 @@ public class GuardsEdoReports extends AppCompatActivity {
             if (current.getProviderId() == pid && current.getEdoFuerzaTurno().equals(groupFiltr)){
                 edo.add(current);
             }
+            getGroupRequired();
             rvAdapter.notifyDataSetChanged();
         }
     }
@@ -309,12 +346,12 @@ public class GuardsEdoReports extends AppCompatActivity {
     }
 
     private void loadEdo() {
-        dbo.getEdoReports(from, to, new DatabaseOperations.doInBackgroundOperation() {
+        dbo.getEdoReports(siteid,from, to, new DatabaseOperations.doInBackgroundOperation() {
             @Override
             public void onOperationFinished(@Nullable Object object) {
                 if (object != null) {
+                    filter.clear();
                     edo.clear();
-                    edo.addAll((List<GuardForceState>) object);
                     filter.addAll((List<GuardForceState>) object);
                 }
             }
@@ -323,9 +360,14 @@ public class GuardsEdoReports extends AppCompatActivity {
             public void onOperationFinished(@Nullable Object object) {
                 rvAdapter.notifyDataSetChanged();
                 getSortLists();
-                updateGCounter();
+                getGroupRequired();
             }
         });
+    }
+
+    private void showAPDetailsDialog(){
+        ApostamientoDetailsDialog dialog = new ApostamientoDetailsDialog();
+        dialog.show(getSupportFragmentManager(),"dialog");
     }
 
     private void syncEdo() {

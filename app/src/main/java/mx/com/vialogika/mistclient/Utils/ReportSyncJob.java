@@ -38,6 +38,11 @@ public class ReportSyncJob extends Job {
                     }
                 }
             }
+
+            @Override
+            public void UIThreadOperation(Object response) {
+
+            }
         });
         return Result.SUCCESS;
     }

@@ -110,7 +110,6 @@
         <item>Nave 6</item>
     </string-array>
     <string name="site_select_title">Seleccione site : </string>
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello groups fragment</string>
     <string name="hello_guard_fragment">Hello guard fragment</string>
     <string name="hello_apostamientos_fragment">Hello apostamientos fragment</string>

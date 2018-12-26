@@ -21,9 +21,12 @@ public interface ApostamientoDao {
     @Query("DELETE FROM Apostamientos")
     int emptyApostamientosTable();
 
-    @Query("SELECT plantillaPlaceSiteId,localId,plantillaPlaceId,plantillaPlaceClientId,plantillaPlaceApostamientoName,plantillaPlaceApostamientoAlias,plantillaPlaceType,(SELECT Clients.clientAlias FROM Clients WHERE clientId = Apostamientos.plantillaPlaceClientId) AS clientName FROM Apostamientos WHERE plantillaPlaceSiteId = :id")
+    @Query("SELECT plantillaPlaceSiteId,localId,plantillaPlaceId,plantillaPlaceClientId,plantillaPlaceApostamientoName,plantillaPlaceApostamientoAlias,plantillaPlaceType,(SELECT Clients.clientAlias FROM Clients WHERE clientId = Apostamientos.plantillaPlaceClientId) AS clientName,plantillaPlaceGuardsRequired FROM Apostamientos WHERE plantillaPlaceSiteId = :id")
     List<Apostamiento> getApostamientosBySiteId(int id);
 
     @Query("SELECT *FROM Apostamientos WHERE plantillaPlaceId = :id")
     Apostamiento getApostamientobyId(int id);
+
+    @Query("SELECT SUM(plantillaPlaceGuardsRequired) FROM Apostamientos WHERE plantillaPlaceSiteId = :siteid")
+    int guardsRequired(int siteid);
 }

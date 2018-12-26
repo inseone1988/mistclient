@@ -20,7 +20,7 @@ public interface GuardEdoReportDao {
     @Query("SELECT id FROM GuardsForceState WHERE id = :id")
     long alreadySaved(int id);
 
-    @Query("SELECT * FROM GuardsForceState WHERE edoFuerzaReported BETWEEN :from AND :to ORDER BY edoFuerzaDate ASC")
-    List<GuardForceState> stateList(String from,String to);
+    @Query("SELECT * FROM GuardsForceState WHERE edoFuerzaSiteId = :siteid AND edoFuerzaReported BETWEEN :from AND :to ORDER BY edoFuerzaDate ASC")
+    List<GuardForceState> stateList(int siteid,String from,String to);
 
 }

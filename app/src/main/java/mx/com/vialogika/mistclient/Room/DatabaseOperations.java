@@ -97,7 +97,9 @@ public class DatabaseOperations {
                 mainHandler.post(new Runnable() {
                     @Override
                     public void run() {
-                        uicb.onOperationFinished(sites);
+                        if (uicb != null){
+                            uicb.onOperationFinished(sites);
+                        }
                     }
                 });
             }
@@ -147,6 +149,7 @@ public class DatabaseOperations {
 
 
     public List<Reporte> syncReports(final Sync cb){
+        final Handler handler = new Handler(Looper.getMainLooper());
         final List<Reporte> fetched = new ArrayList<>();
         getLastReportId(new DatabaseOperationCallback() {
             @Override
@@ -169,8 +172,20 @@ public class DatabaseOperations {
                                             fetched.add(report);
                                         }
                                     }
-                                    //Callback
-                                    cb.onReportSynced(fetched);
+                                    new Thread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            final List<Reporte> reportes = appDatabase.reportDao().getAllReports();
+                                            //Callback
+                                            cb.onReportSynced(fetched);
+                                            handler.post(new Runnable() {
+                                                @Override
+                                                public void run() {
+                                                    cb.UIThreadOperation(reportes);
+                                                }
+                                            });
+                                        }
+                                    }).start();
                                 }
                             }
                         }catch(JSONException e){
@@ -184,38 +199,30 @@ public class DatabaseOperations {
                 });
                 NetworkRequest.fetchIncidents(ctx, "UPDATE", lastid, userid, usersite, new NetworkRequestCallbacks() {
                     @Override
-                    public void onNetworkRequestResponse(Object response) {
-                        try{
-                            JSONObject resp = new JSONObject(response.toString());
-                            if (resp.length() > 0){
-                                if (resp.getBoolean("success")){
-                                    final JSONArray reports = resp.getJSONArray("reports");
-                                    if(reports.length() > 0){
-                                        for (int i = 0;i < reports.length();i++){
-                                            final JSONObject cReport = reports.getJSONObject(i);
-                                            getReport(cReport.getInt("id"), new DatabaseOperationCallback() {
-                                                @Override
-                                                public void onOperationSucceded(@Nullable Object response) {
-                                                    if (response != null){
-                                                        Reporte report = (Reporte) response;
-                                                        if (report != null){
-                                                            report.updateReportData(cReport);
-                                                            saveReport(report);
-                                                        }else{
-                                                            report = new Reporte(cReport);
-                                                            saveReport(report);
-                                                        }
-                                                    }
+                    public void onNetworkRequestResponse(final Object response) {
+                        new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                try{
+                                    JSONObject resp = new JSONObject(response.toString());
+                                    if (resp.length() > 0){
+                                        if (resp.getBoolean("success")){
+                                            final JSONArray reports = resp.getJSONArray("reports");
+                                            if(reports.length() > 0){
+                                                for (int i = 0;i < reports.length();i++){
+                                                    final JSONObject cReport = reports.getJSONObject(i);
+                                                    Reporte old = appDatabase.reportDao().getReport(cReport.getInt("id"));
+                                                    old.updateReportData(cReport);
+                                                    appDatabase.reportDao().saveReport(old);
                                                 }
-                                            });
-
+                                            }
                                         }
                                     }
+                                }catch(JSONException e){
+                                    e.printStackTrace();
                                 }
                             }
-                        }catch(JSONException e){
-                            e.printStackTrace();
-                        }
+                        }).start();
                     }
 
                     @Override
@@ -576,12 +583,12 @@ public class DatabaseOperations {
         }).start();
     }
 
-    public void getEdoReports(final String from,final String to,final doInBackgroundOperation dbo,final UIThreadOperation uiop){
+    public void getEdoReports(final int siteid,final String from,final String to,final doInBackgroundOperation dbo,final UIThreadOperation uiop){
         final Handler handler = new Handler(Looper.getMainLooper());
         new Thread(new Runnable() {
             @Override
             public void run() {
-                final List<GuardForceState> list = appDatabase.guardEdoReportDao().stateList(from,to);
+                final List<GuardForceState> list = appDatabase.guardEdoReportDao().stateList(siteid,from,to);
                 for (int i = 0; i < list.size(); i++) {
                     GuardForceState item = list.get(i);
                     Guard guardinfo = appDatabase.guardDao().getGuardByHash(item.getEdoFuerzaGuardId());
@@ -639,8 +646,27 @@ public class DatabaseOperations {
         }).start();
     }
 
+
+    public void getSiteGuardsRequired(final int siteid, final doInBackgroundOperation cb, final UIThreadOperation uito){
+        final Handler handler = new Handler(Looper.getMainLooper());
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                final int req = appDatabase.apostamientoDao().guardsRequired(siteid);
+                cb.onOperationFinished(req);
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        uito.onOperationFinished(req);
+                    }
+                });
+            }
+        }).start();
+    }
+
     public interface Sync{
         void onReportSynced(List<Reporte> reports);
+        void UIThreadOperation(Object response);
     }
 
     public interface simpleOperationCallback{

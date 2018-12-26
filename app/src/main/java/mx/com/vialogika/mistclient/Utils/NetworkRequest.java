@@ -95,6 +95,7 @@ public class NetworkRequest {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                //TODO:Make a new class for all network calls
                 cb.onNetworkRequestError(error);
                 NetworkResponse response = error.networkResponse;
                 if (error instanceof NetworkError){
@@ -282,7 +283,7 @@ public class NetworkRequest {
         String url = SERVER_URL_PREFIX + handler;
         JSONObject params = new JSONObject();
         try{
-            params.put("function","getApName");
+            params.put("function","getProviderName");
             params.put("searchterm",serachterm);
             RequestQueue rq = Volley.newRequestQueue(context);
             JsonObjectRequest jor = new JsonObjectRequest(Request.Method.POST, url, params, new Response.Listener<JSONObject>() {

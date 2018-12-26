@@ -20,6 +20,7 @@ public class Apostamiento {
     private String plantillaPlaceType;
     private int plantillaPlaceSiteId;
     private String clientName;
+    private int plantillaPlaceGuardsRequired;
 
     public Apostamiento() {
     }
@@ -32,6 +33,7 @@ public class Apostamiento {
             this.plantillaPlaceApostamientoAlias = apostamiento.getString("plantilla_place_apostamiento_alias");
             this.plantillaPlaceType = apostamiento.getString("plantilla_place_type");
             this.plantillaPlaceSiteId = apostamiento.getInt("plantilla_place_site_id");
+            this.plantillaPlaceGuardsRequired = apostamiento.getInt("plantilla_place_guards_required");
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -46,6 +48,7 @@ public class Apostamiento {
             data.put("plantilla_place_apostamiento_alias", this.plantillaPlaceApostamientoAlias);
             data.put("plantilla_place_type", this.plantillaPlaceType);
             data.put("plantilla_place_site_id", this.plantillaPlaceSiteId);
+            data.put("plantilla_place_guards_required",this.plantillaPlaceGuardsRequired);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -114,5 +117,13 @@ public class Apostamiento {
 
     public void setClientName(String clientName) {
         this.clientName = clientName;
+    }
+
+    public int getPlantillaPlaceGuardsRequired() {
+        return plantillaPlaceGuardsRequired;
+    }
+
+    public void setPlantillaPlaceGuardsRequired(int plantillaPlaceGuardsRequired) {
+        this.plantillaPlaceGuardsRequired = plantillaPlaceGuardsRequired;
     }
 }

@@ -332,6 +332,7 @@ public class ReportsFragment extends Fragment {
             //reports must be JSONObject response object
             try{
                 reportes.add(new Reporte(response.getJSONObject(i)));
+
             }catch(JSONException e){
                 e.printStackTrace();
             }
@@ -347,30 +348,25 @@ public class ReportsFragment extends Fragment {
     }
 
     private void fetchIncidents(int from){
-        final Context ctx = getContext();
-        new loadIncidents(from,user,site).execute(this.getContext(), new NetworkRequestCallbacks() {
+        dbo.syncReports(new DatabaseOperations.Sync() {
             @Override
-            public void onNetworkRequestResponse(Object response) {
-                try{
-                    JSONObject JSOresponse = new JSONObject(response.toString());
-                    JSONArray reports = JSOresponse.getJSONArray("reports");
-                    if (reports.length() > 0){
-                        addReportsToList(reports);
-                        dbo.addReportsToQueue(reportes);
-                        dbo.saveReports();
-                        updateLastId();
-                    }else{
-                        Toast.makeText(ctx,"Timeline up to date",Toast.LENGTH_SHORT).show();
-                    }
-                }catch(JSONException e){
-                    e.printStackTrace();
-                }
-                swipeRefreshLayout.setRefreshing(false);
+            public void onReportSynced(List<Reporte> reports) {
+                //This list contains reports fetched from network
+
             }
 
             @Override
-            public void onNetworkRequestError(VolleyError error) {
-                swipeRefreshLayout.setRefreshing(false);
+            public void UIThreadOperation(Object response) {
+                reportes.clear();
+                //This list contains all reports
+                if (response != null){
+                    reportes.addAll((List<Reporte>)response);
+                    runLayoutAnimation();
+                    swipeRefreshLayout.setRefreshing(false);
+                    if (reportes.size() == 0){
+                        Toast.makeText(getContext(), "Timeline actualizado, no hay reportes", Toast.LENGTH_SHORT).show();
+                    }
+                }
             }
         });
     }

@@ -3,6 +3,7 @@ package mx.com.vialogika.mistclient;
 import android.arch.persistence.room.Entity;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -13,6 +14,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -54,6 +56,7 @@ public class GuardsEdoReports extends AppCompatActivity {
     private String groupFiltr;
     private String currentSite;
 
+    private ImageView nodataLogo;
     private TextView dayDisplay,monthDisplay,groupNumber,reportedCount,requiredCount;
     private Spinner menuSpinner, providerSpinner, groupSpinner;
     private ArrayAdapter<String> adapter;
@@ -115,6 +118,7 @@ public class GuardsEdoReports extends AppCompatActivity {
     }
 
     private void getItems() {
+        nodataLogo = findViewById(R.id.nodatalogo);
         recyclerView  = findViewById(R.id.edo_view);
         layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
@@ -173,6 +177,7 @@ public class GuardsEdoReports extends AppCompatActivity {
         reportedCount.setText(String.valueOf(edo.size()));
         requiredCount.setText(String.valueOf(groupRequired));
         groupNumber.setText(String.valueOf(grupos.size()));
+        displayUI();
     }
 
     private String getMonthName(int month){
@@ -366,7 +371,7 @@ public class GuardsEdoReports extends AppCompatActivity {
     }
 
     private void showAPDetailsDialog(){
-        ApostamientoDetailsDialog dialog = new ApostamientoDetailsDialog();
+        ApostamientoDetailsDialog dialog = ApostamientoDetailsDialog.newInstance(from,to,groupFiltr,siteid);
         dialog.show(getSupportFragmentManager(),"dialog");
     }
 
@@ -382,6 +387,16 @@ public class GuardsEdoReports extends AppCompatActivity {
                 loadEdo();
             }
         });
+    }
+
+    private void displayUI(){
+        if (edo.size() < 1){
+            recyclerView.setVisibility(View.GONE);
+            nodataLogo.setVisibility(View.VISIBLE);
+        }else{
+            recyclerView.setVisibility(View.VISIBLE);
+            nodataLogo.setVisibility(View.GONE);
+        }
     }
 
     private void showDatePickerDialog() {

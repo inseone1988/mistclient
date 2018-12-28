@@ -23,6 +23,7 @@ import mx.com.vialogika.mistclient.Guard;
 import mx.com.vialogika.mistclient.GuardForceState;
 import mx.com.vialogika.mistclient.Reporte;
 import mx.com.vialogika.mistclient.User;
+import mx.com.vialogika.mistclient.Utils.APDetailsDataHolder;
 import mx.com.vialogika.mistclient.Utils.DatabaseOperationCallback;
 import mx.com.vialogika.mistclient.Utils.Depuracion;
 import mx.com.vialogika.mistclient.Utils.NetworkRequest;
@@ -640,6 +641,30 @@ public class DatabaseOperations {
                     @Override
                     public void run() {
                         uiThreadOperation.onOperationFinished(alreadySaved);
+                    }
+                });
+            }
+        }).start();
+    }
+
+    public void getAPCoveredDetails(final String from,final String to,final String group,final int siteid,final doInBackgroundOperation dibo,final @Nullable UIThreadOperation uito){
+        final Handler handler = new Handler(Looper.getMainLooper());
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                final List<APDetailsDataHolder> holders = new ArrayList<>();
+                List<Apostamiento> apostamientos = appDatabase.apostamientoDao().getApostamientosBySiteId(siteid);
+                for (int i = 0; i < apostamientos.size(); i++) {
+                    Apostamiento current = apostamientos.get(i);
+                    int required = appDatabase.apostamientoDao().guardsRequiredByApostamiento(current.getPlantillaPlaceId());
+                    int reported = appDatabase.guardEdoReportDao().getCountByAP(from,to,group,current.getPlantillaPlaceId());
+                    holders.add(new APDetailsDataHolder(current.getPlantillaPlaceApostamientoName(),required,reported));
+                }
+                dibo.onOperationFinished(holders);
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        uito.onOperationFinished(holders);
                     }
                 });
             }

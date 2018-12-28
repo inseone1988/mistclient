@@ -8,6 +8,7 @@ import android.arch.persistence.room.Query;
 import java.util.List;
 
 import mx.com.vialogika.mistclient.Apostamiento;
+import mx.com.vialogika.mistclient.Utils.APDetailsDataHolder;
 
 @Dao
 public interface ApostamientoDao {
@@ -26,6 +27,9 @@ public interface ApostamientoDao {
 
     @Query("SELECT *FROM Apostamientos WHERE plantillaPlaceId = :id")
     Apostamiento getApostamientobyId(int id);
+
+    @Query("SELECT plantillaPlaceGuardsRequired FROM Apostamientos WHERE plantillaPlaceId = :placeId")
+    int guardsRequiredByApostamiento(int placeId);
 
     @Query("SELECT SUM(plantillaPlaceGuardsRequired) FROM Apostamientos WHERE plantillaPlaceSiteId = :siteid")
     int guardsRequired(int siteid);

@@ -100,6 +100,7 @@
     <string name="provider_type">Tipo : %1$s</string>
     <string name="provider_title">Buscar proveedor : </string>
     <string name="dsc_save">Guardar</string>
+    <string name="percent_display">%1$d \%</string>
     <string-array name="flag_options">
         <item>Resuelto</item>
         <item>Pendiente</item>

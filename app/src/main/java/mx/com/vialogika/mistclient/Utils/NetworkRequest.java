@@ -40,9 +40,10 @@ public class NetworkRequest {
 
     public static final String SERVER_URL_PREFIX = "https://www.vialogika.com.mx/dscic/";
 
-    public static void authenticateUser(Context context , String user, String password,final NetworkRequestCallbacks cb){
+    public static void authenticateUser(final Context context , String user, String password,final NetworkRequestCallbacks cb){
         //TODO: Consider server will change later
-        String url = "https://www.vialogika.com.mx/dscic/raw.php";
+        String handler = "raw.php";
+        String url = SERVER_URL_PREFIX + handler;
         JSONObject params = new JSONObject();
         try{
             params.put("function","authUser")
@@ -61,6 +62,7 @@ public class NetworkRequest {
             @Override
             public void onErrorResponse(VolleyError error) {
                 cb.onNetworkRequestError(error);
+                displayErrorDialog(context,error);
             }
         });
         rq.add(jor);
@@ -68,7 +70,8 @@ public class NetworkRequest {
 
     public static void fetchIncidents(final Context context,String mode,int from,int user, int site,final NetworkRequestCallbacks cb){
         //TODO: Consider server will change later
-        String url = "https:www.vialogika.com.mx/dscic/raw.php";
+        String handler = "raw.php";
+        String url = SERVER_URL_PREFIX + handler;
         JSONObject params = new JSONObject();
         try{
             if (mode.equals("FETCH")){
@@ -95,24 +98,17 @@ public class NetworkRequest {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                //TODO:Make a new class for all network calls
+                //Make a new class for all network calls
+                //25-12-2018 Added a generic dialog for all volley error
                 cb.onNetworkRequestError(error);
-                NetworkResponse response = error.networkResponse;
-                if (error instanceof NetworkError){
-                    Dialogs.networkErrorDialog(context);
-                }
-                if (error instanceof TimeoutError){
-                    Dialogs.timeoutError(context);
-                }
-                if(response != null){
-                    Dialogs.invalidServerResponse(context,String.valueOf(response.statusCode));
-                }
+                displayErrorDialog(context,error);
+
             }
         });
         rq.add(jor);
     }
 
-    public static void saveComment(Context context,Comment comment,final NetworkRequestCallbacks cb){
+    public static void saveComment(final Context context,Comment comment,final NetworkRequestCallbacks cb){
         String handler = "raw.php";
         String url = NetworkRequest.SERVER_URL_PREFIX + handler;
         JSONObject params = new JSONObject();
@@ -131,6 +127,7 @@ public class NetworkRequest {
                 @Override
                 public void onErrorResponse(VolleyError error) {
                     cb.onNetworkRequestError(error);
+                    displayErrorDialog(context,error);
                 }
             });
             rq.add(jor);
@@ -139,7 +136,7 @@ public class NetworkRequest {
         }
     }
 
-    public static void getEventComments(Context context,int eventid,final NetworkRequestCallbacks cb){
+    public static void getEventComments(final Context context,int eventid,final NetworkRequestCallbacks cb){
         String handler = "raw.php";
         String url = NetworkRequest.SERVER_URL_PREFIX + handler;
         JSONObject params = new JSONObject();
@@ -159,12 +156,13 @@ public class NetworkRequest {
             @Override
             public void onErrorResponse(VolleyError error) {
                 cb.onNetworkRequestError(error);
+                displayErrorDialog(context,error);
             }
         });
         rq.add(jor);
     }
 
-    public static void flagReport(Context context,int eventid,String flag,int userid,final NetworkRequestCallbacks cb){
+    public static void flagReport(final Context context,int eventid,String flag,int userid,final NetworkRequestCallbacks cb){
         String handler = "raw.php";
         String url = SERVER_URL_PREFIX + handler;
         JSONObject params = new JSONObject();
@@ -187,12 +185,13 @@ public class NetworkRequest {
             @Override
             public void onErrorResponse(VolleyError error) {
                 cb.onNetworkRequestError(error);
+                displayErrorDialog(context,error);
             }
         });
         rq.add(jor);
     }
 
-    public static void getUserAutocomplete(Context context,String term,final NetworkRequestCallbacks cb){
+    public static void getUserAutocomplete(final Context context,String term,final NetworkRequestCallbacks cb){
         String handler = "raw.php";
         String url = SERVER_URL_PREFIX + handler;
         JSONObject params = new JSONObject();
@@ -209,6 +208,7 @@ public class NetworkRequest {
                 @Override
                 public void onErrorResponse(VolleyError error) {
                     cb.onNetworkRequestError(error);
+                    displayErrorDialog(context,error);
                 }
             });
             rq.add(jor);
@@ -217,7 +217,7 @@ public class NetworkRequest {
         }
     }
 
-    public static void shareReport(Context context,int userid,int reportid, String users,final NetworkRequestCallbacks cb){
+    public static void shareReport(final Context context,int userid,int reportid, String users,final NetworkRequestCallbacks cb){
         String handler = "raw.php";
         String url = SERVER_URL_PREFIX +handler;
         JSONObject params = new JSONObject();
@@ -235,6 +235,7 @@ public class NetworkRequest {
                 @Override
                 public void onErrorResponse(VolleyError error) {
                     cb.onNetworkRequestError(error);
+                    displayErrorDialog(context,error);
                 }
             });
             rq.add(jor);
@@ -270,6 +271,7 @@ public class NetworkRequest {
                 @Override
                 public void onErrorResponse(VolleyError error) {
                     cb.onNetworkRequestError(error);
+                    displayErrorDialog(context,error);
                 }
             });
             rq.add(jor);
@@ -278,7 +280,7 @@ public class NetworkRequest {
         }
     }
 
-    public static  void getProviderNames(Context context,String serachterm,final NetworkRequestCallbacks cb){
+    public static  void getProviderNames(final Context context,String serachterm,final NetworkRequestCallbacks cb){
         String handler = "raw.php";
         String url = SERVER_URL_PREFIX + handler;
         JSONObject params = new JSONObject();
@@ -295,6 +297,7 @@ public class NetworkRequest {
                 @Override
                 public void onErrorResponse(VolleyError error) {
                     cb.onNetworkRequestError(error);
+                    displayErrorDialog(context,error);
                 }
             });
             rq.add(jor);
@@ -304,7 +307,7 @@ public class NetworkRequest {
 
     }
 
-    public static void saveNewProvider(Context context,Provider provider,final NetworkRequestCallbacks cb){
+    public static void saveNewProvider(final Context context,Provider provider,final NetworkRequestCallbacks cb){
         String handler = "raw.php";
         String url = SERVER_URL_PREFIX + handler;
         JSONObject params = new JSONObject();
@@ -321,6 +324,7 @@ public class NetworkRequest {
                 @Override
                 public void onErrorResponse(VolleyError error) {
                     cb.onNetworkRequestError(error);
+                    displayErrorDialog(context,error);
                 }
             });
             rq.add(jor);
@@ -372,13 +376,17 @@ public class NetworkRequest {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-
+                displayErrorDialog(context,error);
             }
         });
         rq.add(jor);
     }
 
-    public static Bitmap getImageFromURL(String url){
+    public static void displayErrorDialog(Context context,VolleyError error){
+        new NetworkErrorDialog(context,error);
+    }
+
+    public static Bitmap getImageFromURL(String url,boolean save){
         Bitmap image = null;
         URL link;
         try{

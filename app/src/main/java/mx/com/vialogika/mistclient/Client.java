@@ -16,6 +16,7 @@ public class Client {
     private String clientName;
     private String clientAlias;
     private int clientSiteId;
+    private int clientStatus;
 
     public Client() {
     }
@@ -27,6 +28,7 @@ public class Client {
             this.clientName = client.getString("client_name");
             this.clientAlias = client.getString("client_alias");
             this.clientSiteId = client.getInt("client_site_id");
+            this.clientStatus = client.getInt("client_status");
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -40,6 +42,7 @@ public class Client {
             client.put("client_name", this.clientName);
             client.put("client_alias", this.clientAlias);
             client.put("client_site_id", this.clientSiteId);
+            client.put("client_status",this.clientStatus);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -92,5 +95,13 @@ public class Client {
 
     public void setClientSiteId(int clientSiteId) {
         this.clientSiteId = clientSiteId;
+    }
+
+    public int getClientStatus() {
+        return clientStatus;
+    }
+
+    public void setClientStatus(int clientStatus) {
+        this.clientStatus = clientStatus;
     }
 }

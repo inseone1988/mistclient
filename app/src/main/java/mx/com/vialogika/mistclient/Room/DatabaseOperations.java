@@ -590,12 +590,14 @@ public class DatabaseOperations {
             @Override
             public void run() {
                 final List<GuardForceState> list = appDatabase.guardEdoReportDao().stateList(siteid,from,to);
-                for (int i = 0; i < list.size(); i++) {
-                    GuardForceState item = list.get(i);
-                    Guard guardinfo = appDatabase.guardDao().getGuardByHash(item.getEdoFuerzaGuardId());
-                    Apostamiento apostamiento = appDatabase.apostamientoDao().getApostamientobyId(Integer.valueOf(item.getEdoFuerzaPlaceId()));
-                    item.setGuardName(guardinfo.getGuardFullname());
-                    item.setApName(apostamiento.getPlantillaPlaceApostamientoAlias());
+                if(list.size() > 0){
+                    for (int i = 0; i < list.size(); i++) {
+                        GuardForceState item = list.get(i);
+                        Guard guardinfo = appDatabase.guardDao().getGuardByHash(item.getEdoFuerzaGuardId());
+                        Apostamiento apostamiento = appDatabase.apostamientoDao().getApostamientobyId(Integer.valueOf(item.getEdoFuerzaPlaceId()));
+                        item.setGuardName(guardinfo.getGuardFullname());
+                        item.setApName(apostamiento.getPlantillaPlaceApostamientoAlias());
+                    }
                 }
                 dbo.onOperationFinished(list);
                 //TODO:Main thread

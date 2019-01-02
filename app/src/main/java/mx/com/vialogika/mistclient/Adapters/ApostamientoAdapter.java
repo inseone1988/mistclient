@@ -7,12 +7,18 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
 
 import java.util.List;
 
 import mx.com.vialogika.mistclient.Apostamiento;
 import mx.com.vialogika.mistclient.R;
+import mx.com.vialogika.mistclient.Utils.DeleteDialog;
 
 public class ApostamientoAdapter extends RecyclerView.Adapter<ApostamientoAdapter.ApViewHolder> {
 
@@ -21,6 +27,7 @@ public class ApostamientoAdapter extends RecyclerView.Adapter<ApostamientoAdapte
     public static class ApViewHolder extends RecyclerView.ViewHolder{
         CardView cv;
         TextView apname,apalias,apclient,apcreted,aptype;
+        ImageView delete,edit;
 
         ApViewHolder(View itemView){
             super(itemView);
@@ -29,6 +36,7 @@ public class ApostamientoAdapter extends RecyclerView.Adapter<ApostamientoAdapte
             apalias = itemView.findViewById(R.id.ap_key);
             apclient = itemView.findViewById(R.id.ap_client);
             aptype = itemView.findViewById(R.id.ap_type);
+            delete = itemView.findViewById(R.id.apdletebtn);
         }
 
     }
@@ -45,7 +53,7 @@ public class ApostamientoAdapter extends RecyclerView.Adapter<ApostamientoAdapte
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ApViewHolder apViewHolder, int i) {
+    public void onBindViewHolder(@NonNull final ApViewHolder apViewHolder, int i) {
         Resources res = apViewHolder.cv.getContext().getResources();
         String place = res.getString(R.string.ap_place);
         String clientString = res.getString(R.string.ap_client);
@@ -56,6 +64,22 @@ public class ApostamientoAdapter extends RecyclerView.Adapter<ApostamientoAdapte
         apViewHolder.apname.setText(String.format(place,current.getPlantillaPlaceApostamientoName()));
         apViewHolder.apclient.setText(String.format(clientString,current.getClientName()));
         apViewHolder.aptype.setText(String.format(clientType,current.getPlantillaPlaceType()));
+        apViewHolder.delete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                new DeleteDialog(view.getContext(), DeleteDialog.DELETE_APOSTAMIENTO, new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        Toast.makeText(dialog.getContext().getApplicationContext(), "AP deleted", Toast.LENGTH_SHORT).show();
+                    }
+                }, new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+
+                    }
+                });
+            }
+        });
     }
 
     @Override

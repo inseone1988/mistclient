@@ -51,7 +51,7 @@
                 app:srcCompat="@drawable/ic_edit_black_24dp" />
 
             <ImageView
-                android:id="@+id/imageView9"
+                android:id="@+id/deleteclient"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.5"

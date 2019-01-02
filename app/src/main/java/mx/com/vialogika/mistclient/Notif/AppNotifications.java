@@ -66,5 +66,13 @@ public class AppNotifications {
         mBuilder.setStyle(inboxStyle);
         return mBuilder;
     }
+
+    public NotificationCompat.Builder newEdoFuerzaRported(){
+        //TODO:Add edo intent,dar cuerpo a notificacion
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(ctx,RegisterNotificationChannels.EDO_FUERZA_CHANNEL_ID)
+                .setSmallIcon(R.drawable.ic_stat_dhl_icon)
+                .setContentTitle("Hello");
+        return builder;
+    }
 }
 

@@ -8,12 +8,18 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
 
 import java.util.List;
 
 import mx.com.vialogika.mistclient.Client;
 import mx.com.vialogika.mistclient.R;
+import mx.com.vialogika.mistclient.Utils.DeleteDialog;
 
 public class ClientAdapter extends RecyclerView.Adapter<ClientAdapter.ClientViewHolder> {
 
@@ -26,6 +32,7 @@ public class ClientAdapter extends RecyclerView.Adapter<ClientAdapter.ClientView
     public static class ClientViewHolder extends RecyclerView.ViewHolder{
         CardView cv;
         TextView clientName,clientAlias,clientSocial;
+        ImageView delete;
 
         public ClientViewHolder(View itemView){
             super(itemView);
@@ -33,6 +40,7 @@ public class ClientAdapter extends RecyclerView.Adapter<ClientAdapter.ClientView
             cv = itemView.findViewById(R.id.client_cv);
             clientName = itemView.findViewById(R.id.clientname);
             clientSocial = itemView.findViewById(R.id.clientsocial);
+            delete = itemView.findViewById(R.id.deleteclient);
         }
     }
 
@@ -51,6 +59,22 @@ public class ClientAdapter extends RecyclerView.Adapter<ClientAdapter.ClientView
         String social = res.getString(R.string.client_social);
         clientViewHolder.clientName.setText(String.format(clientName,client.getClientName()));
         clientViewHolder.clientSocial.setText(String.format(social,client.getClientSocial()));
+        clientViewHolder.delete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                new DeleteDialog(view.getContext(), DeleteDialog.DELETE_CLIENT, new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        Toast.makeText(dialog.getContext().getApplicationContext(), "Cliente deleted", Toast.LENGTH_SHORT).show();
+                    }
+                }, new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+
+                    }
+                });
+            }
+        });
     }
 
     @Override

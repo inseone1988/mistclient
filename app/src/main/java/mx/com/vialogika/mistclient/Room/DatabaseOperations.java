@@ -237,6 +237,47 @@ public class DatabaseOperations {
         return fetched;
     }
 
+    public void getAllApostamientos(final doInBackgroundOperation cb){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                List<Apostamiento> apts = appDatabase.apostamientoDao().getAllApostamientos();
+                cb.onOperationFinished(apts);
+            }
+        }).start();
+    }
+
+    public void getAllClients(final doInBackgroundOperation cb){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                List<Client> clientes = appDatabase.clientDao().getAllClientes();
+                cb.onOperationFinished(clientes);
+            }
+        }).start();
+    }
+
+    public void getAllSites(final doInBackgroundOperation cb){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                List<Site> sites = appDatabase.sitesDao().getSitenames();
+                cb.onOperationFinished(sites);
+            }
+        }).start();
+    }
+
+    public void saveApostamiento(final Apostamiento ap,final doInBackgroundOperation cb){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                long saved = appDatabase.apostamientoDao().saveApostamiento(ap);
+                Apostamiento apt = appDatabase.apostamientoDao().getApostamientobyId((int)saved);
+                cb.onOperationFinished(apt);
+            }
+        }).start();
+    }
+
     public void getApostamientos(final int siteid, final doInBackgroundOperation bgo, final UIThreadOperation uicb){
         final Handler handler = new Handler(Looper.getMainLooper());
         new Thread(new Runnable() {
@@ -605,6 +646,29 @@ public class DatabaseOperations {
                     @Override
                     public void run() {
                         uiop.onOperationFinished(list);
+                    }
+                });
+            }
+        }).start();
+    }
+
+    public void checkDatabase(final doInBackgroundOperation cb,final UIThreadOperation uito){
+        final Handler handler = new Handler(Looper.getMainLooper());
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                boolean checkPassed = false;
+                int guardCount = appDatabase.guardDao().guardsCount();
+                int providerCount = appDatabase.providerDao().countProviders();
+                int clientCount = appDatabase.clientDao().clientCount();
+                if (guardCount != 0 && providerCount != 0 && clientCount != 0){
+                    checkPassed = true;
+                }
+                cb.onOperationFinished(checkPassed);
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        uito.onOperationFinished(null);
                     }
                 });
             }

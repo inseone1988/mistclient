@@ -101,6 +101,20 @@
     <string name="provider_title">Buscar proveedor : </string>
     <string name="dsc_save">Guardar</string>
     <string name="percent_display">%1$d \%</string>
+    <string name="ap_name">Nombre del apostamiento :</string>
+    <string name="ap_key">Nombre clave del apostamiento : </string>
+    <string name="ap_type_edit">Tipo de apostamiento</string>
+    <string-array name="apType">
+        <item>Filtro</item>
+        <item>Accesos / Aduanas</item>
+        <item>General</item>
+        <item>Adminstrativo</item>
+        <item>Monitorista</item>
+        <item>Otro</item>
+    </string-array>
+    <string name="ap_site_id">Site</string>
+    <string name="ap_cliente">Cliente</string>
+    <string name="ap_guards_required">Guardias requeridos :</string>
     <string-array name="flag_options">
         <item>Resuelto</item>
         <item>Pendiente</item>

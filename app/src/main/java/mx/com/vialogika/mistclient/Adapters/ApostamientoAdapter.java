@@ -19,6 +19,7 @@ import java.util.List;
 import mx.com.vialogika.mistclient.Apostamiento;
 import mx.com.vialogika.mistclient.R;
 import mx.com.vialogika.mistclient.Utils.DeleteDialog;
+import mx.com.vialogika.mistclient.Utils.EditElementDialog;
 
 public class ApostamientoAdapter extends RecyclerView.Adapter<ApostamientoAdapter.ApViewHolder> {
 
@@ -37,6 +38,7 @@ public class ApostamientoAdapter extends RecyclerView.Adapter<ApostamientoAdapte
             apclient = itemView.findViewById(R.id.ap_client);
             aptype = itemView.findViewById(R.id.ap_type);
             delete = itemView.findViewById(R.id.apdletebtn);
+            edit = itemView.findViewById(R.id.apeditbtn);
         }
 
     }
@@ -54,12 +56,12 @@ public class ApostamientoAdapter extends RecyclerView.Adapter<ApostamientoAdapte
 
     @Override
     public void onBindViewHolder(@NonNull final ApViewHolder apViewHolder, int i) {
-        Resources res = apViewHolder.cv.getContext().getResources();
-        String place = res.getString(R.string.ap_place);
-        String clientString = res.getString(R.string.ap_client);
-        String clientType = res.getString(R.string.ap_type);
-        String ap_clave = res.getString(R.string.ap_key_name);
-        Apostamiento current = daataset.get(i);
+        Resources          res          = apViewHolder.cv.getContext().getResources();
+        final String             place        = res.getString(R.string.ap_place);
+        final String             clientString = res.getString(R.string.ap_client);
+        final String             clientType   = res.getString(R.string.ap_type);
+        final String             ap_clave     = res.getString(R.string.ap_key_name);
+        final Apostamiento current      = daataset.get(i);
         apViewHolder.apalias.setText(String.format(ap_clave,current.getPlantillaPlaceApostamientoAlias()));
         apViewHolder.apname.setText(String.format(place,current.getPlantillaPlaceApostamientoName()));
         apViewHolder.apclient.setText(String.format(clientString,current.getClientName()));
@@ -78,6 +80,23 @@ public class ApostamientoAdapter extends RecyclerView.Adapter<ApostamientoAdapte
 
                     }
                 });
+            }
+        });
+        apViewHolder.edit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+               EditElementDialog dialog = new EditElementDialog(v.getContext(),EditElementDialog.EDIT_APOSTAMIENTO);
+               dialog.setAp(current);
+               dialog.setCb(new EditElementDialog.callbacks() {
+                   @Override
+                   public void onSaved(Apostamiento apostamiento) {
+                       apViewHolder.apalias.setText(String.format(ap_clave,apostamiento.getPlantillaPlaceApostamientoAlias()));
+                       apViewHolder.apname.setText(String.format(place,apostamiento.getPlantillaPlaceApostamientoName()));
+                       apViewHolder.apclient.setText(String.format(clientString,apostamiento.getClientName()));
+                       apViewHolder.aptype.setText(String.format(clientType,apostamiento.getPlantillaPlaceType()));
+                   }
+               });
+               dialog.show();
             }
         });
     }

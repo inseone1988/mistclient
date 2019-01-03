@@ -40,4 +40,7 @@ public interface GuardDao {
      @Query ("SELECT * FROM Guards WHERE guardHash = :hash")
     Guard getGuardByHash(String hash);
 
+     @Query("SELECT COUNT(localId) FROM Guards")
+    int guardsCount();
+
 }

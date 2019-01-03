@@ -27,4 +27,7 @@ public interface ProviderDao {
     @Query("SELECT * FROM Providers WHERE providerId = :id")
     Provider getProviderById(int id);
 
+    @Query("SELECT COUNT(localId) FROM Providers")
+    int countProviders();
+
 }

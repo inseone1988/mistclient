@@ -4,11 +4,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import mx.com.vialogika.mistclient.Room.DatabaseOperations;
 
 
 /**
@@ -22,6 +26,10 @@ import android.widget.TextView;
 public class EdoFragment extends Fragment {
 
     private TextView edoReports,edoConfig;
+
+    private boolean paseed;
+
+    private DatabaseOperations dbo;
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -71,6 +79,7 @@ public class EdoFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_edo, container, false);
         getitems(rootView);
         setlisteners();
+        dbo = new DatabaseOperations(getContext());
         return rootView;
     }
 
@@ -89,7 +98,23 @@ public class EdoFragment extends Fragment {
         edoReports.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                loadGuardReportsActivity();
+                //TODO:
+                dbo.checkDatabase(new DatabaseOperations.doInBackgroundOperation() {
+                    @Override
+                    public void onOperationFinished(@Nullable Object object) {
+                        paseed = (boolean) object;
+                    }
+                }, new DatabaseOperations.UIThreadOperation() {
+                    @Override
+                    public void onOperationFinished(@Nullable Object object) {
+                        if (paseed){
+                            loadGuardReportsActivity();
+                        }else{
+                            Toast.makeText(getContext().getApplicationContext(), "Se deben de dar de alta guardias, proveedores y apostamientos para poder usar esta funcion", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+
             }
         });
     }

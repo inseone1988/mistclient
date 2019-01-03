@@ -1,6 +1,7 @@
 package mx.com.vialogika.mistclient.Utils;
 
 
+import android.arch.persistence.room.Database;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -32,6 +33,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.logging.Handler;
 
+import mx.com.vialogika.mistclient.Apostamiento;
 import mx.com.vialogika.mistclient.Comment;
 import mx.com.vialogika.mistclient.GuardForceState;
 import mx.com.vialogika.mistclient.Room.DatabaseOperations;
@@ -384,6 +386,44 @@ public class NetworkRequest {
 
     public static void displayErrorDialog(Context context,VolleyError error){
         new NetworkErrorDialog(context,error);
+    }
+
+    public static void saveApostamiento(final Context context,Apostamiento apostamiento,final NetworkRequestCallbacks cb){
+        String handler = "raw.php";
+        String url = SERVER_URL_PREFIX + handler;
+        RequestQueue rq = Volley.newRequestQueue(context);
+        final DatabaseOperations dbo = new DatabaseOperations(context);
+        JSONObject params = new JSONObject();
+        try{
+            params.put("function","saveApostamiento");
+            params.put("data",apostamiento.mapData());
+        }catch(JSONException e){
+            e.printStackTrace();
+        }
+        JsonObjectRequest jor = new JsonObjectRequest(Request.Method.POST, url, params, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                try{
+                    if (response.getBoolean("success")){
+                        dbo.saveApostamiento(new Apostamiento(response.getJSONObject("payload")), new DatabaseOperations.doInBackgroundOperation() {
+                            @Override
+                            public void onOperationFinished(@android.support.annotation.Nullable Object object) {
+                                cb.onNetworkRequestResponse(object);
+                            }
+                        });
+                    }
+                }catch(JSONException e){
+                    e.printStackTrace();
+                }
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                displayErrorDialog(context,error);
+            }
+        });
+        rq.add(jor);
     }
 
     public static Bitmap getImageFromURL(String url,boolean save){

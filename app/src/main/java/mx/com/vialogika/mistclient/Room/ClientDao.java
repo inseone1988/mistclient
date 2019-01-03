@@ -26,4 +26,10 @@ public interface ClientDao {
 
     @Query("SELECT * FROM Clients WHERE clientSiteId = :id")
     List<Client> getClientsBySiteId(int id);
+
+    @Query("SELECT COUNT(localId) FROM CLIENTS")
+    int clientCount();
+
+    @Query("SELECT * FROM Clients")
+    List<Client> getAllClientes();
 }

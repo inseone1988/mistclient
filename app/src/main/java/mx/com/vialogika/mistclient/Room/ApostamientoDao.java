@@ -22,11 +22,17 @@ public interface ApostamientoDao {
     @Query("DELETE FROM Apostamientos")
     int emptyApostamientosTable();
 
-    @Query("SELECT plantillaPlaceSiteId,localId,plantillaPlaceId,plantillaPlaceClientId,plantillaPlaceApostamientoName,plantillaPlaceApostamientoAlias,plantillaPlaceType,(SELECT Clients.clientAlias FROM Clients WHERE clientId = Apostamientos.plantillaPlaceClientId) AS clientName,plantillaPlaceGuardsRequired,plantillaPlaceStatus FROM Apostamientos WHERE plantillaPlaceSiteId = :id")
+    @Query("DELETE FROM apostamientos WHERE plantillaPlaceId = :id")
+    int deleteApostamiento(int id);
+
+    @Query("SELECT plantillaPlaceSiteId,localId,plantillaPlaceId,plantillaPlaceClientId,plantillaPlaceApostamientoName,plantillaPlaceApostamientoAlias,plantillaPlaceType,(SELECT Clients.clientAlias FROM Clients WHERE clientId = Apostamientos.plantillaPlaceClientId) AS clientName,plantillaPlaceGuardsRequired,plantillaPlaceStatus FROM Apostamientos WHERE plantillaPlaceSiteId = :id ORDER BY plantillaPlaceApostamientoAlias ASC")
     List<Apostamiento> getApostamientosBySiteId(int id);
 
-    @Query("SELECT *FROM Apostamientos WHERE plantillaPlaceId = :id")
+    @Query("SELECT * FROM Apostamientos WHERE plantillaPlaceId = :id")
     Apostamiento getApostamientobyId(int id);
+
+    @Query("SELECT * FROM Apostamientos WHERE localId = :id")
+    Apostamiento getApostamiento(int id);
 
     @Query("SELECT plantillaPlaceGuardsRequired FROM Apostamientos WHERE plantillaPlaceId = :placeId")
     int guardsRequiredByApostamiento(int placeId);
@@ -34,7 +40,7 @@ public interface ApostamientoDao {
     @Query("SELECT SUM(plantillaPlaceGuardsRequired) FROM Apostamientos WHERE plantillaPlaceSiteId = :siteid")
     int guardsRequired(int siteid);
 
-    @Query("SELECT * FROM Apostamientos")
+    @Query("SELECT * FROM Apostamientos ORDER BY plantillaPlaceApostamientoAlias ASC")
     List<Apostamiento> getAllApostamientos();
 
     @Query("SELECT COUNT(localId) FROM Apostamientos")

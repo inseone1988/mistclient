@@ -4,6 +4,7 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -24,6 +25,7 @@ import java.util.List;
 import mx.com.vialogika.mistclient.Adapters.ApostamientoAdapter;
 import mx.com.vialogika.mistclient.Room.DatabaseOperations;
 import mx.com.vialogika.mistclient.Room.Site;
+import mx.com.vialogika.mistclient.Utils.EditElementDialog;
 
 
 /**
@@ -45,7 +47,9 @@ public class EdoApostamientos extends Fragment {
 
     private RecyclerView recyclerView;
     private RecyclerView.Adapter adapter;
-    RecyclerView.LayoutManager layoutManager;
+    private RecyclerView.LayoutManager layoutManager;
+
+    private FloatingActionButton fab;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -171,20 +175,52 @@ public class EdoApostamientos extends Fragment {
         View  rootview = inflater.inflate(R.layout.fragment_edo_apostamientos, container, false);
         getItems(rootview);
         init();
+        setListeners();
         return rootview;
     }
 
     private void getItems(View rootView){
         recyclerView = rootView.findViewById(R.id.apostrv);
+        fab = rootView.findViewById(R.id.addApostamiento);
         recyclerView.setHasFixedSize(true);
     }
 
     private void init(){
         layoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(layoutManager);
-        adapter = new ApostamientoAdapter(apostamientosList);
+        adapter = new ApostamientoAdapter(apostamientosList){
+            @Override
+            public void apDeleted(int position) {
+                removeitem(position);
+            }
+        };
         recyclerView.setAdapter(adapter);
     }
+
+    private void removeitem(int position){
+        apostamientosList.remove(position);
+        adapter.notifyItemRemoved(position);
+        adapter.notifyItemRangeChanged(position,apostamientosList.size());
+    }
+
+    private void setListeners(){
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                EditElementDialog dialog = new EditElementDialog(getContext(),EditElementDialog.EDIT_APOSTAMIENTO);
+                dialog.setAp(new Apostamiento());
+                dialog.setCb(new EditElementDialog.callbacks() {
+                    @Override
+                    public void onSaved(Apostamiento apostamiento) {
+                        apostamientosList.add(apostamiento);
+                        adapter.notifyDataSetChanged();
+                    }
+                });
+                dialog.show();
+            }
+        });
+    }
+
 
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {

@@ -268,12 +268,18 @@ public class DatabaseOperations {
     }
 
     public void saveApostamiento(final Apostamiento ap,final doInBackgroundOperation cb){
+        final Handler handler = new Handler(Looper.getMainLooper());
         new Thread(new Runnable() {
             @Override
             public void run() {
                 long saved = appDatabase.apostamientoDao().saveApostamiento(ap);
-                Apostamiento apt = appDatabase.apostamientoDao().getApostamientobyId((int)saved);
-                cb.onOperationFinished(apt);
+                final Apostamiento apt = appDatabase.apostamientoDao().getApostamiento((int)saved);
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        cb.onOperationFinished(apt);
+                    }
+                });
             }
         }).start();
     }
@@ -291,6 +297,25 @@ public class DatabaseOperations {
                        uicb.onOperationFinished(bgo);
                     }
                 });
+            }
+        }).start();
+    }
+
+    public void deleteApostamiento(final int apid, final doInBackgroundOperation cb, final UIThreadOperation uiThreadOperation){
+        final Handler handler = new Handler(Looper.getMainLooper());
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                final int affected = appDatabase.apostamientoDao().deleteApostamiento(apid);
+                cb.onOperationFinished(affected);
+                if (affected != 0){
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            uiThreadOperation.onOperationFinished(affected);
+                        }
+                    });
+                }
             }
         }).start();
     }

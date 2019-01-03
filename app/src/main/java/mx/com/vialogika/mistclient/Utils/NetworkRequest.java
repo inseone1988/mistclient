@@ -388,7 +388,7 @@ public class NetworkRequest {
         new NetworkErrorDialog(context,error);
     }
 
-    public static void saveApostamiento(final Context context,Apostamiento apostamiento,final NetworkRequestCallbacks cb){
+    public static void saveApostamiento(final Context context, final Apostamiento apostamiento, final NetworkRequestCallbacks cb){
         String handler = "raw.php";
         String url = SERVER_URL_PREFIX + handler;
         RequestQueue rq = Volley.newRequestQueue(context);
@@ -405,7 +405,8 @@ public class NetworkRequest {
             public void onResponse(JSONObject response) {
                 try{
                     if (response.getBoolean("success")){
-                        dbo.saveApostamiento(new Apostamiento(response.getJSONObject("payload")), new DatabaseOperations.doInBackgroundOperation() {
+
+                        dbo.saveApostamiento(apostamiento.update(response.getJSONObject("payload")), new DatabaseOperations.doInBackgroundOperation() {
                             @Override
                             public void onOperationFinished(@android.support.annotation.Nullable Object object) {
                                 cb.onNetworkRequestResponse(object);
@@ -416,6 +417,48 @@ public class NetworkRequest {
                     e.printStackTrace();
                 }
 
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                displayErrorDialog(context,error);
+            }
+        });
+        rq.add(jor);
+    }
+
+    public static void deleteApostamiento(final Context context,final int apid,final NetworkRequestCallbacks cb){
+        String handler = "raw.php";
+        String url = SERVER_URL_PREFIX +handler;
+        JSONObject params = new JSONObject();
+        final DatabaseOperations dbo = new DatabaseOperations(context);
+        try{
+            params.put("function","deleteapostamiento");
+            params.put("apid",apid);
+        }catch(JSONException e){
+            e.printStackTrace();
+        }
+        RequestQueue rq = Volley.newRequestQueue(context);
+        JsonObjectRequest jor = new JsonObjectRequest(Request.Method.POST, url, params, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                try{
+                    if (response.getBoolean("success")){
+                        dbo.deleteApostamiento(apid, new DatabaseOperations.doInBackgroundOperation() {
+                            @Override
+                            public void onOperationFinished(@android.support.annotation.Nullable Object object) {
+
+                            }
+                        }, new DatabaseOperations.UIThreadOperation() {
+                            @Override
+                            public void onOperationFinished(@android.support.annotation.Nullable Object object) {
+                                cb.onNetworkRequestResponse(object);
+                            }
+                        });
+                    }
+                }catch(JSONException e){
+                    e.printStackTrace();
+                }
             }
         }, new Response.ErrorListener() {
             @Override

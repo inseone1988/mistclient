@@ -13,6 +13,7 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.android.volley.VolleyError;
 
 import java.util.List;
 
@@ -20,6 +21,8 @@ import mx.com.vialogika.mistclient.Apostamiento;
 import mx.com.vialogika.mistclient.R;
 import mx.com.vialogika.mistclient.Utils.DeleteDialog;
 import mx.com.vialogika.mistclient.Utils.EditElementDialog;
+import mx.com.vialogika.mistclient.Utils.NetworkRequest;
+import mx.com.vialogika.mistclient.Utils.NetworkRequestCallbacks;
 
 public class ApostamientoAdapter extends RecyclerView.Adapter<ApostamientoAdapter.ApViewHolder> {
 
@@ -55,7 +58,7 @@ public class ApostamientoAdapter extends RecyclerView.Adapter<ApostamientoAdapte
     }
 
     @Override
-    public void onBindViewHolder(@NonNull final ApViewHolder apViewHolder, int i) {
+    public void onBindViewHolder(@NonNull final ApViewHolder apViewHolder, final int i) {
         Resources          res          = apViewHolder.cv.getContext().getResources();
         final String             place        = res.getString(R.string.ap_place);
         final String             clientString = res.getString(R.string.ap_client);
@@ -68,11 +71,23 @@ public class ApostamientoAdapter extends RecyclerView.Adapter<ApostamientoAdapte
         apViewHolder.aptype.setText(String.format(clientType,current.getPlantillaPlaceType()));
         apViewHolder.delete.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onClick(final View view) {
                 new DeleteDialog(view.getContext(), DeleteDialog.DELETE_APOSTAMIENTO, new MaterialDialog.SingleButtonCallback() {
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        Toast.makeText(dialog.getContext().getApplicationContext(), "AP deleted", Toast.LENGTH_SHORT).show();
+                        NetworkRequest.deleteApostamiento(view.getContext(), current.getPlantillaPlaceId(), new NetworkRequestCallbacks() {
+                            @Override
+                            public void onNetworkRequestResponse(Object response) {
+                                apDeleted(i);
+                                Toast.makeText(view.getContext(), "Apostamiento borrado", Toast.LENGTH_SHORT).show();
+                            }
+
+                            @Override
+                            public void onNetworkRequestError(VolleyError error) {
+
+                            }
+                        });
+
                     }
                 }, new MaterialDialog.SingleButtonCallback() {
                     @Override
@@ -84,12 +99,13 @@ public class ApostamientoAdapter extends RecyclerView.Adapter<ApostamientoAdapte
         });
         apViewHolder.edit.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(final View v) {
                EditElementDialog dialog = new EditElementDialog(v.getContext(),EditElementDialog.EDIT_APOSTAMIENTO);
                dialog.setAp(current);
                dialog.setCb(new EditElementDialog.callbacks() {
                    @Override
                    public void onSaved(Apostamiento apostamiento) {
+                       Toast.makeText(v.getContext().getApplicationContext(), "Apostamiento guardado exitosamente", Toast.LENGTH_SHORT).show();
                        apViewHolder.apalias.setText(String.format(ap_clave,apostamiento.getPlantillaPlaceApostamientoAlias()));
                        apViewHolder.apname.setText(String.format(place,apostamiento.getPlantillaPlaceApostamientoName()));
                        apViewHolder.apclient.setText(String.format(clientString,apostamiento.getClientName()));
@@ -99,6 +115,11 @@ public class ApostamientoAdapter extends RecyclerView.Adapter<ApostamientoAdapte
                dialog.show();
             }
         });
+    }
+
+    public void apDeleted(int position){
+        daataset.remove(position);
+        this.notifyDataSetChanged();
     }
 
     @Override

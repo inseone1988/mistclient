@@ -41,6 +41,22 @@ public class Apostamiento {
         }
     }
 
+    public Apostamiento update(JSONObject apostamiento){
+        try {
+            this.plantillaPlaceId = apostamiento.getInt("plantilla_place_id");
+            this.plantillaPlaceClientId = apostamiento.getString("plantilla_place_client_id");
+            this.plantillaPlaceApostamientoName = apostamiento.getString("plantilla_place_apostamiento_name");
+            this.plantillaPlaceApostamientoAlias = apostamiento.getString("plantilla_place_apostamiento_alias");
+            this.plantillaPlaceType = apostamiento.getString("plantilla_place_type");
+            this.plantillaPlaceSiteId = apostamiento.getInt("plantilla_place_site_id");
+            this.plantillaPlaceGuardsRequired = apostamiento.getInt("plantilla_place_guards_required");
+            this.plantillaPlaceStatus = apostamiento.getInt("plantilla_place_status");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return this;
+    }
+
     public JSONObject mapData() {
         JSONObject data = new JSONObject();
         try {

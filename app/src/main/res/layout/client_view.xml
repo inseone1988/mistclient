@@ -44,7 +44,7 @@
             android:layout_height="match_parent" >
 
             <ImageView
-                android:id="@+id/imageView8"
+                android:id="@+id/client_edit"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.5"

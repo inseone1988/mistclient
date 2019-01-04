@@ -4,6 +4,7 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -23,6 +24,7 @@ import java.util.List;
 import mx.com.vialogika.mistclient.Adapters.ClientAdapter;
 import mx.com.vialogika.mistclient.Room.DatabaseOperations;
 import mx.com.vialogika.mistclient.Room.Site;
+import mx.com.vialogika.mistclient.Utils.EditElementDialog;
 
 
 /**
@@ -42,6 +44,8 @@ public class EdoClients extends Fragment {
     private RecyclerView rv;
     private RecyclerView.Adapter adapter;
     private RecyclerView.LayoutManager layoutManager;
+
+    private FloatingActionButton fab;
 
     private List<Site> sites = new ArrayList<>();
 
@@ -124,12 +128,25 @@ public class EdoClients extends Fragment {
         // Inflate the layout for this fragment
         getItems(rootview);
         init();
+        setListeners();
         return rootview;
     }
 
     private void getItems(View rootview){
         rv = rootview.findViewById(R.id.clients_rv);
         rv.setHasFixedSize(true);
+       fab = rootview.findViewById(R.id.addClientfab);
+    }
+
+    private void setListeners(){
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                EditElementDialog dialog = new EditElementDialog(getContext(),EditElementDialog.EDIT_CLIENT);
+                dialog.setCl(new Client());
+                dialog.show();
+            }
+        });
     }
 
     private void init(){

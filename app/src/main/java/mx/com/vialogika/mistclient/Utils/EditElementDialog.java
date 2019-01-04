@@ -43,7 +43,7 @@ public class EditElementDialog extends MaterialDialog.Builder {
     private List<CharSequence> clientList = new ArrayList<>();
     private callbacks cb;
 
-    private TextView apName, apKey, gRequired;
+    private TextView apName, apKey, gRequired,clientName,clientKey,clientAlias;
     private Spinner apType, apSite, apClient;
 
     private ArrayAdapter<CharSequence> adapter,siteAdapter,clientAdapter;
@@ -82,7 +82,7 @@ public class EditElementDialog extends MaterialDialog.Builder {
     private int getLayout() {
         switch (mode) {
             case EDIT_CLIENT:
-                return 0;
+                return R.layout.client_edit_view;
             case EDIT_APOSTAMIENTO:
                 return R.layout.edit_apostamiento;
         }
@@ -110,7 +110,15 @@ public class EditElementDialog extends MaterialDialog.Builder {
                 apSite.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                     @Override
                     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                        ap.setPlantillaPlaceSiteId(sites.get(position).getSiteId());
+                        switch(mode){
+                            case EDIT_APOSTAMIENTO:
+                                ap.setPlantillaPlaceSiteId(sites.get(position).getSiteId());
+                                break;
+                            case EDIT_CLIENT:
+
+                                break;
+                        }
+
                     }
 
                     @Override
@@ -130,6 +138,19 @@ public class EditElementDialog extends MaterialDialog.Builder {
                     }
                 });
                 break;
+            case EDIT_CLIENT:
+                apSite.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                    @Override
+                    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                        cl.setClientSiteId(sites.get(position).getSiteId());
+                    }
+
+                    @Override
+                    public void onNothingSelected(AdapterView<?> parent) {
+
+                    }
+                });
+                break;
         }
     }
 
@@ -140,44 +161,79 @@ public class EditElementDialog extends MaterialDialog.Builder {
                 ap.setPlantillaPlaceApostamientoAlias(apKey.getText().toString());
                 ap.setPlantillaPlaceGuardsRequired(Integer.valueOf(gRequired.getText().toString()));
                 break;
+            case EDIT_CLIENT:
+                cl.setClientName(clientName.getText().toString());
+                cl.setClientName(clientKey.getText().toString());
+                cl.setClientAlias(clientAlias.getText().toString());
+                break;
         }
 
     }
 
     private void loadData() {
+        switch(mode){
+            case EDIT_APOSTAMIENTO:
+                getApostamientos();
+                getClients();
+                getSites();
+                break;
+            case EDIT_CLIENT:
+                getClients();
+                getSites();
+                break;
+        }
+    }
+
+    private void getSites(){
         final Handler handler = new Handler(Looper.getMainLooper());
-        dbo.getAllApostamientos(new DatabaseOperations.doInBackgroundOperation() {
-            @Override
-            public void onOperationFinished(@Nullable Object object) {
-                apts.addAll((List<Apostamiento>) object);
-
-            }
-        });
-        dbo.getAllClients(new DatabaseOperations.doInBackgroundOperation() {
-            @Override
-            public void onOperationFinished(@Nullable Object object) {
-                cls.addAll((List<Client>) object);
-                handler.post(new Runnable() {
-                    @Override
-                    public void run() {
-
-                    }
-                });
-            }
-        });
         dbo.getAllSites(new DatabaseOperations.doInBackgroundOperation() {
             @Override
             public void onOperationFinished(@Nullable Object object) {
                 sites.addAll((List<Site>) object);
-                handler.post(new Runnable() {
-                    @Override
-                    public void run() {
+                switch(mode){
+                    case EDIT_APOSTAMIENTO:
+                        handler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                populateLists();
+                                updateAdapters(UPDATE_CLIENTS);
+                                updateAdapters(UPDATE_SITES);
+                            }
+                        });
+                        break;
+                    case EDIT_CLIENT:
                         populateLists();
-                        updateAdapters(UPDATE_CLIENTS);
                         updateAdapters(UPDATE_SITES);
-                    }
-                });
+                        break;
+                }
+            }
+        });
+    }
 
+    private void getClients(){
+        final Handler handler = new Handler(Looper.getMainLooper());
+        dbo.getAllClients(new DatabaseOperations.doInBackgroundOperation() {
+            @Override
+            public void onOperationFinished(@Nullable Object object) {
+                cls.addAll((List<Client>) object);
+                switch(mode){
+                    case EDIT_APOSTAMIENTO:
+
+                        break;
+                    case EDIT_CLIENT:
+
+                        break;
+                }
+
+            }
+        });
+    }
+
+    private void getApostamientos(){
+        dbo.getAllApostamientos(new DatabaseOperations.doInBackgroundOperation() {
+            @Override
+            public void onOperationFinished(@Nullable Object object) {
+                apts.addAll((List<Apostamiento>) object);
             }
         });
     }
@@ -186,21 +242,30 @@ public class EditElementDialog extends MaterialDialog.Builder {
         switch(mode){
             case EDIT_APOSTAMIENTO:
                 return true;
+            case EDIT_CLIENT:
+                return true;
+
         }
         return true;
     }
 
     private void getItems() {
+        MaterialDialog dialog = this.build();
+        View rootview = dialog.getCustomView();
         switch (mode) {
             case EDIT_APOSTAMIENTO:
-                MaterialDialog dialog = this.build();
-                View rootview = dialog.getCustomView();
                 apType = rootview.findViewById(R.id.apType);
                 apName = rootview.findViewById(R.id.apname);
                 apKey = rootview.findViewById(R.id.apkey);
                 gRequired = rootview.findViewById(R.id.guardsrequired);
                 apSite = rootview.findViewById(R.id.site_select);
                 apClient = rootview.findViewById(R.id.client_select);
+                break;
+            case EDIT_CLIENT:
+                apSite = rootview.findViewById(R.id.siteSpinner);
+                clientName = rootview.findViewById(R.id.socialinput);
+                clientKey = rootview.findViewById(R.id.clientnameinput);
+                clientAlias = rootview.findViewById(R.id.clientaliasinput);
                 break;
         }
     }
@@ -221,6 +286,12 @@ public class EditElementDialog extends MaterialDialog.Builder {
                 apSite.setSelection(siteAdapter.getPosition(getApNameByID(ap.getPlantillaPlaceSiteId())));
                 apClient.setSelection(clientAdapter.getPosition(ap.getClientName()));
                 break;
+            case EDIT_CLIENT:
+                clientName.setText(cl.getClientSocial());
+                clientKey.setText(cl.getClientName());
+                clientAlias.setText(cl.getClientAlias());
+                apSite.setSelection(siteAdapter.getPosition(getApNameByID(cl.getClientSiteId())));
+                break;
         }
     }
 
@@ -236,8 +307,14 @@ public class EditElementDialog extends MaterialDialog.Builder {
     private void populateLists() {
         switch (mode) {
             case EDIT_APOSTAMIENTO:
+                getClientlists();
                 getApostamientosLists();
+                setvalues();
             break;
+            case EDIT_CLIENT:
+                //TODO:Populate lists
+                getClientlists();
+                break;
         }
     }
 
@@ -261,13 +338,15 @@ public class EditElementDialog extends MaterialDialog.Builder {
     }
 
     private void getApostamientosLists() {
-        for (int i = 0; i < sites.size(); i++) {
-            siteList.add(sites.get(i).getSiteName());
-        }
         for (int i = 0; i < cls.size(); i++) {
             clientList.add(cls.get(i).getClientAlias());
         }
-        setvalues();
+    }
+
+    private void getClientlists(){
+        for (int i = 0; i < sites.size(); i++) {
+            siteList.add(sites.get(i).getSiteName());
+        }
     }
 
     private void setOnGuardar(){
@@ -311,6 +390,11 @@ public class EditElementDialog extends MaterialDialog.Builder {
                 apSite.setAdapter(siteAdapter);
                 apClient.setAdapter(clientAdapter);
                 apType.setAdapter(adapter);
+                break;
+            case EDIT_CLIENT:
+                siteAdapter = new ArrayAdapter<>(getContext(),android.R.layout.simple_spinner_item,siteList);
+                siteAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                apSite.setAdapter(siteAdapter);
                 break;
         }
     }

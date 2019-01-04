@@ -101,9 +101,13 @@
     <string name="provider_title">Buscar proveedor : </string>
     <string name="dsc_save">Guardar</string>
     <string name="percent_display">%1$d \%</string>
-    <string name="ap_name">Nombre del apostamiento :</string>
+    <string name="ap_name">Lugar del apostamiento :</string>
     <string name="ap_key">Nombre clave del apostamiento : </string>
     <string name="ap_type_edit">Tipo de apostamiento</string>
+    <string name="social_reason">Razon Social :</string>
+    <string name="client_name">Nombre / Clave :</string>
+    <string name="client_alias">Abreviacion / Alias :</string>
+    <string name="client_site">Site del cliente</string>
     <string-array name="apType">
         <item>Filtro</item>
         <item>Accesos / Aduanas</item>

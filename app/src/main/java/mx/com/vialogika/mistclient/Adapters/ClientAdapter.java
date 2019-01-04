@@ -20,6 +20,7 @@ import java.util.List;
 import mx.com.vialogika.mistclient.Client;
 import mx.com.vialogika.mistclient.R;
 import mx.com.vialogika.mistclient.Utils.DeleteDialog;
+import mx.com.vialogika.mistclient.Utils.EditElementDialog;
 
 public class ClientAdapter extends RecyclerView.Adapter<ClientAdapter.ClientViewHolder> {
 
@@ -32,7 +33,7 @@ public class ClientAdapter extends RecyclerView.Adapter<ClientAdapter.ClientView
     public static class ClientViewHolder extends RecyclerView.ViewHolder{
         CardView cv;
         TextView clientName,clientAlias,clientSocial;
-        ImageView delete;
+        ImageView delete,clientEdit;
 
         public ClientViewHolder(View itemView){
             super(itemView);
@@ -41,6 +42,7 @@ public class ClientAdapter extends RecyclerView.Adapter<ClientAdapter.ClientView
             clientName = itemView.findViewById(R.id.clientname);
             clientSocial = itemView.findViewById(R.id.clientsocial);
             delete = itemView.findViewById(R.id.deleteclient);
+            clientEdit = itemView.findViewById(R.id.client_edit);
         }
     }
 
@@ -53,10 +55,10 @@ public class ClientAdapter extends RecyclerView.Adapter<ClientAdapter.ClientView
 
     @Override
     public void onBindViewHolder(@NonNull ClientViewHolder clientViewHolder, int i) {
-        Resources res = clientViewHolder.cv.getContext().getResources();
-        Client client = dataset.get(i);
-        String clientName = res.getString(R.string.client_key);
-        String social = res.getString(R.string.client_social);
+        Resources    res        = clientViewHolder.cv.getContext().getResources();
+        final Client client     = dataset.get(i);
+        String       clientName = res.getString(R.string.client_key);
+        String       social     = res.getString(R.string.client_social);
         clientViewHolder.clientName.setText(String.format(clientName,client.getClientName()));
         clientViewHolder.clientSocial.setText(String.format(social,client.getClientSocial()));
         clientViewHolder.delete.setOnClickListener(new View.OnClickListener() {
@@ -73,6 +75,14 @@ public class ClientAdapter extends RecyclerView.Adapter<ClientAdapter.ClientView
 
                     }
                 });
+            }
+        });
+        clientViewHolder.clientEdit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                EditElementDialog dialog = new EditElementDialog(v.getContext(),EditElementDialog.EDIT_CLIENT);
+                dialog.setCl(client);
+                dialog.show();
             }
         });
     }

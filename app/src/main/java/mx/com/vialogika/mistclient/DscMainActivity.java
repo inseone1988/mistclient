@@ -160,7 +160,6 @@ public class DscMainActivity extends AppCompatActivity
 
     @Override
     protected void onResume() {
-        Toast.makeText(this, "OnResume", Toast.LENGTH_SHORT).show();
         super.onResume();
     }
 
@@ -216,9 +215,7 @@ public class DscMainActivity extends AppCompatActivity
 
     private void clearBeforeExit(){
         enableLogin();
-        dbo.resetReportsTable();
-        dbo.resetSitesTable();
-        dbo.close();
+        dbo.deleteAllTables();
         JobManager.instance().cancelAll();
         User.clearUserSP(this);
         finishApp();

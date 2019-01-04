@@ -15,6 +15,7 @@ import java.util.List;
 
 import mx.com.vialogika.mistclient.Guard;
 import mx.com.vialogika.mistclient.R;
+import mx.com.vialogika.mistclient.Utils.GuardDetailsDialog;
 import mx.com.vialogika.mistclient.Utils.Provider;
 
 public class GuardAdapter extends RecyclerView.Adapter<GuardAdapter.GuardViewHolder> {
@@ -53,13 +54,21 @@ public class GuardAdapter extends RecyclerView.Adapter<GuardAdapter.GuardViewHol
 
     @Override
     public void onBindViewHolder(@NonNull GuardViewHolder guardViewHolder, int i) {
-        Context context = guardViewHolder.guardPhoto.getContext();
-        Guard current = dataset.get(i);
+        final Context context = guardViewHolder.guardPhoto.getContext();
+        final Guard   current = dataset.get(i);
         guardViewHolder.guardname.setText(current.getGuardFname());
         guardViewHolder.guardposition.setText(current.getPersonPosition());
         guardViewHolder.active.setText(activeGuardText(current.isActive()));
         guardViewHolder.active.setBackgroundResource(setGuardActiveColor(current.isActive()));
         guardViewHolder.gCreated.setText(String.format(context.getResources().getString(R.string.guard_created),current.getPersonCreated()));
+        guardViewHolder.guardmenu.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                GuardDetailsDialog dialog = new GuardDetailsDialog(context);
+                dialog.setGuard(current);
+                dialog.show();
+            }
+        });
     }
 
     private String activeGuardText(boolean isActive){

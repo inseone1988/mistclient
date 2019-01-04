@@ -34,6 +34,20 @@ public class Client {
         }
     }
 
+    public Client update(JSONObject client){
+        try {
+            this.clientId = client.getInt("client_id");
+            this.clientSocial = client.getString("client_social");
+            this.clientName = client.getString("client_name");
+            this.clientAlias = client.getString("client_alias");
+            this.clientSiteId = client.getInt("client_site_id");
+            this.clientStatus = client.getInt("client_status");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return this;
+    }
+
     public JSONObject mapData() {
         JSONObject client = new JSONObject();
         try {

@@ -5,6 +5,8 @@ import android.arch.persistence.room.Database;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.Handler;
+import android.os.Looper;
 import android.widget.ImageView;
 
 import com.android.volley.NetworkError;
@@ -31,9 +33,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
-import java.util.logging.Handler;
 
 import mx.com.vialogika.mistclient.Apostamiento;
+import mx.com.vialogika.mistclient.Client;
 import mx.com.vialogika.mistclient.Comment;
 import mx.com.vialogika.mistclient.GuardForceState;
 import mx.com.vialogika.mistclient.Room.DatabaseOperations;
@@ -41,6 +43,7 @@ import mx.com.vialogika.mistclient.Room.DatabaseOperations;
 public class NetworkRequest {
 
     public static final String SERVER_URL_PREFIX = "https://www.vialogika.com.mx/dscic/";
+    public static final String SERVER_URL_PHOTO_PREFIX = "https://www.vialogika.com.mx/";
 
     public static void authenticateUser(final Context context , String user, String password,final NetworkRequestCallbacks cb){
         //TODO: Consider server will change later
@@ -103,7 +106,6 @@ public class NetworkRequest {
                 //Make a new class for all network calls
                 //25-12-2018 Added a generic dialog for all volley error
                 cb.onNetworkRequestError(error);
-                displayErrorDialog(context,error);
 
             }
         });
@@ -469,15 +471,119 @@ public class NetworkRequest {
         rq.add(jor);
     }
 
-    public static Bitmap getImageFromURL(String url,boolean save){
-        Bitmap image = null;
-        URL link;
+    public static void saveClient(final Context context,final Client client,final NetworkRequestCallbacks cb){
+        String handler = "raw.php";
+        String url = SERVER_URL_PREFIX + handler;
+        JSONObject params = new JSONObject();
+        final DatabaseOperations dbo = new DatabaseOperations(context);
         try{
-            link = new URL(url);
-            image =  BitmapFactory.decodeStream(link.openConnection().getInputStream());
+            params.put("function","saveClient");
+            params.put("data",client.mapData());
+        }catch(JSONException e){
+            e.printStackTrace();
+        }
+        RequestQueue rq = Volley.newRequestQueue(context);
+        JsonObjectRequest jor = new JsonObjectRequest(Request.Method.POST, url, params, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                try{
+                    if (response.getBoolean("success")){
+                        dbo.saveClient(client.update(response.getJSONObject("payload")), new DatabaseOperations.doInBackgroundOperation() {
+                            @Override
+                            public void onOperationFinished(@android.support.annotation.Nullable Object object) {
+
+                            }
+                        }, new DatabaseOperations.UIThreadOperation() {
+                            @Override
+                            public void onOperationFinished(@android.support.annotation.Nullable Object object) {
+                                cb.onNetworkRequestResponse(object);
+                            }
+                        });
+                    }
+                }catch(JSONException e){
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                displayErrorDialog(context,error);
+            }
+        });
+        rq.add(jor);
+    }
+
+    public static void deleteClient(final Context context, final int cid, final NetworkRequestCallbacks cb){
+        String handler = "raw.php";
+        String url = SERVER_URL_PREFIX + handler;
+        JSONObject params = new JSONObject();
+        final DatabaseOperations dbo = new DatabaseOperations(context);
+        try{
+            //TODO:Add request params
+            params.put("function","deleteClient");
+            params.put("cid",cid);
+        }catch(JSONException e){
+            e.printStackTrace();
+        }
+        RequestQueue rq = Volley.newRequestQueue(context);
+        JsonObjectRequest jor = new JsonObjectRequest(Request.Method.POST, url, params, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                try{
+                    if(response.getBoolean("success")){
+                        dbo.deleteClient(cid, new DatabaseOperations.doInBackgroundOperation() {
+                            @Override
+                            public void onOperationFinished(@android.support.annotation.Nullable Object object) {
+
+                            }
+                        }, new DatabaseOperations.UIThreadOperation() {
+                            @Override
+                            public void onOperationFinished(@android.support.annotation.Nullable Object object) {
+                                cb.onNetworkRequestResponse(object);
+                            }
+                        });
+                    }
+                }catch(JSONException e){
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                displayErrorDialog(context.getApplicationContext(),error);
+            }
+        });
+        rq.add(jor);
+    }
+
+    public static void getImageFromURL(String url,boolean save,final NetworkBitmap cb){
+        Bitmap image = null;
+        final Handler handler = new Handler(Looper.getMainLooper());
+        try{
+            final URL link = new URL(url);
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try{
+                        final Bitmap downloadStream =  BitmapFactory.decodeStream(link.openConnection().getInputStream());
+                        handler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                cb.downloaded(downloadStream);
+                            }
+                        });
+                    }catch(IOException e){
+                        e.printStackTrace();
+                    }
+                }
+            }).start();
+
         }catch(Exception e){
             e.printStackTrace();
         }
-        return image;
+    }
+
+    public interface NetworkBitmap{
+        void downloaded(Bitmap bitmap);
     }
 }

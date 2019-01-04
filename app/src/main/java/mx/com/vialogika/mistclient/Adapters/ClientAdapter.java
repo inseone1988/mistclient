@@ -5,6 +5,7 @@ import android.content.res.Resources;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +15,7 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.android.volley.VolleyError;
 
 import java.util.List;
 
@@ -21,6 +23,8 @@ import mx.com.vialogika.mistclient.Client;
 import mx.com.vialogika.mistclient.R;
 import mx.com.vialogika.mistclient.Utils.DeleteDialog;
 import mx.com.vialogika.mistclient.Utils.EditElementDialog;
+import mx.com.vialogika.mistclient.Utils.NetworkRequest;
+import mx.com.vialogika.mistclient.Utils.NetworkRequestCallbacks;
 
 public class ClientAdapter extends RecyclerView.Adapter<ClientAdapter.ClientViewHolder> {
 
@@ -54,7 +58,7 @@ public class ClientAdapter extends RecyclerView.Adapter<ClientAdapter.ClientView
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ClientViewHolder clientViewHolder, int i) {
+    public void onBindViewHolder(@NonNull final ClientViewHolder clientViewHolder, final int i) {
         Resources    res        = clientViewHolder.cv.getContext().getResources();
         final Client client     = dataset.get(i);
         String       clientName = res.getString(R.string.client_key);
@@ -63,10 +67,23 @@ public class ClientAdapter extends RecyclerView.Adapter<ClientAdapter.ClientView
         clientViewHolder.clientSocial.setText(String.format(social,client.getClientSocial()));
         clientViewHolder.delete.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onClick(final View view) {
                 new DeleteDialog(view.getContext(), DeleteDialog.DELETE_CLIENT, new MaterialDialog.SingleButtonCallback() {
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        NetworkRequest.deleteClient(dialog.getContext().getApplicationContext(), client.getClientId(), new NetworkRequestCallbacks() {
+                            @Override
+                            public void onNetworkRequestResponse(Object response) {
+                                removeClient(i);
+                                Log.d("Room","Deleted client id " + (int) response);
+                                Toast.makeText(view.getContext().getApplicationContext(), "Cliente borrado con exito", Toast.LENGTH_SHORT).show();
+                            }
+
+                            @Override
+                            public void onNetworkRequestError(VolleyError error) {
+
+                            }
+                        });
                         Toast.makeText(dialog.getContext().getApplicationContext(), "Cliente deleted", Toast.LENGTH_SHORT).show();
                     }
                 }, new MaterialDialog.SingleButtonCallback() {
@@ -82,9 +99,21 @@ public class ClientAdapter extends RecyclerView.Adapter<ClientAdapter.ClientView
             public void onClick(View v) {
                 EditElementDialog dialog = new EditElementDialog(v.getContext(),EditElementDialog.EDIT_CLIENT);
                 dialog.setCl(client);
+                dialog.setClcb(new EditElementDialog.clientCallback() {
+                    @Override
+                    public void onSaved(Client rClient) {
+                        clientViewHolder.clientName.setText(rClient.getClientName());
+                        clientViewHolder.clientSocial.setText(rClient.getClientSocial());
+                    }
+                });
                 dialog.show();
             }
         });
+    }
+
+    public void removeClient(int position){
+        dataset.remove(position);
+        this.notifyDataSetChanged();
     }
 
     @Override

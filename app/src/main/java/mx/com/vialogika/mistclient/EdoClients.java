@@ -144,6 +144,13 @@ public class EdoClients extends Fragment {
             public void onClick(View v) {
                 EditElementDialog dialog = new EditElementDialog(getContext(),EditElementDialog.EDIT_CLIENT);
                 dialog.setCl(new Client());
+                dialog.setClcb(new EditElementDialog.clientCallback() {
+                    @Override
+                    public void onSaved(Client client) {
+                        clients.add(client);
+                        adapter.notifyDataSetChanged();
+                    }
+                });
                 dialog.show();
             }
         });
@@ -152,8 +159,19 @@ public class EdoClients extends Fragment {
     private void init(){
         layoutManager = new LinearLayoutManager(getContext());
         rv.setLayoutManager(layoutManager);
-        adapter = new ClientAdapter(clients);
+        adapter = new ClientAdapter(clients){
+            @Override
+            public void removeClient(int position) {
+                removeItem(position);
+            }
+        };
         rv.setAdapter(adapter);
+    }
+
+    private void removeItem(int position){
+        clients.remove(position);
+        adapter.notifyItemRemoved(position);
+        adapter.notifyItemRangeChanged(position,clients.size());
     }
 
     // TODO: Rename method, update argument and hook method into UI event

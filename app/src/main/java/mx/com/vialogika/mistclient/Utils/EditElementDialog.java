@@ -42,6 +42,7 @@ public class EditElementDialog extends MaterialDialog.Builder {
     private List<CharSequence> siteList   = new ArrayList<>();
     private List<CharSequence> clientList = new ArrayList<>();
     private callbacks cb;
+    private clientCallback clcb;
 
     private TextView apName, apKey, gRequired,clientName,clientKey,clientAlias;
     private Spinner apType, apSite, apClient;
@@ -162,7 +163,7 @@ public class EditElementDialog extends MaterialDialog.Builder {
                 ap.setPlantillaPlaceGuardsRequired(Integer.valueOf(gRequired.getText().toString()));
                 break;
             case EDIT_CLIENT:
-                cl.setClientName(clientName.getText().toString());
+                cl.setClientSocial(clientName.getText().toString());
                 cl.setClientName(clientKey.getText().toString());
                 cl.setClientAlias(clientAlias.getText().toString());
                 break;
@@ -202,8 +203,14 @@ public class EditElementDialog extends MaterialDialog.Builder {
                         });
                         break;
                     case EDIT_CLIENT:
-                        populateLists();
-                        updateAdapters(UPDATE_SITES);
+                        handler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                populateLists();
+                                updateAdapters(UPDATE_SITES);
+                            }
+                        });
+
                         break;
                 }
             }
@@ -314,6 +321,7 @@ public class EditElementDialog extends MaterialDialog.Builder {
             case EDIT_CLIENT:
                 //TODO:Populate lists
                 getClientlists();
+                setvalues();
                 break;
         }
     }
@@ -371,6 +379,27 @@ public class EditElementDialog extends MaterialDialog.Builder {
                     }
                 });
                 break;
+            case EDIT_CLIENT:
+                onPositive(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        if (validateInputs()){
+                            getValues();
+                            NetworkRequest.saveClient(getContext(), cl, new NetworkRequestCallbacks() {
+                                @Override
+                                public void onNetworkRequestResponse(Object response) {
+                                    clcb.onSaved((Client) response);
+                                }
+
+                                @Override
+                                public void onNetworkRequestError(VolleyError error) {
+
+                                }
+                            });
+                        }
+                    }
+                });
+                break;
         }
     }
 
@@ -415,7 +444,19 @@ public class EditElementDialog extends MaterialDialog.Builder {
         this.cl = cl;
     }
 
+    public clientCallback getClcb() {
+        return clcb;
+    }
+
+    public void setClcb(clientCallback clcb) {
+        this.clcb = clcb;
+    }
+
     public interface callbacks{
         void onSaved(Apostamiento apostamiento);
+    }
+
+    public interface clientCallback{
+        void onSaved(Client client);
     }
 }

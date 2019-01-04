@@ -762,6 +762,54 @@ public class DatabaseOperations {
         }).start();
     }
 
+    public void saveClient(final Client client,final doInBackgroundOperation dib,final UIThreadOperation uiThreadOperation){
+        final Handler handler = new Handler(Looper.getMainLooper());
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                final long saved = appDatabase.clientDao().saveClient(client);
+                final Client updated = appDatabase.clientDao().getClientById((int)saved);
+                dib.onOperationFinished(saved);
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        uiThreadOperation.onOperationFinished(updated);
+                    }
+                });
+            }
+        }).start();
+    }
+
+    public void deleteAllTables(){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                appDatabase.clearAllTables();
+            }
+        }).start();
+    }
+
+    public void deleteClient(final int id,final doInBackgroundOperation dibo,final UIThreadOperation uito){
+        final Handler handler = new Handler(Looper.getMainLooper());
+        new Thread(new Runnable(){
+            @Override
+            public void run(){
+                //TODO: Make background operations
+                final int deleted = appDatabase.clientDao().deleteClient(id);
+                //TODO: Execute background callback - Add object response
+                dibo.onOperationFinished(deleted);
+                handler.post(new Runnable(){
+                    @Override
+                    public void run(){
+                        //TODO:Execute main UIThread callback
+                        uito.onOperationFinished(deleted);
+                    }
+                });
+
+            }
+        }).start();
+    }
+
 
     public void getSiteGuardsRequired(final int siteid, final doInBackgroundOperation cb, final UIThreadOperation uito){
         final Handler handler = new Handler(Looper.getMainLooper());

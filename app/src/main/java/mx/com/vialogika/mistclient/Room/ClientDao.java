@@ -32,4 +32,10 @@ public interface ClientDao {
 
     @Query("SELECT * FROM Clients")
     List<Client> getAllClientes();
+
+    @Query("SELECT * FROM Clients WHERE localId = :id")
+    Client getClientById(int id);
+
+    @Query("DELETE FROM Clients WHERE clientId = :id")
+    int deleteClient(int id);
 }

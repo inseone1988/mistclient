@@ -5,7 +5,7 @@
     <string name="password_prompt">Contraseña</string>
     <string name="open_sesion_checkbox">Recordar credenciales</string>
     <string name="log_in_prompt">Ingresar</string>
-    <string name="dsc_copy">©DSC 2018 </string>
+    <string name="dsc_copy">©DSC 2019 </string>
     <string name="sesion_opened_advice_title">Session advice</string>
     <string name="sesion_opened_advice">Session wil stay open until you manually close it.</string>
     <string name="dsc_text_ok">Ok</string>
@@ -108,6 +108,9 @@
     <string name="client_name">Nombre / Clave :</string>
     <string name="client_alias">Abreviacion / Alias :</string>
     <string name="client_site">Site del cliente</string>
+    <string name="element_name">Nombre del elemento : %1$s</string>
+    <string name="element_created">Fecha de alta : %1$s</string>
+    <string name="element_position">Posicion del elemento : %1$s</string>
     <string-array name="apType">
         <item>Filtro</item>
         <item>Accesos / Aduanas</item>

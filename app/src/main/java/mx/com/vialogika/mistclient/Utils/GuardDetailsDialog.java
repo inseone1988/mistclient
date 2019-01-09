@@ -58,7 +58,7 @@ public class GuardDetailsDialog extends MaterialDialog.Builder {
 
     private void setValues(){
         Resources res = getContext().getResources();
-        guardName.setText(String.format(res.getString(R.string.element_name),guard.getGuardFullname()));
+        guardName.setText(guard.getGuardFullname());
         guardAlta.setText(String.format(res.getString(R.string.element_created),guard.getPersonCreated()));
         guardPosition.setText(String.format(res.getString(R.string.element_position),guard.getPersonPosition()));
     }

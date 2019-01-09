@@ -1,5 +1,7 @@
 package mx.com.vialogika.mistclient.Adapters;
 
+import android.content.Context;
+import android.content.res.Resources;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -46,9 +48,14 @@ public class EdoGuardAdapter extends RecyclerView.Adapter<EdoGuardAdapter.EdoGua
 
     @Override
     public void onBindViewHolder(@NonNull EdoGuardViewHolder edoGuardViewHolder, int i) {
+        Context context = edoGuardViewHolder.elementName.getContext();
+        Resources res = context.getResources();
         GuardForceState item = dataset.get(i);
+        String obs  = item.getProviderIncidencesType().equals("null") ? "Sin incidencias" : String.format(res.getString(R.string.obs_guard),item.getProviderIncidencesType());
         edoGuardViewHolder.elementName.setText(item.getGuardName());
         edoGuardViewHolder.apostamiento.setText(item.getApName());
+        edoGuardViewHolder.tiempo.setText(item.reportHour());
+        edoGuardViewHolder.obs.setText(obs);
     }
 
     @Override

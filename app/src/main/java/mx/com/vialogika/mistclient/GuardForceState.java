@@ -7,6 +7,12 @@ import android.arch.persistence.room.PrimaryKey;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+
 @Entity(tableName = "GuardsForceState")
 public class GuardForceState {
 
@@ -278,5 +284,16 @@ public class GuardForceState {
 
     public int getProviderId(){
         return Integer.valueOf(this.edoFuerzaProviderId);
+    }
+
+    public String reportHour(){
+        try{
+            DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            Date  hour = format.parse(this.edoFuerzaReported);
+            return new SimpleDateFormat("HH:mm:ss").format(hour);
+        }catch(ParseException e){
+            e.printStackTrace();
+        }
+        return "";
     }
 }

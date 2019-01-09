@@ -85,7 +85,7 @@
     <string name="radio_button_text_ro">Ver</string>
     <string name="edo_reports">Reporte estado de fuerza</string>
     <string name="edo_reports_settings">Administracion</string>
-    <string name="site_name">Site name</string>
+    <string name="site_name">Seguridad patrimonial</string>
     <string name="refresh">Refresh</string>
     <string name="guard_created">Alta : %1$s</string>
     <string name="ap_created">Fecha de creacion : %1$s</string>
@@ -111,6 +111,7 @@
     <string name="element_name">Nombre del elemento : %1$s</string>
     <string name="element_created">Fecha de alta : %1$s</string>
     <string name="element_position">Posicion del elemento : %1$s</string>
+    <string name="obs_guard">Incidencia / Observaciones : %1$s</string>
     <string-array name="apType">
         <item>Filtro</item>
         <item>Accesos / Aduanas</item>

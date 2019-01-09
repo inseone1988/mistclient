@@ -233,7 +233,6 @@ public class DatabaseOperations {
                 });
             }
         });
-        close();
         return fetched;
     }
 

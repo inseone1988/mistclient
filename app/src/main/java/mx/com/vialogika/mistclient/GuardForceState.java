@@ -289,7 +289,7 @@ public class GuardForceState {
     public String reportHour(){
         try{
             DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            Date  hour = format.parse(this.edoFuerzaReported);
+            Date  hour = format.parse(this.edoFuerzaDate);
             return new SimpleDateFormat("HH:mm:ss").format(hour);
         }catch(ParseException e){
             e.printStackTrace();

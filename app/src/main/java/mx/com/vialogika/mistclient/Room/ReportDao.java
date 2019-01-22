@@ -21,7 +21,7 @@ public interface ReportDao {
     @Query("SELECT remReportId FROM Reports ORDER BY remReportId DESC LIMIT 1")
     int  fetchLastReportID ();
 
-    @Query("SELECT * FROM Reports WHERE reportStatus != 'Archived'")
+    @Query("SELECT * FROM Reports WHERE reportStatus != 'Archived' ORDER BY reportTimeStamp DESC")
     List<Reporte> getAllReports();
 
     @Query("DELETE FROM Reports")

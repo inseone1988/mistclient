@@ -13,6 +13,7 @@ public class RegisterNotificationChannels {
     private Context ctx ;
     final static public String REPORTES_CHANNEL_ID = "REPORTES";
     final static public String EDO_FUERZA_CHANNEL_ID = "EDO";
+    final static public String DOWNLOAD_CHANNEL_ID = "DESCARGAS";
 
     public RegisterNotificationChannels(Context context){
         this.ctx = context;
@@ -22,6 +23,7 @@ public class RegisterNotificationChannels {
     private void createNotificationChannels(){
         createReportNotificationChannel();
         createEdoNotificationChannel();
+        createDownloadNotificationChannel();
     }
 
     private void createReportNotificationChannel(){
@@ -30,6 +32,18 @@ public class RegisterNotificationChannels {
             String description = ctx.getString(R.string.channel_name_report_description_low);
             int importance = NotificationManager.IMPORTANCE_DEFAULT;
             NotificationChannel channel = new NotificationChannel(REPORTES_CHANNEL_ID,name,importance);
+            channel.setDescription(description);
+            NotificationManager notificationManager = ctx.getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+        }
+    }
+
+    private void createDownloadNotificationChannel(){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+            CharSequence name = ctx.getString(R.string.channel_name_download);
+            String description = ctx.getString(R.string.channel_name_download_description);
+            int importance = NotificationManager.IMPORTANCE_LOW;
+            NotificationChannel channel = new NotificationChannel(DOWNLOAD_CHANNEL_ID,name,importance);
             channel.setDescription(description);
             NotificationManager notificationManager = ctx.getSystemService(NotificationManager.class);
             notificationManager.createNotificationChannel(channel);

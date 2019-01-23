@@ -2,6 +2,7 @@ package mx.com.vialogika.mistclient.Adapters;
 
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.graphics.BitmapFactory;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -56,6 +57,11 @@ public class GuardAdapter extends RecyclerView.Adapter<GuardAdapter.GuardViewHol
     public void onBindViewHolder(@NonNull GuardViewHolder guardViewHolder, int i) {
         final Context context = guardViewHolder.guardPhoto.getContext();
         final Guard   current = dataset.get(i);
+        if (current.getLocalPhotoPath() != null){
+            if (!current.getLocalPhotoPath().equals("")){
+                guardViewHolder.guardPhoto.setImageBitmap(BitmapFactory.decodeFile(current.getLocalPhotoPath()));
+            }
+        }
         guardViewHolder.guardname.setText(current.getGuardFname());
         guardViewHolder.guardposition.setText(current.getPersonPosition());
         guardViewHolder.active.setText(activeGuardText(current.isActive()));

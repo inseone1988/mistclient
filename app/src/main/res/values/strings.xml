@@ -63,6 +63,8 @@
     <string name="channel_name_report_description_low">Reportes con prioridad baja</string>
     <string name="report_notif_title">%1$s Nuevos reportes</string>
     <string name="channel_name_edo_description_low">Estado de fuerza</string>
+    <string name="channel_name_download">Descargas en segundo plano</string>
+    <string name="channel_name_download_description">Descarga de imagenes, archivos etc</string>
     <string name="channel_name_report_description_medium">Reportes con prioridad media</string>
     <string name="channel_name_report_description_high">Reportes con prioridad alta</string>
     <string name="filter_action_title">Filtrar reportes</string>

@@ -43,4 +43,7 @@ public interface GuardDao {
      @Query("SELECT COUNT(localId) FROM Guards")
     int guardsCount();
 
+     @Query("SELECT localPhotoPath FROM guards WHERE guardId = :id")
+    String getGuardProfilePhotoPath(int id);
+
 }

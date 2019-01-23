@@ -2,7 +2,9 @@ package mx.com.vialogika.mistclient.Adapters;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.BitmapFactory;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -15,6 +17,7 @@ import java.util.List;
 
 import mx.com.vialogika.mistclient.GuardForceState;
 import mx.com.vialogika.mistclient.R;
+import mx.com.vialogika.mistclient.Room.DatabaseOperations;
 
 public class EdoGuardAdapter extends RecyclerView.Adapter<EdoGuardAdapter.EdoGuardViewHolder> {
 
@@ -28,6 +31,7 @@ public class EdoGuardAdapter extends RecyclerView.Adapter<EdoGuardAdapter.EdoGua
         public EdoGuardViewHolder(View itemView) {
             super(itemView);
             cv = itemView.findViewById(R.id.guardedoview);
+            guardPhoto = itemView.findViewById(R.id.guardProfilePhoto);
             elementName = itemView.findViewById(R.id.elementname);
             apostamiento = itemView.findViewById(R.id.elementapostamiento);
             tiempo = itemView.findViewById(R.id.elementtiempo);
@@ -51,6 +55,13 @@ public class EdoGuardAdapter extends RecyclerView.Adapter<EdoGuardAdapter.EdoGua
         Context context = edoGuardViewHolder.elementName.getContext();
         Resources res = context.getResources();
         GuardForceState item = dataset.get(i);
+        if (item.getGuardPhotoPath() != null){
+            if (!item.getGuardPhotoPath().equals("null")){
+                if(!item.getGuardPhotoPath().equals("")){
+                    edoGuardViewHolder.guardPhoto.setImageBitmap(BitmapFactory.decodeFile(item.getGuardPhotoPath()));
+                }
+            }
+        }
         String obs  = item.getProviderIncidencesType().equals("null") ? "Sin incidencias" : String.format(res.getString(R.string.obs_guard),item.getProviderIncidencesType());
         edoGuardViewHolder.elementName.setText(item.getGuardName());
         edoGuardViewHolder.apostamiento.setText(item.getApName());

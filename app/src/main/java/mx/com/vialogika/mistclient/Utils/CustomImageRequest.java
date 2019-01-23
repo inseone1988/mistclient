@@ -18,7 +18,7 @@ public class CustomImageRequest extends ImageRequest {
     public CustomImageRequest(String url,String photoPath, Response.Listener<Bitmap> listener, int maxWidth, int maxHeight, ImageView.ScaleType scaleType, Bitmap.Config decodeConfig, @Nullable Response.ErrorListener errorListener) {
         super(url, listener, maxWidth, maxHeight, scaleType, decodeConfig, errorListener);
         mParams = new HashMap<String,String>();
-        mParams.put("function","profileimage");
+        mParams.put("function","profileImage");
         mParams.put("path",photoPath);
     }
 

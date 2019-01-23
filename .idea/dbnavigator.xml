@@ -24,8 +24,11 @@
     <autoscroll-from-editor value="true" />
     <show-object-properties value="true" />
     <loaded-nodes>
+      <connection connection-id="6b7d6789-6cc3-4f8f-93c8-695c73c4f026">
+        <schema name="vialogik_dscic" object-types="constraint, index, view, function, table, column, dataset trigger, procedure" />
+      </connection>
       <connection connection-id="08c0b568-769d-463c-8f16-d70b6d59f331">
-        <schema name="main" object-types="table, view, constraint, index, column, dataset trigger" />
+        <schema name="main" object-types="constraint, index, dataset trigger, table, view, column" />
       </connection>
     </loaded-nodes>
   </component>
@@ -36,6 +39,9 @@
     <connection id="08c0b568-769d-463c-8f16-d70b6d59f331">
       <console name="Connection" type="STANDARD" schema="" session="Main" />
     </connection>
+  </component>
+  <component name="DBNavigator.Project.DatabaseFileManager">
+    <open-files />
   </component>
   <component name="DBNavigator.Project.DatabaseSessionManager">
     <connection id="6b7d6789-6cc3-4f8f-93c8-695c73c4f026" />
@@ -54,6 +60,14 @@
     <filter-list connection-id="08c0b568-769d-463c-8f16-d70b6d59f331" dataset="main.Apostamientos" active-filter-id="EMPTY_FILTER" />
     <filter-list connection-id="08c0b568-769d-463c-8f16-d70b6d59f331" dataset="main.Guards" active-filter-id="EMPTY_FILTER" />
     <filter-list connection-id="08c0b568-769d-463c-8f16-d70b6d59f331" dataset="main.Clients" active-filter-id="EMPTY_FILTER" />
+    <filter-list connection-id="6b7d6789-6cc3-4f8f-93c8-695c73c4f026" dataset="vialogik_dscic.edo_fuerza" active-filter-id="8a24991e-4ca6-4df5-aca5-fa0a6fc0d5c4">
+      <filter id="fb959669-9e4e-4c0d-af62-7ad389aff949" name="1" temporary="false" custom-name="false" type="basic" join-type="AND">
+        <condition column="edo_fuerza_site_id" operator="=" value="1" active="true" />
+      </filter>
+      <filter id="8a24991e-4ca6-4df5-aca5-fa0a6fc0d5c4" name="15" temporary="false" custom-name="false" type="basic" join-type="AND">
+        <condition column="edo_fuerza_site_id" operator="=" value="15" active="true" />
+      </filter>
+    </filter-list>
   </component>
   <component name="DBNavigator.Project.EditorStateManager">
     <last-used-providers>
@@ -179,7 +193,7 @@
           <port value="" />
           <database value="" />
           <files>
-            <file path="C:\Users\Javier Ramirez\Documents\AndroidStudio\DeviceExplorer\motorola-moto_e5-192.168.2.3_5555\data\data\mx.com.vialogika.mistclient\databases\Database" schema="main" />
+            <file path="C:\Users\Javier Ramirez\Documents\AndroidStudio\DeviceExplorer\motorola-moto_e5-192.168.2.2_5555\data\data\mx.com.vialogika.mistclient\databases\Database" schema="main" />
           </files>
           <os-authentication value="false" />
           <empty-password value="false" />

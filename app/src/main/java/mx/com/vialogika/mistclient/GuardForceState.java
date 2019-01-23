@@ -39,6 +39,8 @@ public class GuardForceState {
     private String providerIncidencesRequestedby;
     private String providerIncidencesObs;
     @Ignore
+    private String guardPhotoPath = "";
+    @Ignore
     private String guardName;
     @Ignore
     private String apName;
@@ -295,5 +297,13 @@ public class GuardForceState {
             e.printStackTrace();
         }
         return "";
+    }
+
+    public String getGuardPhotoPath() {
+        return guardPhotoPath;
+    }
+
+    public void setGuardPhotoPath(String guardPhotoPath) {
+        this.guardPhotoPath = guardPhotoPath;
     }
 }

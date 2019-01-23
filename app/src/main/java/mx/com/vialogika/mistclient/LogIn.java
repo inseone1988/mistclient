@@ -99,8 +99,12 @@ public class LogIn extends AppCompatActivity {
                                 clearFields();
                                 setKeepSessionOpened(shouldSkipLogin);
                                 User.setUserIsLoggedIn(mcontext,true);
-                                loadAppData();
-                                startMainActivity();
+                                loadAppData(new Callback() {
+                                    @Override
+                                    public void onDataLoaded() {
+                                        startMainActivity();
+                                    }
+                                });
                             }
 
                             @Override
@@ -117,7 +121,7 @@ public class LogIn extends AppCompatActivity {
         });
     }
 
-    private void loadAppData(){
+    private void loadAppData(final Callback cb){
         UserSettings us = new UserSettings(this);
         NetworkRequest.getSiteEdoInfo(this, null, null, us.getManagesSites(), new NetworkRequestCallbacks() {
             @Override
@@ -125,7 +129,7 @@ public class LogIn extends AppCompatActivity {
                 try{
                     JSONObject resp = new JSONObject(response.toString());
                     if (resp.getBoolean("success")){
-
+                        cb.onDataLoaded();
                     }
                 }catch(JSONException e){
                     e.printStackTrace();
@@ -206,5 +210,9 @@ public class LogIn extends AppCompatActivity {
                 }
                 break;
         }
+    }
+
+    public interface Callback{
+        void onDataLoaded();
     }
 }

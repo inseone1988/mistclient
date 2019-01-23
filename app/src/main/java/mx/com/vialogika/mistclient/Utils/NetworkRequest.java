@@ -1,15 +1,20 @@
 package mx.com.vialogika.mistclient.Utils;
 
 
+import android.app.DownloadManager;
 import android.arch.persistence.room.Database;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
+import android.support.annotation.NonNull;
 import android.widget.ImageView;
 
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.android.volley.NetworkError;
 import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
@@ -271,10 +276,23 @@ public class NetworkRequest {
             RequestQueue rq = Volley.newRequestQueue(context);
             JsonObjectRequest jor = new JsonObjectRequest(Request.Method.POST, url, params, new Response.Listener<JSONObject>() {
                 @Override
-                public void onResponse(JSONObject response) {
-                    DatabaseOperations dbo = new DatabaseOperations(context);
-                    dbo.syncEdoData(response);
-                    cb.onNetworkRequestResponse(response);
+                public void onResponse(final JSONObject response) {
+                    final DatabaseOperations dbo = new DatabaseOperations(context);
+                    new DownloadProfileImagesDialog(context, new MaterialDialog.SingleButtonCallback() {
+                        @Override
+                        public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                            switch (which){
+                                case POSITIVE:
+                                    dbo.syncEdoData(response,true);
+                                    cb.onNetworkRequestResponse(response);
+                                    break;
+                                case NEGATIVE:
+                                    dbo.syncEdoData(response,false);
+                                    cb.onNetworkRequestResponse(response);
+                                    break;
+                            }
+                        }
+                    });
                 }
             }, new Response.ErrorListener() {
                 @Override
@@ -561,34 +579,38 @@ public class NetworkRequest {
         rq.add(jor);
     }
 
-    public static void getProfileImage(final Context context,String photoPath,final NetworkRequestCallbacks cb){
-        String handler = "raw.php";
+    public static ImageRequest getProfileImage(final Context context,String photoPath,final NetworkRequestCallbacks cb){
+        String handler = "requesthandler.php";
         String url = SERVER_URL_PREFIX + handler;
+        int count = 0;
         CustomImageRequest rq = new CustomImageRequest(url, photoPath, new Response.Listener<Bitmap>() {
             @Override
             public void onResponse(Bitmap response) {
-                saveImage(response);
-                cb.onNetworkRequestResponse(response);
+                if (response !=null && !response.equals("")){
+                    String path = saveImage(context,response);
+                    cb.onNetworkRequestResponse(path);
+                }
             }
         }, 0, 0, ImageView.ScaleType.FIT_CENTER, Bitmap.Config.ARGB_8888, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                cb.onNetworkRequestResponse(error);
-                new NetworkErrorDialog(context.getApplicationContext(),error);
+                cb.onNetworkRequestError(error);
+                error.printStackTrace();
             }
         });
+        return rq;
     }
 
-    public static void saveImage(Bitmap mImage){
+    public static String saveImage(Context context,Bitmap mImage){
         String root = Environment.getExternalStorageDirectory().toString();
-        File mFile = new File(root + "/profileImages");
+        File mFile = new File(root + "/Android/data/"+context.getPackageName()+ "/profileImages");
         if (!mFile.exists()){
             mFile.mkdirs();
         }
         Random generator = new Random();
         int    n         = 10000;
         n = generator.nextInt(n);
-        String fname = "Image-"+ n +".jpg";
+        String fname = "DSCProfile-"+ n +".jpg";
         File file = new File (mFile, fname);
         if (file.exists ())
             file.delete ();
@@ -601,6 +623,7 @@ public class NetworkRequest {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        return file.getAbsolutePath();
     }
 
     public static void getImageFromURL(String url,boolean save,final NetworkBitmap cb){

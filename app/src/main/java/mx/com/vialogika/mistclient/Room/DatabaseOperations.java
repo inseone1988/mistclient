@@ -5,9 +5,14 @@ import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.Nullable;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.NotificationManagerCompat;
 import android.util.Log;
 
+import com.android.volley.RequestQueue;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.ImageRequest;
+import com.android.volley.toolbox.Volley;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -21,6 +26,7 @@ import mx.com.vialogika.mistclient.Client;
 import mx.com.vialogika.mistclient.Comment;
 import mx.com.vialogika.mistclient.Guard;
 import mx.com.vialogika.mistclient.GuardForceState;
+import mx.com.vialogika.mistclient.Notif.AppNotifications;
 import mx.com.vialogika.mistclient.Reporte;
 import mx.com.vialogika.mistclient.User;
 import mx.com.vialogika.mistclient.Utils.APDetailsDataHolder;
@@ -469,29 +475,63 @@ public class DatabaseOperations {
         }).start();
     }
 
-    public void syncEdoData(JSONObject response){
+    public void syncEdoData(JSONObject response,boolean downloadProfilePhotos){
             List<Guard> guards = new ArrayList<>();
             List<Client> clients = new ArrayList<>();
             List<Apostamiento> apostamientos = new ArrayList<>();
             try{
-                JSONArray g = response.getJSONArray("guards");
+                final JSONArray g = response.getJSONArray("guards");
                 JSONArray c = response.getJSONArray("clients");
                 JSONArray p = response.getJSONArray("places");
+                RequestQueue rq = Volley.newRequestQueue(ctx);
+                final int NOTIF_ID = 1234;
+                final NotificationManagerCompat nManager = NotificationManagerCompat.from(ctx.getApplicationContext());
+                AppNotifications notif = new AppNotifications(ctx.getApplicationContext());
+                notif.setPROGRESS_MAX(g.length());
+                final NotificationCompat.Builder dNotif = notif.downloadNotification();
                 for (int i = 0;i < g.length();i++){
-                    guards.add(new Guard(g.getJSONObject(i)));
+                    final Guard guard = new Guard(g.getJSONObject(i));
+                    final int counter = i + 1;
+                    if (downloadProfilePhotos){
+                        nManager.notify(NOTIF_ID, dNotif.build());
+                        if (guard.hasProfilePhoto()){
+                            ImageRequest ir = NetworkRequest.getProfileImage(ctx, guard.getPersonProfilePhotoPath(), new NetworkRequestCallbacks() {
+                                @Override
+                                public void onNetworkRequestResponse(Object response) {
+                                    guard.setLocalPhotoPath((String) response);
+                                    saveGuard(guard);
+                                    dNotif.setProgress(g.length(),counter,false);
+                                    nManager.notify(NOTIF_ID,dNotif.build());
+                                }
+                                @Override
+                                public void onNetworkRequestError(VolleyError error) {
+
+                                }
+                            });
+                            rq.add(ir);
+                        }else{
+                         saveGuard(guard);
+                        }
+                    }else{
+                        saveGuard(guard);
+                    }
                 }
+                //syncGuards(guards);
                 for (int i = 0; i < c.length();i++){
                     clients.add(new Client(c.getJSONObject(i)));
                 }
                 for (int i = 0; i < p.length();i++){
                     apostamientos.add(new Apostamiento(p.getJSONObject(i)));
                 }
-                syncGuards(guards);
                 syncClients(clients);
                 syncApostamientos(apostamientos);
             }catch(JSONException e){
                 e.printStackTrace();
             }
+    }
+
+    public static int counter(int position){
+        return position +1;
     }
 
     public void syncGuards(final List<Guard> guards){
@@ -661,6 +701,7 @@ public class DatabaseOperations {
                         Guard guardinfo = appDatabase.guardDao().getGuardByHash(item.getEdoFuerzaGuardId());
                         Apostamiento apostamiento = appDatabase.apostamientoDao().getApostamientobyId(Integer.valueOf(item.getEdoFuerzaPlaceId()));
                         item.setGuardName(guardinfo.getGuardFullname());
+                        item.setGuardPhotoPath(guardinfo.getLocalPhotoPath());
                         item.setApName(apostamiento.getPlantillaPlaceApostamientoAlias());
                     }
                 }
@@ -676,6 +717,22 @@ public class DatabaseOperations {
         }).start();
     }
 
+    public void getGuardProfilePhotoPath(final int guardId, final doInBackgroundOperation dbo, final UIThreadOperation uiThreadOperation){
+        final Handler handler = new Handler(Looper.getMainLooper());
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                final String path = appDatabase.guardDao().getGuardProfilePhotoPath(guardId);
+                dbo.onOperationFinished(path);
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        uiThreadOperation.onOperationFinished(path);
+                    }
+                });
+            }
+        }).start();
+    }
     public void checkDatabase(final doInBackgroundOperation cb,final UIThreadOperation uito){
         final Handler handler = new Handler(Looper.getMainLooper());
         new Thread(new Runnable() {

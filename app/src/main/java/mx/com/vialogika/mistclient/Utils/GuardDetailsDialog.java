@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.support.annotation.NonNull;
 import android.view.View;
 import android.widget.ImageView;
@@ -64,16 +65,11 @@ public class GuardDetailsDialog extends MaterialDialog.Builder {
     }
 
     private void getGuardPhoto(){
-        String url = NetworkRequest.SERVER_URL_PHOTO_PREFIX + guard.getGuardPhotoPath();
-        NetworkRequest.getImageFromURL(url, false, new NetworkRequest.NetworkBitmap() {
-            @Override
-            public void downloaded(Bitmap guardImage) {
-                if (guardImage != null){
-                    guardphoto.setImageBitmap(guardImage);
-                }
-            }
-        });
-
+       if (!guard.getLocalPhotoPath().equals("null")){
+           if (!guard.getLocalPhotoPath().equals("")){
+               guardphoto.setImageBitmap(BitmapFactory.decodeFile(guard.getLocalPhotoPath()));
+           }
+       }
     }
 
     public Guard getGuard() {

@@ -7,8 +7,11 @@ import com.afollestad.materialdialogs.MaterialDialog;
 
 public class DownloadProfileImagesDialog extends MaterialDialog.Builder {
 
-    public DownloadProfileImagesDialog(@NonNull Context context) {
+    private MaterialDialog.SingleButtonCallback mCalbback;
+
+    public DownloadProfileImagesDialog(@NonNull Context context, MaterialDialog.SingleButtonCallback cb) {
         super(context);
+        this.mCalbback = cb;
         init();
     }
 
@@ -16,7 +19,8 @@ public class DownloadProfileImagesDialog extends MaterialDialog.Builder {
         this.title = "Descargar Imagenes";
         this.content = "¿Descargar imagenes de perfil de guardias?";
         this.positiveText = "OK";
+        this.negativeText("Cancelar");
+        this.onAny(mCalbback);
+        show();
     }
-
-
 }

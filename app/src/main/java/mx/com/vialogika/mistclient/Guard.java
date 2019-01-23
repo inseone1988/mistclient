@@ -11,24 +11,25 @@ import org.json.JSONObject;
 @Entity(tableName = "Guards")
 public class Guard {
     @PrimaryKey(autoGenerate = true)
-    private int localId;
-    private int idpersons;
+    private int    localId;
+    private int    idpersons;
     private String personCreated;
-    private int personProviderid;
+    private int    personProviderid;
     private String personType;
     private String personPosition;
     private String personName;
     private String personFname;
     private String personLname;
     private String personProfilePhotoPath;
-    private int guardId;
-    private int guardProviderId;
-    private int guardPersonId;
+    private int    guardId;
+    private int    guardProviderId;
+    private int    guardPersonId;
     private String guardSite;
     private String guardRange;
     private String guardHash;
     private String guardPhotoPath;
-    private int guardStatus;
+    private String localPhotoPath;
+    private int    guardStatus;
     private String guardBajaTimestamp;
     @Ignore
     private String guardFullname;
@@ -61,7 +62,7 @@ public class Guard {
         }
     }
 
-    public void upadteGuard(Guard guard){
+    public void upadteGuard(Guard guard) {
         this.idpersons = guard.getIdpersons();
         this.personCreated = getPersonCreated();
         this.personProviderid = guard.getPersonProviderid();
@@ -261,11 +262,11 @@ public class Guard {
         this.guardBajaTimestamp = guardBajaTimestamp;
     }
 
-    public String getGuardFname(){
+    public String getGuardFname() {
         return personName + " " + personFname + " " + personLname;
     }
 
-    public boolean isActive(){
+    public boolean isActive() {
         return guardStatus == 1;
     }
 
@@ -273,11 +274,23 @@ public class Guard {
         return this.personName + " " + personFname + " " + personLname;
     }
 
-    public boolean hasProfilePhoto(){
-        return !this.personProfilePhotoPath.equals("");
+    public boolean hasProfilePhoto() {
+        return !this.guardPhotoPath.equals("null");
+    }
+
+    public boolean hasLocalProfilePhoto() {
+        return !this.localPhotoPath.equals("");
     }
 
     public void setGuardFullname(String guardFullname) {
         this.guardFullname = guardFullname;
+    }
+
+    public String getLocalPhotoPath() {
+        return localPhotoPath;
+    }
+
+    public void setLocalPhotoPath(String localPhotoPath) {
+        this.localPhotoPath = localPhotoPath;
     }
 }

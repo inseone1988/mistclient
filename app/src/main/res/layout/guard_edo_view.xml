@@ -12,7 +12,7 @@
         android:orientation="horizontal">
 
         <ImageView
-            android:id="@+id/imageView10"
+            android:id="@+id/guardProfilePhoto"
             android:layout_width="0dp"
             android:layout_height="70dp"
             android:layout_weight="0.3"

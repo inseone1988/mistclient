@@ -366,6 +366,9 @@ public class GuardsEdoReports extends AppCompatActivity {
                 rvAdapter.notifyDataSetChanged();
                 getSortLists();
                 getGroupRequired();
+                if (filter.size() == 0){
+                    Toast.makeText(GuardsEdoReports.this, "Sin datos para el dia seleccionado", Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }
@@ -384,6 +387,7 @@ public class GuardsEdoReports extends AppCompatActivity {
         }, new DatabaseOperations.UIThreadOperation() {
             @Override
             public void onOperationFinished(@Nullable Object object) {
+                Toast.makeText(GuardsEdoReports.this, "Syncronizado con servidor", Toast.LENGTH_SHORT).show();
                 loadEdo();
             }
         });

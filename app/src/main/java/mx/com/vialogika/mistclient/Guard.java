@@ -273,6 +273,10 @@ public class Guard {
         return this.personName + " " + personFname + " " + personLname;
     }
 
+    public boolean hasProfilePhoto(){
+        return !this.personProfilePhotoPath.equals("");
+    }
+
     public void setGuardFullname(String guardFullname) {
         this.guardFullname = guardFullname;
     }

@@ -5,6 +5,7 @@ import android.arch.persistence.room.Database;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.widget.ImageView;
@@ -16,6 +17,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.JsonRequest;
 import com.android.volley.toolbox.Volley;
@@ -26,6 +28,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
@@ -33,6 +37,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Random;
 
 import mx.com.vialogika.mistclient.Apostamiento;
 import mx.com.vialogika.mistclient.Client;
@@ -554,6 +559,48 @@ public class NetworkRequest {
             }
         });
         rq.add(jor);
+    }
+
+    public static void getProfileImage(final Context context,String photoPath,final NetworkRequestCallbacks cb){
+        String handler = "raw.php";
+        String url = SERVER_URL_PREFIX + handler;
+        CustomImageRequest rq = new CustomImageRequest(url, photoPath, new Response.Listener<Bitmap>() {
+            @Override
+            public void onResponse(Bitmap response) {
+                saveImage(response);
+                cb.onNetworkRequestResponse(response);
+            }
+        }, 0, 0, ImageView.ScaleType.FIT_CENTER, Bitmap.Config.ARGB_8888, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                cb.onNetworkRequestResponse(error);
+                new NetworkErrorDialog(context.getApplicationContext(),error);
+            }
+        });
+    }
+
+    public static void saveImage(Bitmap mImage){
+        String root = Environment.getExternalStorageDirectory().toString();
+        File mFile = new File(root + "/profileImages");
+        if (!mFile.exists()){
+            mFile.mkdirs();
+        }
+        Random generator = new Random();
+        int    n         = 10000;
+        n = generator.nextInt(n);
+        String fname = "Image-"+ n +".jpg";
+        File file = new File (mFile, fname);
+        if (file.exists ())
+            file.delete ();
+        try {
+            FileOutputStream out = new FileOutputStream(file);
+            mImage.compress(Bitmap.CompressFormat.JPEG, 90, out);
+            out.flush();
+            out.close();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public static void getImageFromURL(String url,boolean save,final NetworkBitmap cb){

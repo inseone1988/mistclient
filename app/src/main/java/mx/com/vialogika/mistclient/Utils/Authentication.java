@@ -24,7 +24,6 @@ public class Authentication {
                 try{
                     JSONObject r = new JSONObject(response.toString());
                     if(r.has("success")){
-
                         boolean valid = r.getBoolean("success");
                         if(valid){
                             JSONObject userdata = r.getJSONArray("userdata").getJSONObject(0);

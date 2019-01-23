@@ -1,9 +1,14 @@
 package mx.com.vialogika.mistclient;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
@@ -27,6 +32,8 @@ import mx.com.vialogika.mistclient.Utils.NetworkRequestCallbacks;
 import mx.com.vialogika.mistclient.Utils.SimpleDialogCallback;
 
 public class LogIn extends AppCompatActivity {
+
+    final static private int REQUEST_PERMISSIONS = 6546;
 
     private Boolean shouldSkipLogin;
     private String user;
@@ -84,23 +91,27 @@ public class LogIn extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if(validateFields()){
-                    getValues();
-                    Authentication.authUser(v.getContext(), user, passwordString, new AuthCallbacks() {
-                        @Override
-                        public void onAuthenticated() {
-                            clearFields();
-                            setKeepSessionOpened(shouldSkipLogin);
-                            User.setUserIsLoggedIn(mcontext,true);
-                            loadAppData();
-                            startMainActivity();
-                        }
+                    if (checkPermission()){
+                        getValues();
+                        Authentication.authUser(v.getContext(), user, passwordString, new AuthCallbacks() {
+                            @Override
+                            public void onAuthenticated() {
+                                clearFields();
+                                setKeepSessionOpened(shouldSkipLogin);
+                                User.setUserIsLoggedIn(mcontext,true);
+                                loadAppData();
+                                startMainActivity();
+                            }
 
-                        @Override
-                        public void onAuthenticatedFailed() {
-                            clearFields();
-                            Dialogs.authFailedDialog(mcontext);
-                        }
-                    });
+                            @Override
+                            public void onAuthenticatedFailed() {
+                                clearFields();
+                                Dialogs.authFailedDialog(mcontext);
+                            }
+                        });
+                    }else{
+                        requestPermissons();
+                    }
                 }
             }
         });
@@ -171,5 +182,29 @@ public class LogIn extends AppCompatActivity {
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
         finish();
+    }
+
+    private boolean checkPermission(){
+        int wsp = ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        int resp = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE);
+        if (wsp == PackageManager.PERMISSION_GRANTED && resp == PackageManager.PERMISSION_GRANTED){
+            return true;
+        }
+        return false;
+    }
+
+    private void requestPermissons(){
+        ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.READ_EXTERNAL_STORAGE,Manifest.permission.WRITE_EXTERNAL_STORAGE},REQUEST_PERMISSIONS);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch(requestCode){
+            case REQUEST_PERMISSIONS :
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                    loginbutton.performClick();
+                }
+                break;
+        }
     }
 }

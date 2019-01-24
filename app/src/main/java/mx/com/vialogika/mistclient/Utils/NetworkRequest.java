@@ -11,6 +11,7 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
 import android.widget.ImageView;
 
 import com.afollestad.materialdialogs.DialogAction;
@@ -616,7 +617,7 @@ public class NetworkRequest {
             file.delete ();
         try {
             FileOutputStream out = new FileOutputStream(file);
-            mImage.compress(Bitmap.CompressFormat.JPEG, 90, out);
+            mImage.compress(Bitmap.CompressFormat.JPEG, 100, out);
             out.flush();
             out.close();
 
@@ -624,6 +625,22 @@ public class NetworkRequest {
             e.printStackTrace();
         }
         return file.getAbsolutePath();
+    }
+
+    public static void deleteGuardPictures(final Context context){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                String dirpath = Environment.getExternalStorageDirectory().toString();
+                File dir = new File(dirpath + "/Android/data/" + context.getPackageName() + "/profileImages");
+                if (dir.isDirectory()){
+                    String[] children = dir.list();
+                    for (int i = 0; i < children.length; i++) {
+                        new File(dir,children[i]).delete();
+                    }
+                }
+            }
+        }).start();
     }
 
     public static void getImageFromURL(String url,boolean save,final NetworkBitmap cb){

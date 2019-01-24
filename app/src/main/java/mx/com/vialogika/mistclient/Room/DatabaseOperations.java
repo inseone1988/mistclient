@@ -510,12 +510,16 @@ public class DatabaseOperations {
                             });
                             rq.add(ir);
                         }else{
-                         saveGuard(guard);
+                            saveGuard(guard);
+                            dNotif.setProgress(g.length(),counter,false);
+                            nManager.notify(NOTIF_ID,dNotif.build());
                         }
                     }else{
                         saveGuard(guard);
                     }
                 }
+                dNotif.setContentTitle("Imagenes descargadas");
+                nManager.notify(NOTIF_ID,dNotif.build());
                 //syncGuards(guards);
                 for (int i = 0; i < c.length();i++){
                     clients.add(new Client(c.getJSONObject(i)));

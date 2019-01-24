@@ -32,6 +32,7 @@ import mx.com.vialogika.mistclient.Notif.AppNotifications;
 import mx.com.vialogika.mistclient.Room.DatabaseOperations;
 import mx.com.vialogika.mistclient.Utils.AppJobCreator;
 import mx.com.vialogika.mistclient.Utils.Dialogs;
+import mx.com.vialogika.mistclient.Utils.NetworkRequest;
 import mx.com.vialogika.mistclient.Utils.ReportSyncJob;
 import mx.com.vialogika.mistclient.Utils.SimpleDialogCallback;
 
@@ -170,8 +171,6 @@ public class DscMainActivity extends AppCompatActivity
         return super.onPrepareOptionsMenu(menu);
     }*/
 
-
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -218,6 +217,7 @@ public class DscMainActivity extends AppCompatActivity
         dbo.deleteAllTables();
         JobManager.instance().cancelAll();
         User.clearUserSP(this);
+        NetworkRequest.deleteGuardPictures(this);
         finishApp();
     }
 

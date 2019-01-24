@@ -61,6 +61,8 @@ public class GuardAdapter extends RecyclerView.Adapter<GuardAdapter.GuardViewHol
             if (!current.getLocalPhotoPath().equals("")){
                 guardViewHolder.guardPhoto.setImageBitmap(BitmapFactory.decodeFile(current.getLocalPhotoPath()));
             }
+        }else{
+            guardViewHolder.guardPhoto.setImageDrawable(context.getDrawable(R.drawable.ic_guard1));
         }
         guardViewHolder.guardname.setText(current.getGuardFname());
         guardViewHolder.guardposition.setText(current.getPersonPosition());

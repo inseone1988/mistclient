@@ -43,14 +43,7 @@ public class GuardDetailsDialog extends MaterialDialog.Builder {
     }
 
     private void setListeners(){
-        guardphoto.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (guard != null){
-                    getGuardPhoto();
-                }
-            }
-        });
+
     }
 
     private void init(){
@@ -65,11 +58,13 @@ public class GuardDetailsDialog extends MaterialDialog.Builder {
     }
 
     private void getGuardPhoto(){
-       if (!guard.getLocalPhotoPath().equals("null")){
-           if (!guard.getLocalPhotoPath().equals("")){
-               guardphoto.setImageBitmap(BitmapFactory.decodeFile(guard.getLocalPhotoPath()));
-           }
-       }
+        if (guard.getLocalPhotoPath() != null){
+            if (!guard.getLocalPhotoPath().equals("null")){
+                if (!guard.getLocalPhotoPath().equals("")){
+                    guardphoto.setImageBitmap(BitmapFactory.decodeFile(guard.getLocalPhotoPath()));
+                }
+            }
+        }
     }
 
     public Guard getGuard() {
@@ -79,5 +74,6 @@ public class GuardDetailsDialog extends MaterialDialog.Builder {
     public void setGuard(Guard guard) {
         this.guard = guard;
         setValues();
+        getGuardPhoto();
     }
 }

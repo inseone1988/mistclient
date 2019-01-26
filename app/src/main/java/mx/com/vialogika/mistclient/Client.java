@@ -17,6 +17,7 @@ public class Client {
     private String clientAlias;
     private int clientSiteId;
     private int clientStatus;
+    private String clientConsignaDueDate;
 
     public Client() {
     }
@@ -29,6 +30,7 @@ public class Client {
             this.clientAlias = client.getString("client_alias");
             this.clientSiteId = client.getInt("client_site_id");
             this.clientStatus = client.getInt("client_status");
+            this.clientConsignaDueDate = client.getString("client_consigna_due_date");
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -42,6 +44,7 @@ public class Client {
             this.clientAlias = client.getString("client_alias");
             this.clientSiteId = client.getInt("client_site_id");
             this.clientStatus = client.getInt("client_status");
+            this.clientConsignaDueDate = client.getString("client_consigna_due_date");
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -57,6 +60,7 @@ public class Client {
             client.put("client_alias", this.clientAlias);
             client.put("client_site_id", this.clientSiteId);
             client.put("client_status",this.clientStatus);
+            client.put("client_consigna_due_date",this.clientConsignaDueDate);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -117,5 +121,13 @@ public class Client {
 
     public void setClientStatus(int clientStatus) {
         this.clientStatus = clientStatus;
+    }
+
+    public String getClientConsignaDueDate() {
+        return clientConsignaDueDate;
+    }
+
+    public void setClientConsignaDueDate(String clientConsignaDueDate) {
+        this.clientConsignaDueDate = clientConsignaDueDate;
     }
 }

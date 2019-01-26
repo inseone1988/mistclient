@@ -17,7 +17,12 @@ import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.android.volley.VolleyError;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import mx.com.vialogika.mistclient.Client;
 import mx.com.vialogika.mistclient.R;
@@ -30,16 +35,16 @@ public class ClientAdapter extends RecyclerView.Adapter<ClientAdapter.ClientView
 
     private List<Client> dataset;
 
-    public ClientAdapter(List<Client> clients){
+    public ClientAdapter(List<Client> clients) {
         this.dataset = clients;
     }
 
-    public static class ClientViewHolder extends RecyclerView.ViewHolder{
+    public static class ClientViewHolder extends RecyclerView.ViewHolder {
         CardView cv;
-        TextView clientName,clientAlias,clientSocial;
-        ImageView delete,clientEdit;
+        TextView clientName, clientAlias, clientSocial;
+        ImageView delete, clientEdit;
 
-        public ClientViewHolder(View itemView){
+        public ClientViewHolder(View itemView) {
             super(itemView);
             //TODO:Load card Items
             cv = itemView.findViewById(R.id.client_cv);
@@ -53,18 +58,19 @@ public class ClientAdapter extends RecyclerView.Adapter<ClientAdapter.ClientView
     @NonNull
     @Override
     public ClientViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        View rootview = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.client_view,viewGroup,false);
+        View rootview = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.client_view, viewGroup, false);
         return new ClientViewHolder(rootview);
     }
 
     @Override
     public void onBindViewHolder(@NonNull final ClientViewHolder clientViewHolder, final int i) {
-        Resources    res        = clientViewHolder.cv.getContext().getResources();
+        Context context = clientViewHolder.cv.getContext();
+        Resources    res        = context.getResources();
         final Client client     = dataset.get(i);
         String       clientName = res.getString(R.string.client_key);
         String       social     = res.getString(R.string.client_social);
-        clientViewHolder.clientName.setText(String.format(clientName,client.getClientName()));
-        clientViewHolder.clientSocial.setText(String.format(social,client.getClientSocial()));
+        clientViewHolder.clientName.setText(String.format(clientName, client.getClientName()));
+        clientViewHolder.clientSocial.setText(String.format(social, client.getClientSocial()));
         clientViewHolder.delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View view) {
@@ -75,7 +81,7 @@ public class ClientAdapter extends RecyclerView.Adapter<ClientAdapter.ClientView
                             @Override
                             public void onNetworkRequestResponse(Object response) {
                                 removeClient(i);
-                                Log.d("Room","Deleted client id " + (int) response);
+                                Log.d("Room", "Deleted client id " + (int) response);
                                 Toast.makeText(view.getContext().getApplicationContext(), "Cliente borrado con exito", Toast.LENGTH_SHORT).show();
                             }
 
@@ -97,7 +103,7 @@ public class ClientAdapter extends RecyclerView.Adapter<ClientAdapter.ClientView
         clientViewHolder.clientEdit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                EditElementDialog dialog = new EditElementDialog(v.getContext(),EditElementDialog.EDIT_CLIENT);
+                EditElementDialog dialog = new EditElementDialog(v.getContext(), EditElementDialog.EDIT_CLIENT);
                 dialog.setCl(client);
                 dialog.setClcb(new EditElementDialog.clientCallback() {
                     @Override
@@ -111,7 +117,7 @@ public class ClientAdapter extends RecyclerView.Adapter<ClientAdapter.ClientView
         });
     }
 
-    public void removeClient(int position){
+    public void removeClient(int position) {
         dataset.remove(position);
         this.notifyDataSetChanged();
     }

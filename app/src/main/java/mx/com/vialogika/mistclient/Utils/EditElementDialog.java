@@ -1,10 +1,13 @@
 package mx.com.vialogika.mistclient.Utils;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.FragmentManager;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -16,11 +19,15 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.android.volley.VolleyError;
 
 import java.nio.charset.Charset;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import mx.com.vialogika.mistclient.Apostamiento;
 import mx.com.vialogika.mistclient.Client;
+import mx.com.vialogika.mistclient.Pickers.DatePickerFragment;
 import mx.com.vialogika.mistclient.R;
 import mx.com.vialogika.mistclient.Room.DatabaseOperations;
 import mx.com.vialogika.mistclient.Room.Site;
@@ -44,7 +51,10 @@ public class EditElementDialog extends MaterialDialog.Builder {
     private callbacks cb;
     private clientCallback clcb;
 
+    private FragmentManager fragmentManager;
+
     private TextView apName, apKey, gRequired,clientName,clientKey,clientAlias;
+    private TextView consdate;
     private Spinner apType, apSite, apClient;
 
     private ArrayAdapter<CharSequence> adapter,siteAdapter,clientAdapter;
@@ -57,6 +67,7 @@ public class EditElementDialog extends MaterialDialog.Builder {
     public EditElementDialog(Context context, String mode) {
         super(context);
         this.mode = mode;
+        this.autoDismiss = false;
         getDatabaseOperations();
         setTitle();
         this.customView(getLayout(), true);
@@ -127,6 +138,19 @@ public class EditElementDialog extends MaterialDialog.Builder {
 
                     }
                 });
+                consdate.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        DatePickerFragment dp = new DatePickerFragment();
+                        dp.setCallback(new DatePickerFragment.DatePicker() {
+                            @Override
+                            public void onDateSet(Date from, Date to) {
+                                consdate.setText(new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH).format(from));
+                            }
+                        });
+                        dp.show(getFragmentManager(),"DATE_PICKER");
+                    }
+                });
                 apClient.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                     @Override
                     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -155,12 +179,25 @@ public class EditElementDialog extends MaterialDialog.Builder {
         }
     }
 
+    public FragmentManager getFragmentManager() {
+        return fragmentManager;
+    }
+
+    public void setFragmentManager(FragmentManager fragmentManager) {
+        this.fragmentManager = fragmentManager;
+    }
+
+    private MaterialDialog getDialog(){
+        return this.build();
+    }
+
     private void getValues(){
         switch(mode){
             case EDIT_APOSTAMIENTO:
                 ap.setPlantillaPlaceApostamientoName(apName.getText().toString());
                 ap.setPlantillaPlaceApostamientoAlias(apKey.getText().toString());
                 ap.setPlantillaPlaceGuardsRequired(Integer.valueOf(gRequired.getText().toString()));
+                ap.setPlantillaPlaceConsExp(consdate.getText().toString());
                 break;
             case EDIT_CLIENT:
                 cl.setClientSocial(clientName.getText().toString());
@@ -267,6 +304,7 @@ public class EditElementDialog extends MaterialDialog.Builder {
                 gRequired = rootview.findViewById(R.id.guardsrequired);
                 apSite = rootview.findViewById(R.id.site_select);
                 apClient = rootview.findViewById(R.id.client_select);
+                consdate = rootview.findViewById(R.id.consdate);
                 break;
             case EDIT_CLIENT:
                 apSite = rootview.findViewById(R.id.siteSpinner);
@@ -362,13 +400,14 @@ public class EditElementDialog extends MaterialDialog.Builder {
             case EDIT_APOSTAMIENTO:
                 onPositive(new MaterialDialog.SingleButtonCallback() {
                     @Override
-                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                    public void onClick(@NonNull final MaterialDialog dialog, @NonNull DialogAction which) {
                         if (validateInputs()){
                             getValues();
                             NetworkRequest.saveApostamiento(getContext(), ap, new NetworkRequestCallbacks() {
                                 @Override
                                 public void onNetworkRequestResponse(Object response) {
                                     cb.onSaved((Apostamiento)response);
+                                    dialog.dismiss();
                                 }
                                 @Override
                                 public void onNetworkRequestError(VolleyError error) {
@@ -382,13 +421,14 @@ public class EditElementDialog extends MaterialDialog.Builder {
             case EDIT_CLIENT:
                 onPositive(new MaterialDialog.SingleButtonCallback() {
                     @Override
-                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                    public void onClick(@NonNull final MaterialDialog dialog, @NonNull DialogAction which) {
                         if (validateInputs()){
                             getValues();
                             NetworkRequest.saveClient(getContext(), cl, new NetworkRequestCallbacks() {
                                 @Override
                                 public void onNetworkRequestResponse(Object response) {
                                     clcb.onSaved((Client) response);
+                                    dialog.dismiss();
                                 }
 
                                 @Override
@@ -401,6 +441,10 @@ public class EditElementDialog extends MaterialDialog.Builder {
                 });
                 break;
         }
+    }
+
+    private void close(){
+        getDialog().dismiss();
     }
 
     public void setCb(callbacks cb) {
@@ -427,6 +471,8 @@ public class EditElementDialog extends MaterialDialog.Builder {
                 break;
         }
     }
+
+
 
     public Apostamiento getAp() {
         return ap;

@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -190,6 +191,11 @@ public class EdoApostamientos extends Fragment {
         recyclerView.setLayoutManager(layoutManager);
         adapter = new ApostamientoAdapter(apostamientosList){
             @Override
+            public FragmentManager getFragmentManager() {
+                return getThisFragmentmanager();
+            }
+
+            @Override
             public void apDeleted(int position) {
                 removeitem(position);
             }
@@ -201,6 +207,10 @@ public class EdoApostamientos extends Fragment {
         apostamientosList.remove(position);
         adapter.notifyItemRemoved(position);
         adapter.notifyItemRangeChanged(position,apostamientosList.size());
+    }
+
+    private FragmentManager getThisFragmentmanager(){
+        return getActivity().getSupportFragmentManager();
     }
 
     private void setListeners(){

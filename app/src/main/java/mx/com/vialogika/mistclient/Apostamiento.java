@@ -22,6 +22,7 @@ public class Apostamiento {
     private String clientName;
     private int plantillaPlaceGuardsRequired;
     private int plantillaPlaceStatus;
+    private String plantillaPlaceConsExp;
 
     public Apostamiento() {
     }
@@ -36,6 +37,7 @@ public class Apostamiento {
             this.plantillaPlaceSiteId = apostamiento.getInt("plantilla_place_site_id");
             this.plantillaPlaceGuardsRequired = apostamiento.getInt("plantilla_place_guards_required");
             this.plantillaPlaceStatus = apostamiento.getInt("plantilla_place_status");
+            this.plantillaPlaceConsExp = apostamiento.getString("plantilla_place_cons_exp");
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -51,6 +53,7 @@ public class Apostamiento {
             this.plantillaPlaceSiteId = apostamiento.getInt("plantilla_place_site_id");
             this.plantillaPlaceGuardsRequired = apostamiento.getInt("plantilla_place_guards_required");
             this.plantillaPlaceStatus = apostamiento.getInt("plantilla_place_status");
+            this.plantillaPlaceConsExp = apostamiento.getString("plantilla_place_cons_exp");
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -68,6 +71,7 @@ public class Apostamiento {
             data.put("plantilla_place_site_id", this.plantillaPlaceSiteId);
             data.put("plantilla_place_guards_required",this.plantillaPlaceGuardsRequired);
             data.put("plantilla_place_status",this.plantillaPlaceStatus);
+            data.put("plantilla_place_cons_exp",this.plantillaPlaceConsExp);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -152,5 +156,13 @@ public class Apostamiento {
 
     public void setPlantillaPlaceStatus(int plantillaPlaceStatus) {
         this.plantillaPlaceStatus = plantillaPlaceStatus;
+    }
+
+    public String getPlantillaPlaceConsExp() {
+        return plantillaPlaceConsExp;
+    }
+
+    public void setPlantillaPlaceConsExp(String plantillaPlaceConsExp) {
+        this.plantillaPlaceConsExp = plantillaPlaceConsExp;
     }
 }

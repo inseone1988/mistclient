@@ -25,7 +25,7 @@ public interface ApostamientoDao {
     @Query("DELETE FROM apostamientos WHERE plantillaPlaceId = :id")
     int deleteApostamiento(int id);
 
-    @Query("SELECT plantillaPlaceSiteId,localId,plantillaPlaceId,plantillaPlaceClientId,plantillaPlaceApostamientoName,plantillaPlaceApostamientoAlias,plantillaPlaceType,(SELECT Clients.clientAlias FROM Clients WHERE clientId = Apostamientos.plantillaPlaceClientId) AS clientName,plantillaPlaceGuardsRequired,plantillaPlaceStatus FROM Apostamientos WHERE plantillaPlaceSiteId = :id ORDER BY plantillaPlaceApostamientoAlias ASC")
+    @Query("SELECT plantillaPlaceSiteId,localId,plantillaPlaceId,plantillaPlaceClientId,plantillaPlaceApostamientoName,plantillaPlaceApostamientoAlias,plantillaPlaceType,(SELECT Clients.clientAlias FROM Clients WHERE clientId = Apostamientos.plantillaPlaceClientId) AS clientName,plantillaPlaceGuardsRequired,plantillaPlaceStatus,plantillaPlaceConsExp FROM Apostamientos WHERE plantillaPlaceSiteId = :id ORDER BY plantillaPlaceApostamientoAlias ASC")
     List<Apostamiento> getApostamientosBySiteId(int id);
 
     @Query("SELECT * FROM Apostamientos WHERE plantillaPlaceId = :id")

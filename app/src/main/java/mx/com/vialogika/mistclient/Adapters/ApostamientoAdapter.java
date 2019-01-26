@@ -1,7 +1,10 @@
 package mx.com.vialogika.mistclient.Adapters;
 
+import android.app.Activity;
+import android.content.Context;
 import android.content.res.Resources;
 import android.support.annotation.NonNull;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -15,6 +18,9 @@ import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.android.volley.VolleyError;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import mx.com.vialogika.mistclient.Apostamiento;
@@ -26,12 +32,20 @@ import mx.com.vialogika.mistclient.Utils.NetworkRequestCallbacks;
 
 public class ApostamientoAdapter extends RecyclerView.Adapter<ApostamientoAdapter.ApViewHolder> {
 
+
+    public static final int IS_VALID        = 0;
+    public static final int ABOUT_TO_EXPIRE = 1;
+    public static final int EXPIRED         = 2;
+
+    private FragmentManager fragmentManager;
+
     private List<Apostamiento> daataset;
 
     public static class ApViewHolder extends RecyclerView.ViewHolder{
         CardView cv;
         TextView apname,apalias,apclient,apcreted,aptype;
         ImageView delete,edit;
+        TextView consignationExpdate,consignationValidity;
 
         ApViewHolder(View itemView){
             super(itemView);
@@ -42,6 +56,8 @@ public class ApostamientoAdapter extends RecyclerView.Adapter<ApostamientoAdapte
             aptype = itemView.findViewById(R.id.ap_type);
             delete = itemView.findViewById(R.id.apdletebtn);
             edit = itemView.findViewById(R.id.apeditbtn);
+            consignationExpdate = itemView.findViewById(R.id.cons_ex_date);
+            consignationValidity = itemView.findViewById(R.id.cons_sem);
         }
 
     }
@@ -69,6 +85,8 @@ public class ApostamientoAdapter extends RecyclerView.Adapter<ApostamientoAdapte
         apViewHolder.apname.setText(String.format(place,current.getPlantillaPlaceApostamientoName()));
         apViewHolder.apclient.setText(String.format(clientString,current.getClientName()));
         apViewHolder.aptype.setText(String.format(clientType,current.getPlantillaPlaceType()));
+        apViewHolder.consignationExpdate.setText(current.getPlantillaPlaceConsExp());
+        apViewHolder.consignationValidity.setBackgroundColor(res.getColor(checkValidConsigna(current.getPlantillaPlaceConsExp())));
         apViewHolder.delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View view) {
@@ -101,6 +119,7 @@ public class ApostamientoAdapter extends RecyclerView.Adapter<ApostamientoAdapte
             @Override
             public void onClick(final View v) {
                EditElementDialog dialog = new EditElementDialog(v.getContext(),EditElementDialog.EDIT_APOSTAMIENTO);
+               dialog.setFragmentManager(getFragmentManager());
                dialog.setAp(current);
                dialog.setCb(new EditElementDialog.callbacks() {
                    @Override
@@ -115,6 +134,51 @@ public class ApostamientoAdapter extends RecyclerView.Adapter<ApostamientoAdapte
                dialog.show();
             }
         });
+
+
+    }
+
+    public FragmentManager getFragmentManager() {
+        return fragmentManager;
+    }
+
+    public void setFragmentManager(FragmentManager fragmentManager) {
+        this.fragmentManager = fragmentManager;
+    }
+
+    private int checkValidConsigna(String dueDate) {
+        if (dueDate != null){
+            try {
+                Date mDueDate = new SimpleDateFormat("yyyy-MM-dd").parse(dueDate);
+                switch(checkValidity(mDueDate)){
+                    case EXPIRED:
+                        return R.color.dsc_danger;
+                    case ABOUT_TO_EXPIRE :
+                        return R.color.dsc_warning;
+                    case IS_VALID :
+                        return R.color.dsc_success;
+                }
+
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
+        return R.color.dsc_danger;
+    }
+
+    private int checkValidity(Date duedate) {
+        Date today = new Date();
+        if (today.before(duedate)){
+            long difference = duedate.getTime() - today.getTime();
+            float daysBetween = (difference / (1000*60*60*24));
+            if (daysBetween < 90){
+                return ABOUT_TO_EXPIRE;
+            }
+            if (daysBetween > 90){
+                return IS_VALID;
+            }
+        }
+        return EXPIRED;
     }
 
     public void apDeleted(int position){

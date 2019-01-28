@@ -17,6 +17,9 @@
             android:icon="@drawable/ic_guard"
             android:title="@string/oficials" />
         <item
+            android:icon="@drawable/ic_report_black_24dp"
+            android:title="@string/emergency_report" />
+        <item
             android:id="@+id/nav_settings"
             android:checkable="true"
             android:icon="@drawable/ic_action_settings"

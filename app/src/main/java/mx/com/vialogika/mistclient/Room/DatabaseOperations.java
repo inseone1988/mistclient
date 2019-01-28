@@ -822,6 +822,23 @@ public class DatabaseOperations {
         }).start();
     }
 
+    public void getGroupNames(final String from,final String to,final doInBackgroundOperation dib,final UIThreadOperation uiThreadOperation){
+        final Handler handler = new Handler(Looper.getMainLooper());
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                final String[] grupos = appDatabase.guardEdoReportDao().getGroups(from,to);
+                dib.onOperationFinished(grupos);
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        uiThreadOperation.onOperationFinished(grupos);
+                    }
+                });
+            }
+        }).start();
+    }
+
     public void saveClient(final Client client,final doInBackgroundOperation dib,final UIThreadOperation uiThreadOperation){
         final Handler handler = new Handler(Looper.getMainLooper());
         new Thread(new Runnable() {

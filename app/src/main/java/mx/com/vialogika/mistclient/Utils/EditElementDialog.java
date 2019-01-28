@@ -55,6 +55,7 @@ public class EditElementDialog extends MaterialDialog.Builder {
 
     private TextView apName, apKey, gRequired,clientName,clientKey,clientAlias;
     private TextView consdate;
+    private TextView securityResp;
     private Spinner apType, apSite, apClient;
 
     private ArrayAdapter<CharSequence> adapter,siteAdapter,clientAdapter;
@@ -203,6 +204,7 @@ public class EditElementDialog extends MaterialDialog.Builder {
                 cl.setClientSocial(clientName.getText().toString());
                 cl.setClientName(clientKey.getText().toString());
                 cl.setClientAlias(clientAlias.getText().toString());
+                cl.setClientSecurityResponsable(securityResp.getText().toString());
                 break;
         }
 
@@ -311,6 +313,7 @@ public class EditElementDialog extends MaterialDialog.Builder {
                 clientName = rootview.findViewById(R.id.socialinput);
                 clientKey = rootview.findViewById(R.id.clientnameinput);
                 clientAlias = rootview.findViewById(R.id.clientaliasinput);
+                securityResp = rootview.findViewById(R.id.securityResponsible);
                 break;
         }
     }

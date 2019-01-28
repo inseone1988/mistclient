@@ -18,6 +18,7 @@ public class Client {
     private int clientSiteId;
     private int clientStatus;
     private String clientConsignaDueDate;
+    private String clientSecurityResponsable;
 
     public Client() {
     }
@@ -31,6 +32,7 @@ public class Client {
             this.clientSiteId = client.getInt("client_site_id");
             this.clientStatus = client.getInt("client_status");
             this.clientConsignaDueDate = client.getString("client_consigna_due_date");
+            this.clientSecurityResponsable = client.getString("client_security_responsable");
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -45,6 +47,7 @@ public class Client {
             this.clientSiteId = client.getInt("client_site_id");
             this.clientStatus = client.getInt("client_status");
             this.clientConsignaDueDate = client.getString("client_consigna_due_date");
+            this.clientSecurityResponsable = client.getString("client_security_responsable");
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -61,6 +64,7 @@ public class Client {
             client.put("client_site_id", this.clientSiteId);
             client.put("client_status",this.clientStatus);
             client.put("client_consigna_due_date",this.clientConsignaDueDate);
+            client.put("client_security_responsable",this.clientSecurityResponsable);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -129,5 +133,13 @@ public class Client {
 
     public void setClientConsignaDueDate(String clientConsignaDueDate) {
         this.clientConsignaDueDate = clientConsignaDueDate;
+    }
+
+    public String getClientSecurityResponsable() {
+        return clientSecurityResponsable;
+    }
+
+    public void setClientSecurityResponsable(String clientSecurityResponsable) {
+        this.clientSecurityResponsable = clientSecurityResponsable;
     }
 }

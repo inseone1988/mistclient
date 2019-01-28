@@ -115,6 +115,11 @@
     <string name="element_position">Posicion del elemento : %1$s</string>
     <string name="obs_guard">Incidencia / Observaciones : %1$s</string>
     <string name="vigenciadelacondigna">Vigencia de la consigna</string>
+    <string name="responsable_deseguridad">Responsable de seguridad de la cuenta :</string>
+    <string name="edo_direct_access">Edo. Fuerza</string>
+    <string name="security_provider">Proveedor de seguridad</string>
+    <string name="group">Grupo</string>
+    <string name="emergency_report">Reporte de emergencia</string>
     <string-array name="apType">
         <item>Filtro</item>
         <item>Accesos / Aduanas</item>

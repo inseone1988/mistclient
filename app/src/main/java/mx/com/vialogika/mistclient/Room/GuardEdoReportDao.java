@@ -29,4 +29,7 @@ public interface GuardEdoReportDao {
     @Query("SELECT COUNT(id) FROM GuardsForceState WHERE edoFuerzaPlaceId = :apid AND edoFuerzaTurno = :group AND edoFuerzaDate BETWEEN :from AND :to")
     int getCountByAP(String from,String to,String group,int apid);
 
+    @Query("SELECT edoFuerzaTurno FROM GuardsForceState WHERE edoFuerzaDate BETWEEN :from AND :to")
+    String[] getGroups(String from,String to);
+
 }

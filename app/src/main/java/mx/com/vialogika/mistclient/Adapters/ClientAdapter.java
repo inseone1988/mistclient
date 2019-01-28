@@ -41,7 +41,7 @@ public class ClientAdapter extends RecyclerView.Adapter<ClientAdapter.ClientView
 
     public static class ClientViewHolder extends RecyclerView.ViewHolder {
         CardView cv;
-        TextView clientName, clientAlias, clientSocial;
+        TextView clientName, clientAlias, clientSocial,securityResp;
         ImageView delete, clientEdit;
 
         public ClientViewHolder(View itemView) {
@@ -52,6 +52,7 @@ public class ClientAdapter extends RecyclerView.Adapter<ClientAdapter.ClientView
             clientSocial = itemView.findViewById(R.id.clientsocial);
             delete = itemView.findViewById(R.id.deleteclient);
             clientEdit = itemView.findViewById(R.id.client_edit);
+            securityResp = itemView.findViewById(R.id.securityResp);
         }
     }
 
@@ -69,8 +70,10 @@ public class ClientAdapter extends RecyclerView.Adapter<ClientAdapter.ClientView
         final Client client     = dataset.get(i);
         String       clientName = res.getString(R.string.client_key);
         String       social     = res.getString(R.string.client_social);
+        String secResp = client.getClientSecurityResponsable().equals("null") ? "N/A" : client.getClientSecurityResponsable();
         clientViewHolder.clientName.setText(String.format(clientName, client.getClientName()));
         clientViewHolder.clientSocial.setText(String.format(social, client.getClientSocial()));
+        clientViewHolder.securityResp.setText(secResp);
         clientViewHolder.delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View view) {

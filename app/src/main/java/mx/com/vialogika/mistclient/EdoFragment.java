@@ -5,14 +5,23 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.CardView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
+
 import mx.com.vialogika.mistclient.Room.DatabaseOperations;
+import mx.com.vialogika.mistclient.Utils.ApostamientoDetailsDialog;
+import mx.com.vialogika.mistclient.Utils.GetSiteAndGroupDialog;
 
 
 /**
@@ -25,11 +34,13 @@ import mx.com.vialogika.mistclient.Room.DatabaseOperations;
  */
 public class EdoFragment extends Fragment {
 
-    private TextView edoReports,edoConfig;
+    private CardView edoReports,edoConfig;
 
     private boolean paseed;
 
     private DatabaseOperations dbo;
+
+    private FloatingActionButton fab;
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -84,8 +95,9 @@ public class EdoFragment extends Fragment {
     }
 
     private void getitems(View rootview){
-        edoConfig = rootview.findViewById(R.id.edo_settings);
-        edoReports = rootview.findViewById(R.id.edost);
+        edoConfig = rootview.findViewById(R.id.edo_admin_trigger);
+        edoReports = rootview.findViewById(R.id.edo_report_trigger);
+        fab = rootview.findViewById(R.id.edo_perc_ad);
     }
 
     private void setlisteners(){
@@ -117,6 +129,33 @@ public class EdoFragment extends Fragment {
 
             }
         });
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showAPDetailsDialog();
+            }
+        });
+    }
+
+    private void showAPDetailsDialog(){
+        final String[] fromto = todaydates();
+        //Todo load data select
+        new GetSiteAndGroupDialog(getContext(), new GetSiteAndGroupDialog.SiteAndGroupsCallback() {
+            @Override
+            public void onValuesSelected(int site, String grupo) {
+                ApostamientoDetailsDialog dialog = ApostamientoDetailsDialog.newInstance(fromto[0],fromto[1],grupo,site);
+                dialog.show(getFragmentManager(),"Dialog_Info");
+            }
+        }).build().show();
+
+    }
+
+    private String[] todaydates(){
+        Calendar c = Calendar.getInstance();
+        c.add(Calendar.DAY_OF_MONTH,1);
+        String from = new SimpleDateFormat("yyyy-MM-dd",Locale.ENGLISH).format(new Date());
+        String to = new SimpleDateFormat("yyyy-MM-dd",Locale.ENGLISH).format(c.getTime());
+        return new String[]{from,to};
     }
 
     private void loadGuardReportsActivity(){

@@ -43,96 +43,166 @@
 
     </android.support.v7.widget.CardView>
 
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="horizontal">
+        android:layout_height="match_parent">
 
-        <android.support.v7.widget.CardView
-            android:layout_width="0dp"
-            android:layout_height="180dp"
-            android:layout_columnWeight="1"
-            android:layout_margin="5dp"
-            android:layout_weight="0.5"
-            app:layout_gravity="center">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:gravity="center"
-                android:orientation="vertical"
-                android:padding="5dp">
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
 
-                <ImageView
-                    android:id="@+id/imageView2"
-                    android:layout_width="80dp"
-                    android:layout_height="80dp"
-                    android:layout_gravity="center"
+                <android.support.v7.widget.CardView
+                    android:id="@+id/edo_report_trigger"
+                    android:layout_width="0dp"
+                    android:layout_height="180dp"
+                    android:layout_columnWeight="1"
+                    android:layout_margin="5dp"
                     android:layout_weight="0.5"
-                    android:scaleType="fitCenter"
-                    android:src="@drawable/ic_guard1" />
+                    app:layout_gravity="center">
 
-                <View
-                    android:id="@+id/divider"
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginBottom="5dp"
-                    android:layout_weight="0.5"
-                    android:background="?android:attr/listDivider" />
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:gravity="center"
+                        android:orientation="vertical"
+                        android:padding="5dp">
 
-                <TextView
-                    android:id="@+id/edost"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                        <ImageView
+                            android:id="@+id/imageView2"
+                            android:layout_width="80dp"
+                            android:layout_height="80dp"
+                            android:layout_gravity="center"
+                            android:layout_weight="0.5"
+                            android:scaleType="fitCenter"
+                            android:src="@drawable/ic_guard1" />
+
+                        <View
+                            android:id="@+id/divider"
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:layout_marginTop="5dp"
+                            android:layout_marginBottom="5dp"
+                            android:layout_weight="0.5"
+                            android:background="?android:attr/listDivider" />
+
+                        <TextView
+                            android:id="@+id/edost"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="0.5"
+                            android:gravity="center"
+                            android:text="@string/edo_reports"
+                            android:textSize="18sp" />
+                    </LinearLayout>
+                </android.support.v7.widget.CardView>
+
+                <android.support.v7.widget.CardView
+                    android:id="@+id/edo_admin_trigger"
+                    android:layout_width="0dp"
+                    android:layout_height="180dp"
+                    android:layout_columnWeight="1"
+                    android:layout_margin="5dp"
                     android:layout_weight="0.5"
-                    android:gravity="center"
-                    android:text="@string/edo_reports"
-                    android:textSize="18sp" />
+                    app:layout_gravity="center">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:gravity="center"
+                        android:orientation="vertical"
+                        android:padding="5dp">
+
+                        <ImageView
+                            android:id="@+id/imageView5"
+                            android:layout_width="80dp"
+                            android:layout_height="80dp"
+                            android:layout_gravity="center"
+                            android:src="@drawable/ic_guard2" />
+
+                        <View
+                            android:id="@+id/divider2"
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:layout_marginTop="5dp"
+                            android:layout_marginBottom="5dp"
+                            android:background="?android:attr/listDivider" />
+
+                        <TextView
+                            android:id="@+id/edo_settings"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:text="@string/edo_reports_settings"
+                            android:textSize="18sp" />
+                    </LinearLayout>
+                </android.support.v7.widget.CardView>
             </LinearLayout>
-        </android.support.v7.widget.CardView>
-
-        <android.support.v7.widget.CardView
-            android:layout_width="0dp"
-            android:layout_height="180dp"
-            android:layout_columnWeight="1"
-            android:layout_margin="5dp"
-            android:layout_weight="0.5"
-            app:layout_gravity="center">
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:gravity="center"
-                android:orientation="vertical"
-                android:padding="5dp">
+                android:layout_height="match_parent"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="20dp"
+                android:orientation="horizontal">
 
-                <ImageView
-                    android:id="@+id/imageView5"
-                    android:layout_width="80dp"
-                    android:layout_height="80dp"
-                    android:layout_gravity="center"
-                    android:src="@drawable/ic_guard2" />
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="95dp"
+                    android:layout_weight="0.25"
+                    android:orientation="vertical">
 
-                <View
-                    android:id="@+id/divider2"
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginBottom="5dp"
-                    android:background="?android:attr/listDivider" />
+                    <android.support.design.widget.FloatingActionButton
+                        android:id="@+id/edo_perc_ad"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_gravity="center"
+                        android:layout_margin="5dp"
+                        android:layout_weight="0.7"
+                        android:clickable="true"
+                        android:src="@drawable/ic_security_black_24dp"
+                        app:backgroundTint="@color/colorPrimary"
+                        app:fabSize="normal" />
 
-                <TextView
-                    android:id="@+id/edo_settings"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:text="@string/edo_reports_settings"
-                    android:textSize="18sp" />
+                    <TextView
+                        android:id="@+id/textView28"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_margin="2dp"
+                        android:layout_weight="0.3"
+                        android:text="@string/edo_direct_access"
+                        android:textAlignment="center"
+                        android:textSize="12sp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.25"
+                    android:orientation="vertical"></LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.25"
+                    android:orientation="vertical"></LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.25"
+                    android:orientation="vertical"></LinearLayout>
+
             </LinearLayout>
-        </android.support.v7.widget.CardView>
-    </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
 
 </LinearLayout>

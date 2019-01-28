@@ -53,4 +53,17 @@
         android:id="@+id/siteSpinner"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
+
+    <TextView
+        android:id="@+id/textView26"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/responsable_deseguridad" />
+
+    <EditText
+        android:id="@+id/securityResponsible"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="textPersonName" />
 </LinearLayout>

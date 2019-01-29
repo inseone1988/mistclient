@@ -38,7 +38,7 @@
     <string name="about">About this app</string>
     <string name="leave_app">Salir de la app</string>
     <string name="leave_app_advice">Desea cerrar su sesion?</string>
-    <string name="cancel">Cancel</string>
+    <string name="cancel">Cancelar</string>
     <string name="incident_tiltle">Malas practicas</string>
     <string name="incident_timestamp">2015-10-25 10:30 AM</string>
     <string name="incident_description">Lorem ipsum dolor sit amet helo this is atesting mesge that hasno sente to al thwe world  odjsbvhp sdbh ñjb vob dosvjbojvs pksdh vok nhok sdnhvojb sdovhboñj ñsdbhvojb kdbvoubj </string>
@@ -120,6 +120,11 @@
     <string name="security_provider">Proveedor de seguridad</string>
     <string name="group">Grupo</string>
     <string name="emergency_report">Reporte de emergencia</string>
+    <string name="event_hour">Hora del evento</string>
+    <string name="event_date">Fecha del evento</string>
+    <string name="what_happened">¿Que paso?</string>
+    <string name="event_facts">Hechos</string>
+    <string name="evidences">Evidencias</string>
     <string-array name="apType">
         <item>Filtro</item>
         <item>Accesos / Aduanas</item>

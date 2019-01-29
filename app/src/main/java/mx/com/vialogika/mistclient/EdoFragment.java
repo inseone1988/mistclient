@@ -147,7 +147,6 @@ public class EdoFragment extends Fragment {
                 dialog.show(getFragmentManager(),"Dialog_Info");
             }
         }).build().show();
-
     }
 
     private String[] todaydates(){

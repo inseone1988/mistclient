@@ -23,7 +23,11 @@
     <autoscroll-to-editor value="false" />
     <autoscroll-from-editor value="true" />
     <show-object-properties value="true" />
-    <loaded-nodes />
+    <loaded-nodes>
+      <connection connection-id="6b7d6789-6cc3-4f8f-93c8-695c73c4f026">
+        <schema name="vialogik_dscic" object-types="view, table" />
+      </connection>
+    </loaded-nodes>
   </component>
   <component name="DBNavigator.Project.DatabaseConsoleManager">
     <connection id="6b7d6789-6cc3-4f8f-93c8-695c73c4f026">
@@ -53,6 +57,7 @@
     <filter-list connection-id="08c0b568-769d-463c-8f16-d70b6d59f331" dataset="main.Apostamientos" active-filter-id="EMPTY_FILTER" />
     <filter-list connection-id="08c0b568-769d-463c-8f16-d70b6d59f331" dataset="main.Guards" active-filter-id="EMPTY_FILTER" />
     <filter-list connection-id="08c0b568-769d-463c-8f16-d70b6d59f331" dataset="main.Clients" active-filter-id="EMPTY_FILTER" />
+    <filter-list connection-id="6b7d6789-6cc3-4f8f-93c8-695c73c4f026" dataset="vialogik_dscic.site_events" active-filter-id="EMPTY_FILTER" />
     <filter-list connection-id="6b7d6789-6cc3-4f8f-93c8-695c73c4f026" dataset="vialogik_dscic.edo_fuerza" active-filter-id="8a24991e-4ca6-4df5-aca5-fa0a6fc0d5c4">
       <filter id="fb959669-9e4e-4c0d-af62-7ad389aff949" name="1" temporary="false" custom-name="false" type="basic" join-type="AND">
         <condition column="edo_fuerza_site_id" operator="=" value="1" active="true" />

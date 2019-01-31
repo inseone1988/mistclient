@@ -26,6 +26,7 @@ import mx.com.vialogika.mistclient.Client;
 import mx.com.vialogika.mistclient.Comment;
 import mx.com.vialogika.mistclient.Guard;
 import mx.com.vialogika.mistclient.GuardForceState;
+import mx.com.vialogika.mistclient.Incident;
 import mx.com.vialogika.mistclient.Notif.AppNotifications;
 import mx.com.vialogika.mistclient.Reporte;
 import mx.com.vialogika.mistclient.User;
@@ -885,6 +886,52 @@ public class DatabaseOperations {
 
             }
         }).start();
+    }
+
+    public void saveIncident(final Incident incident, final doInBackgroundOperation db, final UIThreadOperation uito){
+        final Handler handler = new Handler(Looper.getMainLooper());
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                final long saved = appDatabase.incidentDao().saveIncident(incident);
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        uito.onOperationFinished(saved);
+                    }
+                });
+            }
+        }).start();
+    }
+
+    public void getPendingIncidents(final doInBackgroundOperation cb,final UIThreadOperation uito){
+        final Handler handler = new Handler(Looper.getMainLooper());
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                final List<Incident> pending = appDatabase.incidentDao().getPendingIncidents();
+                cb.onOperationFinished(pending);
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        uito.onOperationFinished(pending);
+                    }
+                });
+            }
+        }).start();
+
+    }
+
+    public void deleteIncident(final int incodentid, final doInBackgroundOperation cb){
+        Handler handler = new Handler(Looper.getMainLooper());
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                int deleted = appDatabase.incidentDao().deleteIncident(incodentid);
+                cb.onOperationFinished(deleted);
+            }
+        }).start();
+
     }
 
 

@@ -17,4 +17,5 @@
     <color name="dsc_light_gray">#dcdcdc</color>
     <color name="calendar_light">#e3e9f5</color>
     <color name="salmon">#fd6464</color>
+    <color name="dsc_ultra_light_gray">#f5f5f5</color>
 </resources>

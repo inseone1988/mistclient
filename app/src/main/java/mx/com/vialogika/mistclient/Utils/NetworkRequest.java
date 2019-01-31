@@ -12,6 +12,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.widget.ImageView;
 
 import com.afollestad.materialdialogs.DialogAction;
@@ -28,6 +29,12 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.JsonRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
+
+import net.gotev.uploadservice.MultipartUploadRequest;
+import net.gotev.uploadservice.ServerResponse;
+import net.gotev.uploadservice.UploadInfo;
+import net.gotev.uploadservice.UploadNotificationConfig;
+import net.gotev.uploadservice.UploadStatusDelegate;
 
 import org.jetbrains.annotations.Nullable;
 import org.json.JSONArray;
@@ -49,6 +56,7 @@ import mx.com.vialogika.mistclient.Apostamiento;
 import mx.com.vialogika.mistclient.Client;
 import mx.com.vialogika.mistclient.Comment;
 import mx.com.vialogika.mistclient.GuardForceState;
+import mx.com.vialogika.mistclient.Incident;
 import mx.com.vialogika.mistclient.Room.DatabaseOperations;
 
 public class NetworkRequest {
@@ -668,6 +676,53 @@ public class NetworkRequest {
         }catch(Exception e){
             e.printStackTrace();
         }
+    }
+
+    public static void uploadIncidence(final Incident incident, Context context,final NetworkUpload cb){
+        try{
+            String url = SERVER_URL_PREFIX + "requesthandler.php";
+            String[] paths = incident.getEventEvidence().split(",");
+            if (paths.length > 0){
+               MultipartUploadRequest rq = new MultipartUploadRequest(context,url);
+                for (int i = 0; i < paths.length; i++) {
+                    if (!paths[i].equals("")){
+                        rq.addFileToUpload(paths[i],"FILE-"+i);
+                    }
+                }
+                rq.setDelegate(new UploadStatusDelegate() {
+                    @Override
+                    public void onProgress(Context context, UploadInfo uploadInfo) {
+
+                    }
+
+                    @Override
+                    public void onError(Context context, UploadInfo uploadInfo, ServerResponse serverResponse, Exception exception) {
+
+                    }
+
+                    @Override
+                    public void onCompleted(Context context, UploadInfo uploadInfo, ServerResponse serverResponse) {
+                        cb.onUploadCompleted(incident,uploadInfo,serverResponse);
+                    }
+
+                    @Override
+                    public void onCancelled(Context context, UploadInfo uploadInfo) {
+
+                    }
+                });
+                rq.addParameter("function","emergencyReport");
+                rq.addParameter("data",incident.toJSON().toString());
+                rq.setNotificationConfig(new UploadNotificationConfig());
+                rq.setMaxRetries(2);
+                rq.startUpload();
+            }
+        }catch(Exception e){
+            Log.e("AndroidUploadService",e.getMessage(),e);
+        }
+    }
+
+    public interface NetworkUpload{
+        void onUploadCompleted(Incident incident, UploadInfo uploadInfo, ServerResponse serverResponse);
     }
 
     public interface NetworkBitmap{

@@ -1,6 +1,7 @@
 package mx.com.vialogika.mistclient;
 
 import android.arch.persistence.room.Entity;
+import android.os.CountDownTimer;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
@@ -415,9 +416,5 @@ public class GuardsEdoReports extends AppCompatActivity {
             }
         });
         datepicker.show(getSupportFragmentManager(), "datePicker");
-    }
-
-    private void updateDates() {
-
     }
 }

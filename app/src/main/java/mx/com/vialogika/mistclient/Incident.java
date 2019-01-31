@@ -38,6 +38,7 @@ public class Incident {
     private boolean eventStatus;
     private String  eventFlags;
 
+
     public Incident() {
 
     }

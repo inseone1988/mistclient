@@ -125,6 +125,8 @@
     <string name="what_happened">¿Que paso?</string>
     <string name="event_facts">Hechos</string>
     <string name="evidences">Evidencias</string>
+    <string name="not_saved_yet">No se ha guardado aun</string>
+    <string name="guardado">Guardado : %1$s</string>
     <string-array name="apType">
         <item>Filtro</item>
         <item>Accesos / Aduanas</item>

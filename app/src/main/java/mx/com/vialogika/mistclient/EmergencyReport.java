@@ -303,6 +303,7 @@ public class EmergencyReport extends Fragment {
                 .onPositive(new MaterialDialog.SingleButtonCallback() {
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        getValues();
                         NetworkRequest.uploadIncidence(incident, getContext(), new NetworkRequest.NetworkUpload() {
                             @Override
                             public void onUploadCompleted(Incident incident, UploadInfo uploadInfo, ServerResponse serverResponse) {
@@ -339,20 +340,23 @@ public class EmergencyReport extends Fragment {
     }
     private void saveIncident(){
         getValues();
-        DatabaseOperations dbo = new DatabaseOperations(getContext());
-        dbo.saveIncident(incident, new DatabaseOperations.doInBackgroundOperation() {
-            @Override
-            public void onOperationFinished(@Nullable Object object) {
+        Context context = getContext();
+        if (context != null){
+            DatabaseOperations dbo = new DatabaseOperations(getContext().getApplicationContext());
+            dbo.saveIncident(incident, new DatabaseOperations.doInBackgroundOperation() {
+                @Override
+                public void onOperationFinished(@Nullable Object object) {
 
-            }
-        }, new DatabaseOperations.UIThreadOperation() {
-            @Override
-            public void onOperationFinished(@Nullable Object object) {
-                SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss",Locale.ENGLISH);
-                String formatted = String.format(getString(R.string.guardado),df.format(new Date()));
-                lastsaved.setText(formatted);
-            }
-        });
+                }
+            }, new DatabaseOperations.UIThreadOperation() {
+                @Override
+                public void onOperationFinished(@Nullable Object object) {
+                    SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss",Locale.ENGLISH);
+                    String formatted = String.format(getString(R.string.guardado),df.format(new Date()));
+                    lastsaved.setText(formatted);
+                }
+            });
+        }
     }
 
     private void scheduleAutoSave(){
@@ -371,6 +375,10 @@ public class EmergencyReport extends Fragment {
     }
 
     private void getValues(){
+        String cDatetime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
+        incident.setEventRiskLevel("red");
+        incident.setEventCaptureTimestamp(cDatetime);
+        incident.setEventName("Reporte de emergencia");
         incident.setEventTime(eventhour.getText().toString());
         incident.setEventDate(ebentdate.getText().toString());
         incident.setEventWhat(whhathappened.getText().toString());
@@ -387,7 +395,6 @@ public class EmergencyReport extends Fragment {
     }
 
     private void loadThumbnails(){
-        paths.clear();
         String mPaths = incident.getEventEvidence();
         String[] lPaths = mPaths.split(",");
         paths.addAll(new ArrayList<String>(Arrays.asList(lPaths)));

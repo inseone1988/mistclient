@@ -164,7 +164,7 @@ public class DatabaseOperations {
             public void onOperationSucceded(Object response) {
                 int lastid = (int) response;
                 int userid = User.userId(ctx);
-                int usersite = User.userSite(ctx);
+                String[] usersite = User.getManagedSites(ctx);
                 NetworkRequest.fetchIncidents(ctx,"FETCH" ,lastid, userid, usersite, new NetworkRequestCallbacks() {
                     @Override
                     public void onNetworkRequestResponse(Object response) {

@@ -39,7 +39,8 @@ import mx.com.vialogika.mistclient.Utils.SimpleDialogCallback;
 public class DscMainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
         ReportsFragment.OnFragmentInteractionListener,
-        EmergencyReport.OnFragmentInteractionListener {
+        EmergencyReport.OnFragmentInteractionListener,
+        HomeFragment.OnFragmentInteractionListener{
 
     private Toolbar        toolbar;
     private NavigationView navigationView;
@@ -64,7 +65,8 @@ public class DscMainActivity extends AppCompatActivity
         setSupportActionBar(toolbar);
         setupActionListeners();
         setupDrawer();
-        loadFragment(new ReportsFragment());
+        Fragment hf = HomeFragment.newInstance("","");
+        loadFragment(hf);
         navigationView.setNavigationItemSelectedListener(this);
         handleIntent();
         //showSampleNotification();
@@ -238,6 +240,10 @@ public class DscMainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
         switch (id) {
+            case R.id.home:
+                Fragment hf = HomeFragment.newInstance("","");
+                loadFragment(hf);
+                break;
             case R.id.nav_reports:
                 Fragment edoRepFragment = ReportsFragment.newInstance("","");
                 loadFragment(edoRepFragment);

@@ -9,6 +9,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -73,6 +74,7 @@ public class ReportsFragment extends Fragment {
     private RecyclerView mRecyclerview;
     private RecyclerView.Adapter rAdapter;
     private RecyclerView.LayoutManager rLayoutManager;
+    private ConstraintLayout mConstarintLayout;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -201,6 +203,22 @@ public class ReportsFragment extends Fragment {
         });
     }
 
+    private void hideRV(){
+        mRecyclerview.setVisibility(View.GONE);
+    }
+
+    private void showRV(){
+        mRecyclerview.setVisibility(View.VISIBLE);
+    }
+
+    private void hideNoDataLogo(){
+        mConstarintLayout.setVisibility(View.GONE);
+    }
+
+    private void showNoDataLogo(){
+        mConstarintLayout.setVisibility(View.VISIBLE);
+    }
+
     private void setupRecyclerView(){
         mRecyclerview.setHasFixedSize(true);
         rLayoutManager = new LinearLayoutManager(this.getContext());
@@ -269,7 +287,7 @@ public class ReportsFragment extends Fragment {
     private void getItems(View rootView){
         swipeRefreshLayout = rootView.findViewById(R.id.fr_report);
         mRecyclerview = rootView.findViewById(R.id.report_rv);
-
+        mConstarintLayout = rootView.findViewById(R.id.nodataview);
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -363,8 +381,13 @@ public class ReportsFragment extends Fragment {
                     reportes.addAll((List<Reporte>)response);
                     runLayoutAnimation();
                     swipeRefreshLayout.setRefreshing(false);
-                    if (reportes.size() == 0){
+                    if (reportes.size() > 0){
+                        showRV();
+                        hideNoDataLogo();
+                    }else{
                         Toast.makeText(getContext(), "Timeline actualizado, no hay reportes", Toast.LENGTH_SHORT).show();
+                        hideRV();
+                        showNoDataLogo();
                     }
                 }
             }
@@ -522,38 +545,5 @@ public class ReportsFragment extends Fragment {
         void onReportShare(int position);
         void onReportFlagged(int selected,int reportid);
 
-    }
-
-    private class loadIncidents extends AsyncTask<Object,Void,Void>{
-
-        private int mFrom;
-        private int mUser;
-        private int mSite;
-
-        public loadIncidents(int from,int user,int site){
-            this.mFrom = from;
-            this.mUser = user;
-            this.mSite = site;
-        }
-        @Override
-        protected void onPreExecute() {
-
-        }
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            super.onPostExecute(aVoid);
-        }
-
-        @Override
-        protected void onProgressUpdate(Void... values) {
-            super.onProgressUpdate(values);
-        }
-
-        @Override
-        protected Void doInBackground(Object... context) {
-            NetworkRequest.fetchIncidents((Context)context[0],"FETCH",mFrom,mUser,mSite,(NetworkRequestCallbacks) context[1]);
-            return null;
-        }
     }
 }

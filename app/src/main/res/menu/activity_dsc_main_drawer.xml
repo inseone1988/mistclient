@@ -7,6 +7,10 @@
         android:id="@+id/drawer_main_group"
         android:checkableBehavior="single">
         <item
+            android:id="@+id/home"
+            android:icon="@drawable/ic_home_black_24dp"
+            android:title="Inicio" />
+        <item
             android:id="@+id/nav_reports"
             android:checkable="true"
             android:icon="@drawable/ic_baseline_library_books"

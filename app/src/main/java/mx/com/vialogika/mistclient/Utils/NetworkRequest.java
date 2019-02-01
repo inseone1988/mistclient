@@ -12,6 +12,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
+import android.text.TextUtils;
 import android.util.Log;
 import android.widget.ImageView;
 
@@ -92,7 +93,7 @@ public class NetworkRequest {
         rq.add(jor);
     }
 
-    public static void fetchIncidents(final Context context,String mode,int from,int user, int site,final NetworkRequestCallbacks cb){
+    public static void fetchIncidents(final Context context,String mode,int from,int user, String[] sites,final NetworkRequestCallbacks cb){
         //TODO: Consider server will change later
         String handler = "raw.php";
         String url = SERVER_URL_PREFIX + handler;
@@ -102,7 +103,7 @@ public class NetworkRequest {
                 params.put("function","getIncidents")
                         .put("from",from)
                         .put("user",user)
-                        .put("site",site);
+                        .put("site",TextUtils.join(",",sites));
             }else{
                 DatabaseOperations dbo = new DatabaseOperations(context);
                 int[] toUpdate = dbo.repToUpdate();

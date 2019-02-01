@@ -3,6 +3,7 @@ package mx.com.vialogika.mistclient;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -70,6 +71,8 @@ public class EmergencyReport extends Fragment {
     private ArrayList<String> pendingIncidentTitles = new ArrayList<>();
     private boolean continueEditing = true;
     private boolean autoSaveSchduled = false;
+
+    private Context mContext;
 
 
     // TODO: Rename parameter arguments, choose names that match
@@ -142,14 +145,14 @@ public class EmergencyReport extends Fragment {
     }
 
     private void init(){
-        layoutManager = new LinearLayoutManager(getContext());
+        layoutManager = new LinearLayoutManager(mContext);
         adapter = new EvidenceAdapter(paths);
         rv.setLayoutManager(layoutManager);
         rv.setAdapter(adapter);
     }
 
     private void getPendingIncidents(){
-        DatabaseOperations dbo = new DatabaseOperations(getContext());
+        DatabaseOperations dbo = new DatabaseOperations(mContext);
         dbo.getPendingIncidents(new DatabaseOperations.doInBackgroundOperation() {
             @Override
             public void onOperationFinished(@Nullable Object object) {
@@ -169,7 +172,8 @@ public class EmergencyReport extends Fragment {
     }
 
     private void showPendingIncidentDialogs(){
-            new MaterialDialog.Builder(getContext())
+        if (mContext != null){
+            new MaterialDialog.Builder(mContext)
                     .title("Reportes pendientes")
                     .items(pendingIncidentTitles)
                     .itemsCallback(new MaterialDialog.ListCallback() {
@@ -181,26 +185,27 @@ public class EmergencyReport extends Fragment {
                     })
                     .positiveText("Editar")
                     .show();
+        }
+
     }
 
     private void deleteIncident(){
         if (incident.getLocalId() != 0){
-            DatabaseOperations dbo = new DatabaseOperations(getContext());
+            DatabaseOperations dbo = new DatabaseOperations(mContext);
             dbo.deleteIncident(incident.getLocalId(), new DatabaseOperations.doInBackgroundOperation() {
                 @Override
                 public void onOperationFinished(@Nullable Object object) {
                     incident = new Incident();
-                    getValues();
                 }
             });
         }else{
             incident = new Incident();
-            getValues();
         }
+        setValues();
     }
 
     private void deleteDialog(){
-        new MaterialDialog.Builder(getContext())
+        new MaterialDialog.Builder(mContext)
                 .title("Eliminar reporte")
                 .content("Desea borrar el reporte en edicion?")
                 .positiveText("OK")
@@ -268,7 +273,7 @@ public class EmergencyReport extends Fragment {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (count > 5){
+                if (count > 3){
                     if (!autoSaveSchduled){
                         setIncidentEditing();
                         scheduleAutoSave();
@@ -296,7 +301,7 @@ public class EmergencyReport extends Fragment {
     }
 
     private void saveDialog(){
-        new MaterialDialog.Builder(getContext())
+        new MaterialDialog.Builder(mContext)
                 .title("Enviar reporte")
                 .content("Deseas enviar el reporte ahora?")
                 .positiveText("OK")
@@ -304,11 +309,12 @@ public class EmergencyReport extends Fragment {
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                         getValues();
-                        NetworkRequest.uploadIncidence(incident, getContext(), new NetworkRequest.NetworkUpload() {
+                        NetworkRequest.uploadIncidence(incident, mContext, new NetworkRequest.NetworkUpload() {
                             @Override
                             public void onUploadCompleted(Incident incident, UploadInfo uploadInfo, ServerResponse serverResponse) {
                                 Log.d("AndroidUploadService",String.valueOf(serverResponse.getHttpCode()));
                                 deleteIncident();
+                                autoSaveSchduled = false;
                             }
                         });
                     }
@@ -338,21 +344,22 @@ public class EmergencyReport extends Fragment {
     private void setIncidentEditing(){
         incident.setEventEditStatus(true);
     }
+
     private void saveIncident(){
         getValues();
-        Context context = getContext();
-        if (context != null){
-            DatabaseOperations dbo = new DatabaseOperations(getContext().getApplicationContext());
+        if (mContext != null){
+            DatabaseOperations dbo = new DatabaseOperations(mContext.getApplicationContext());
             dbo.saveIncident(incident, new DatabaseOperations.doInBackgroundOperation() {
                 @Override
                 public void onOperationFinished(@Nullable Object object) {
-
+                    incident = (Incident) object;
                 }
             }, new DatabaseOperations.UIThreadOperation() {
                 @Override
                 public void onOperationFinished(@Nullable Object object) {
+                    Resources res = mContext.getResources();
                     SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss",Locale.ENGLISH);
-                    String formatted = String.format(getString(R.string.guardado),df.format(new Date()));
+                    String formatted = String.format(res.getString(R.string.guardado),df.format(new Date()));
                     lastsaved.setText(formatted);
                 }
             });
@@ -375,15 +382,20 @@ public class EmergencyReport extends Fragment {
     }
 
     private void getValues(){
-        String cDatetime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
-        incident.setEventRiskLevel("red");
-        incident.setEventCaptureTimestamp(cDatetime);
-        incident.setEventName("Reporte de emergencia");
-        incident.setEventTime(eventhour.getText().toString());
-        incident.setEventDate(ebentdate.getText().toString());
-        incident.setEventWhat(whhathappened.getText().toString());
-        incident.setEventFacts(facts.getText().toString());
-        incident.setEventEvidence(TextUtils.join(",",paths));
+        if (mContext != null){
+            String cDatetime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
+            incident.setEventUserSite(String.valueOf(37));
+            incident.setEventUser(User.userName(mContext));
+            incident.setEventRiskLevel("red");
+            incident.setEventCaptureTimestamp(cDatetime);
+            incident.setEventName("Reporte de emergencia");
+            incident.setEventTime(eventhour.getText().toString());
+            incident.setEventDate(ebentdate.getText().toString());
+            incident.setEventWhat(whhathappened.getText().toString());
+            incident.setEventFacts(facts.getText().toString());
+            incident.setEventEvidence(TextUtils.join(",",paths));
+        }
+
     }
 
     private void setValues(){
@@ -397,8 +409,10 @@ public class EmergencyReport extends Fragment {
     private void loadThumbnails(){
         String mPaths = incident.getEventEvidence();
         String[] lPaths = mPaths.split(",");
-        paths.addAll(new ArrayList<String>(Arrays.asList(lPaths)));
-        adapter.notifyDataSetChanged();
+        if (lPaths.length > 0){
+            paths.addAll(new ArrayList<String>(Arrays.asList(lPaths)));
+            adapter.notifyDataSetChanged();
+        }
     }
 
     private void updateTime(String time){
@@ -427,6 +441,7 @@ public class EmergencyReport extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+        mContext = context;
         if (context instanceof OnFragmentInteractionListener) {
             mListener = (OnFragmentInteractionListener) context;
         } else {

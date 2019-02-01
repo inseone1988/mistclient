@@ -17,7 +17,7 @@ import mx.com.vialogika.mistclient.Incident;
 import mx.com.vialogika.mistclient.Reporte;
 import mx.com.vialogika.mistclient.Utils.Provider;
 
-@Database(entities = {Reporte.class,Comment.class,Site.class,Guard.class,Apostamiento.class,Client.class,Provider.class,EdoReport.class,GuardForceState.class,Incident.class},version = 1,exportSchema = false)
+@Database(entities = {Reporte.class,Comment.class,Site.class,Guard.class,Apostamiento.class,Client.class,Provider.class,EdoReport.class,GuardForceState.class,Incident.class},version = 2,exportSchema = false)
 public abstract class AppDatabase extends RoomDatabase {
     public abstract ReportDao reportDao();
     public abstract CommentDao commentDao();

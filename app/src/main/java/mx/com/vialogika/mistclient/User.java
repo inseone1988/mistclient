@@ -111,6 +111,15 @@ public class User {
         editor.clear().apply();
     }
 
+    public static String[] getManagedSites(Context context){
+        SharedPreferences sp = context.getSharedPreferences("AndroidSettings",Context.MODE_PRIVATE);
+        String sitesString = sp.getString("casd","");
+        if (sitesString != null){
+            return sitesString.split(",");
+        }
+        return new String[]{};
+    }
+
     public interface onUserDataSaved{
         void dataSaved();
     }

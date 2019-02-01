@@ -127,6 +127,7 @@
     <string name="evidences">Evidencias</string>
     <string name="not_saved_yet">No se ha guardado aun</string>
     <string name="guardado">Guardado : %1$s</string>
+    <string name="swipe_down_to_refresh">Esta muy vacio aqui :(\n Tira para actualizar</string>
     <string-array name="apType">
         <item>Filtro</item>
         <item>Accesos / Aduanas</item>

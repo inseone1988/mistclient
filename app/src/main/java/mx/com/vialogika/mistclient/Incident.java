@@ -8,7 +8,7 @@ import org.json.JSONObject;
 
 @Entity(tableName = "Incidents")
 public class Incident {
-    @PrimaryKey
+    @PrimaryKey(autoGenerate = true)
     private int     localId;
     private int     eventId;
     private String  eventCaptureTimestamp;
@@ -17,7 +17,7 @@ public class Incident {
     private String  eventName;
     private String  eventRiskLevel;
     private String  eventResponsable;
-    private String  eventEvidence;
+    private String  eventEvidence = "";
     private String  eventWhat;
     private String  eventHow;
     private String  eventWhen;

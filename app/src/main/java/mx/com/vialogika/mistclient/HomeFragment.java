@@ -3,11 +3,13 @@ package mx.com.vialogika.mistclient;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.smarteist.autoimageslider.DefaultSliderView;
 import com.smarteist.autoimageslider.IndicatorAnimations;
@@ -27,6 +29,8 @@ import com.smarteist.autoimageslider.SliderView;
 public class HomeFragment extends Fragment {
 
     private SliderLayout sliderLayout;
+    private FloatingActionButton fab;
+
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -76,12 +80,31 @@ public class HomeFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_home, container, false);
         getItems(rootView);
         initSlider();
+        setListeners();
         return rootView;
     }
 
     private void getItems(View v){
         sliderLayout = v.findViewById(R.id.newsslider);
+        fab = v.findViewById(R.id.faqbutton);
     }
+
+    private void setListeners(){
+        fab.setOnClickListener(onClickListener);
+    }
+
+    private View.OnClickListener onClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            switch (v.getId()){
+                case R.id.faqbutton:
+                    Uri sampleuri = Uri.parse("mailto:someuser?param1=value1");
+                    onButtonPressed(sampleuri);
+                    Toast.makeText(getContext(), "Hello this is the faq button", Toast.LENGTH_SHORT).show();
+                    break;
+            }
+        }
+    };
 
     private void initSlider(){
         sliderLayout.setIndicatorAnimation(IndicatorAnimations.FILL);
@@ -92,7 +115,7 @@ public class HomeFragment extends Fragment {
     private void setSliderViews(){
         for (int i = 0; i < 3; i++) {
             SliderView sliderView = new DefaultSliderView(getContext());
-            sliderView.setImageUrl("https://picsum.photos/400/600/?image=108"+i);
+            sliderView.setImageUrl("https://picsum.photos/1920/1800/?image=107"+i);
             sliderView.setImageScaleType(ImageView.ScaleType.CENTER_CROP);
             sliderLayout.addSliderView(sliderView);
         }

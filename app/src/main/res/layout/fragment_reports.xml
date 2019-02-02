@@ -8,11 +8,20 @@
     tools:context=".ReportsFragment">
 
     <!-- TODO: Update blank fragment layout -->
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/report_rv"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layoutAnimation="@anim/layout_animation_fall_down"
+        android:visibility="visible">
+
+    </android.support.v7.widget.RecyclerView>
+
     <android.support.constraint.ConstraintLayout
         android:id="@+id/nodataview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="visible">
+        android:visibility="gone">
 
         <ImageView
             android:id="@+id/logonodata"
@@ -37,14 +46,5 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/logonodata" />
     </android.support.constraint.ConstraintLayout>
-
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/report_rv"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layoutAnimation="@anim/layout_animation_fall_down"
-        android:visibility="gone">
-
-    </android.support.v7.widget.RecyclerView>
 
 </android.support.v4.widget.SwipeRefreshLayout>

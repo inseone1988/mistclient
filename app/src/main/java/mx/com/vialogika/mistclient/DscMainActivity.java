@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.NotificationManagerCompat;
 import android.view.View;
@@ -32,6 +33,7 @@ import mx.com.vialogika.mistclient.Notif.AppNotifications;
 import mx.com.vialogika.mistclient.Room.DatabaseOperations;
 import mx.com.vialogika.mistclient.Utils.AppJobCreator;
 import mx.com.vialogika.mistclient.Utils.Dialogs;
+import mx.com.vialogika.mistclient.Utils.FaqsDialogFragment;
 import mx.com.vialogika.mistclient.Utils.NetworkRequest;
 import mx.com.vialogika.mistclient.Utils.ReportSyncJob;
 import mx.com.vialogika.mistclient.Utils.SimpleDialogCallback;
@@ -117,9 +119,19 @@ public class DscMainActivity extends AppCompatActivity
 
     }
 
+    private void shwFaqsDialog (){
+        FragmentManager fm = getSupportFragmentManager();
+        FaqsDialogFragment faqsDialogFragment = FaqsDialogFragment.newInstance();
+        FragmentTransaction transaction = fm.beginTransaction();
+        transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+        transaction.add(android.R.id.content,faqsDialogFragment)
+                .addToBackStack(null).commit();
+        //faqsDialogFragment.show(fm,"FAQS_DIALOG");
+    }
+
     @Override
     public void onFragmentInteraction(Uri uri) {
-
+        shwFaqsDialog();
     }
 
     private void updateUserData() {
@@ -209,6 +221,9 @@ public class DscMainActivity extends AppCompatActivity
     private void updateAppBarTitle(int fragmentid) {
         int appBarTitle = R.string.title_activity_log_in;
         switch (fragmentid) {
+            case R.id.home:
+                appBarTitle = R.string.security;
+                break;
             case R.id.nav_reports:
                 appBarTitle = R.string.appbar_title_reports;
                 break;

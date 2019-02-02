@@ -375,20 +375,21 @@ public class ReportsFragment extends Fragment {
 
             @Override
             public void UIThreadOperation(Object response) {
+                //TODO: Figure out a way to show empty view
                 reportes.clear();
                 //This list contains all reports
                 if (response != null){
                     reportes.addAll((List<Reporte>)response);
-                    runLayoutAnimation();
                     swipeRefreshLayout.setRefreshing(false);
                     if (reportes.size() > 0){
-                        showRV();
+                        //showRV();
                         hideNoDataLogo();
                     }else{
                         Toast.makeText(getContext(), "Timeline actualizado, no hay reportes", Toast.LENGTH_SHORT).show();
-                        hideRV();
+                        //hideRV();
                         showNoDataLogo();
                     }
+                    runLayoutAnimation();
                 }
             }
         });

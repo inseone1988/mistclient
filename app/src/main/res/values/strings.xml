@@ -128,6 +128,10 @@
     <string name="not_saved_yet">No se ha guardado aun</string>
     <string name="guardado">Guardado : %1$s</string>
     <string name="swipe_down_to_refresh">Esta muy vacio aqui :(\n Tira para actualizar</string>
+    <string name="faqs">FAQ\'s</string>
+    <string name="security">Seguridad Patrimonial</string>
+    <string name="welcome">Bienvenido</string>
+    <string name="news">Noticias</string>
     <string-array name="apType">
         <item>Filtro</item>
         <item>Accesos / Aduanas</item>

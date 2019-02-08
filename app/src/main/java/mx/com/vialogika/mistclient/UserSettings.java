@@ -20,6 +20,7 @@ public class UserSettings {
     private boolean canAddApts;
     private boolean canDeleteGuards;
     private boolean canaDeleteApts;
+    private String defaultMails;
 
     public UserSettings(Context context){
         this.context = context;
@@ -38,6 +39,7 @@ public class UserSettings {
             this.canAddApts = as.getBoolean("can_add_apts");
             this.canDeleteGuards = as.getBoolean("can_delete_guards");
             this.canaDeleteApts = as.getBoolean("can_delete_apts");
+
         }catch(JSONException e){
             e.printStackTrace();
         }
@@ -159,5 +161,9 @@ public class UserSettings {
 
     public void setCanaDeleteApts(boolean canaDeleteApts) {
         this.canaDeleteApts = canaDeleteApts;
+    }
+
+    public boolean managesMoreThanOneSite(){
+        return managesSites.split(",").length > 1;
     }
 }

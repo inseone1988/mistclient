@@ -1,5 +1,6 @@
 package mx.com.vialogika.mistclient;
 
+import android.app.Activity;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
@@ -7,6 +8,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -44,6 +46,8 @@ public class EdoApostamientos extends Fragment {
     private List<Apostamiento> apostamientosList = new ArrayList<>();
     private List<Site> sites = new ArrayList<>();
     private DatabaseOperations dbo;
+
+    private Context mContext;
 
 
     private RecyclerView recyclerView;
@@ -187,12 +191,13 @@ public class EdoApostamientos extends Fragment {
     }
 
     private void init(){
+        final FragmentManager fm = mGetFragmentManager();
         layoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(layoutManager);
         adapter = new ApostamientoAdapter(apostamientosList){
             @Override
             public FragmentManager getFragmentManager() {
-                return getThisFragmentmanager();
+                return fm;
             }
 
             @Override
@@ -200,6 +205,7 @@ public class EdoApostamientos extends Fragment {
                 removeitem(position);
             }
         };
+        ((ApostamientoAdapter) adapter).setFragmentManager(fm);
         recyclerView.setAdapter(adapter);
     }
 
@@ -209,8 +215,12 @@ public class EdoApostamientos extends Fragment {
         adapter.notifyItemRangeChanged(position,apostamientosList.size());
     }
 
+    private FragmentManager mGetFragmentManager(){
+        return ((AppCompatActivity) mContext).getSupportFragmentManager();
+    }
+
     private FragmentManager getThisFragmentmanager(){
-        return getActivity().getSupportFragmentManager();
+        return this.getFragmentManager();
     }
 
     private void setListeners(){
@@ -231,6 +241,10 @@ public class EdoApostamientos extends Fragment {
         });
     }
 
+    public Context getContext(){
+        return this.mContext;
+    }
+
 
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
@@ -241,6 +255,7 @@ public class EdoApostamientos extends Fragment {
 
     @Override
     public void onAttach(Context context) {
+        mContext = context;
         super.onAttach(context);
         if (context instanceof OnFragmentInteractionListener) {
             mListener = (OnFragmentInteractionListener) context;

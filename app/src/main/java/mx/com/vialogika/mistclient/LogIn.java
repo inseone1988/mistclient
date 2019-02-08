@@ -191,14 +191,15 @@ public class LogIn extends AppCompatActivity {
     private boolean checkPermission(){
         int wsp = ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
         int resp = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE);
-        if (wsp == PackageManager.PERMISSION_GRANTED && resp == PackageManager.PERMISSION_GRANTED){
+        int phoneCallPermission = ContextCompat.checkSelfPermission(this,Manifest.permission.CALL_PHONE);
+        if (wsp == PackageManager.PERMISSION_GRANTED && resp == PackageManager.PERMISSION_GRANTED && phoneCallPermission == PackageManager.PERMISSION_GRANTED){
             return true;
         }
         return false;
     }
 
     private void requestPermissons(){
-        ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.READ_EXTERNAL_STORAGE,Manifest.permission.WRITE_EXTERNAL_STORAGE},REQUEST_PERMISSIONS);
+        ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.READ_EXTERNAL_STORAGE,Manifest.permission.WRITE_EXTERNAL_STORAGE,Manifest.permission.CALL_PHONE},REQUEST_PERMISSIONS);
     }
 
     @Override

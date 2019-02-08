@@ -8,6 +8,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentManager;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -142,6 +143,7 @@ public class EditElementDialog extends MaterialDialog.Builder {
                 consdate.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        FragmentManager fm = ((AppCompatActivity) getContext()).getSupportFragmentManager();
                         DatePickerFragment dp = new DatePickerFragment();
                         dp.setCallback(new DatePickerFragment.DatePicker() {
                             @Override
@@ -149,7 +151,7 @@ public class EditElementDialog extends MaterialDialog.Builder {
                                 consdate.setText(new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH).format(from));
                             }
                         });
-                        dp.show(getFragmentManager(),"DATE_PICKER");
+                        dp.show(fm,"DATE_PICKER");
                     }
                 });
                 apClient.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {

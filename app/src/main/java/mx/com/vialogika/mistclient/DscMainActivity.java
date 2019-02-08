@@ -33,6 +33,7 @@ import mx.com.vialogika.mistclient.Notif.AppNotifications;
 import mx.com.vialogika.mistclient.Room.DatabaseOperations;
 import mx.com.vialogika.mistclient.Utils.AppJobCreator;
 import mx.com.vialogika.mistclient.Utils.Dialogs;
+import mx.com.vialogika.mistclient.Utils.EdoSyncJob;
 import mx.com.vialogika.mistclient.Utils.FaqsDialogFragment;
 import mx.com.vialogika.mistclient.Utils.NetworkRequest;
 import mx.com.vialogika.mistclient.Utils.ReportSyncJob;
@@ -60,6 +61,7 @@ public class DscMainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         JobManager.create(this).addJobCreator(new AppJobCreator());
         ReportSyncJob.scheduleJob();
+        EdoSyncJob.scheduleJob();
         setContentView(R.layout.activity_dsc_main);
         initdb();
         getSPValues();
@@ -227,6 +229,12 @@ public class DscMainActivity extends AppCompatActivity
             case R.id.nav_reports:
                 appBarTitle = R.string.appbar_title_reports;
                 break;
+            case R.id.nav_em_report:
+                appBarTitle = R.string.emergency_report;
+                break;
+            case R.id.nav_edo:
+                appBarTitle = R.string.edo_reports;
+                break;
         }
         toolbar.setTitle(appBarTitle);
     }
@@ -249,6 +257,13 @@ public class DscMainActivity extends AppCompatActivity
         }).start();
     }
 
+    private void SOSCall(){
+        //TODO: Get phone number dinamically
+        Intent intent = new Intent(Intent.ACTION_CALL);
+        intent.setData(Uri.parse("tel:5546056613"));
+        startActivity(intent);
+    }
+
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
@@ -267,9 +282,16 @@ public class DscMainActivity extends AppCompatActivity
                 Fragment emreport = EmergencyReport.newInstance("", "");
                 loadFragment(emreport);
                 break;
+            case R.id.sos_call:
+                SOSCall();
+                break;
             case R.id.nav_edo:
                 Fragment edoFragment = EdoFragment.newInstance("","");
                 loadFragment(edoFragment);
+                break;
+            case R.id.nav_settings:
+                Intent intent = new Intent(this,SettingsActivity.class);
+                startActivity(intent);
                 break;
             case R.id.nav_exit_app:
                 Dialogs.exitAppDialog(this, new SimpleDialogCallback() {

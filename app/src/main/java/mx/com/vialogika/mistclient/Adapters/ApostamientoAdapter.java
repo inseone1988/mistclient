@@ -139,7 +139,7 @@ public class ApostamientoAdapter extends RecyclerView.Adapter<ApostamientoAdapte
     }
 
     public FragmentManager getFragmentManager() {
-        return fragmentManager;
+        return this.fragmentManager;
     }
 
     public void setFragmentManager(FragmentManager fragmentManager) {

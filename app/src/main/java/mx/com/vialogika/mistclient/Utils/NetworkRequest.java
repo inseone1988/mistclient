@@ -11,6 +11,7 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.NonNull;
+import android.support.v4.app.NotificationManagerCompat;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.util.Log;
@@ -58,6 +59,7 @@ import mx.com.vialogika.mistclient.Client;
 import mx.com.vialogika.mistclient.Comment;
 import mx.com.vialogika.mistclient.GuardForceState;
 import mx.com.vialogika.mistclient.Incident;
+import mx.com.vialogika.mistclient.Notif.AppNotifications;
 import mx.com.vialogika.mistclient.Room.DatabaseOperations;
 
 public class NetworkRequest {
@@ -397,6 +399,22 @@ public class NetworkRequest {
                         dbo.syncEdoReports(responsedata, new DatabaseOperations.doInBackgroundOperation() {
                             @Override
                             public void onOperationFinished(@android.support.annotation.Nullable Object object) {
+                                List<GuardForceState> saved = (List<GuardForceState>)object;
+                                String current = "";
+                                List<String> grupos = new ArrayList<>();
+                                if (saved!= null){
+                                    for (int i = 0; i < saved.size(); i++) {
+                                        if (!saved.get(i).getEdoFuerzaTurno().equals(current)){
+                                            grupos.add(saved.get(i).getEdoFuerzaTurno());
+                                        }
+                                        current = saved.get(i).getEdoFuerzaTurno();
+                                    }
+                                }
+                                if (grupos.size() > 0){
+                                    AppNotifications appNotifications = new AppNotifications(context);
+                                    NotificationManagerCompat nManager = NotificationManagerCompat.from(context);
+                                    nManager.notify(appNotifications.EDO_FUERZA_REPORTED_HANDLE,appNotifications.newEdoNotification(grupos.size()).build());
+                                }
                                 dib.onOperationFinished(object);
                             }
                         }, new DatabaseOperations.UIThreadOperation() {
@@ -414,6 +432,43 @@ public class NetworkRequest {
             @Override
             public void onErrorResponse(VolleyError error) {
                 displayErrorDialog(context,error);
+            }
+        });
+        rq.add(jor);
+    }
+
+    public static void getSecurityToken(final Context context, String type,int identifier,final  NetworkRequestCallbacks cb){
+        String handler = "raw.php";
+        String url = SERVER_URL_PREFIX + handler;
+        RequestQueue rq = Volley.newRequestQueue(context);
+        JSONObject params = new JSONObject();
+        try{
+            params.put("function","tokenRequest");
+            params.put("type",type);
+            params.put("identifier",identifier);
+        }catch(JSONException e){
+            e.printStackTrace();
+        }
+        JsonObjectRequest jor = new JsonObjectRequest(Request.Method.POST, url, params, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                if (response != null){
+                    try{
+                        if (response.getBoolean("success")){
+                            String token = response.getString("token");
+                            cb.onNetworkRequestResponse(response);
+                        }
+                    }catch(JSONException e){
+                        e.printStackTrace();
+                    }
+
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                displayErrorDialog(context,error);
+                cb.onNetworkRequestError(error);
             }
         });
         rq.add(jor);

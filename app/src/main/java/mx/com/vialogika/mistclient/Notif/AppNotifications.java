@@ -14,6 +14,7 @@ import org.json.JSONObject;
 import java.util.List;
 
 import mx.com.vialogika.mistclient.DscMainActivity;
+import mx.com.vialogika.mistclient.GuardsEdoReports;
 import mx.com.vialogika.mistclient.R;
 import mx.com.vialogika.mistclient.Reporte;
 
@@ -22,6 +23,7 @@ public class AppNotifications {
     final public static int    REPORT_NOTIFICATION_HANDLE   = 12345;
     final public static int    DOWNLOAD_NOTIFICATION_HANDLE = 12515;
     final public static int    TESTIN_NOTIFICATION_HANDLE   = 67891;
+    final public static int    EDO_FUERZA_REPORTED_HANDLE          = 54616;
     final public static String REPORT_GROUP                 = "REPORT_GROUP";
 
     private int PROGRESS_MAX     = 100;
@@ -63,7 +65,7 @@ public class AppNotifications {
                 .setContentTitle(reportText)
                 .setContentIntent(pendingIntent)
                 .setAutoCancel(true)
-                .setContentText("New reports");
+                .setContentText("Nuevas Incidencias reportadas");
         NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle();
         inboxStyle.setBigContentTitle("New reports arrived");
         for (int i = 0; i < reportes.size(); i++) {
@@ -71,6 +73,21 @@ public class AppNotifications {
         }
         mBuilder.setStyle(inboxStyle);
         return mBuilder;
+    }
+
+    public NotificationCompat.Builder newEdoNotification(int groupsReported) {
+        Intent intent = new Intent(ctx, GuardsEdoReports.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        PendingIntent pendingIntent = PendingIntent.getActivity(ctx, 0, intent, 0);
+        String        edoText       = String.format(ctx.getResources().getString(R.string.edoreport_notif), String.valueOf(groupsReported));
+        NotificationCompat.Builder mbuilder = new NotificationCompat.Builder(ctx, RegisterNotificationChannels.EDO_FUERZA_CHANNEL_ID)
+                .setSmallIcon(R.drawable.ic_stat_dhl_icon)
+                .setContentTitle(edoText)
+                .setContentIntent(pendingIntent)
+                .setAutoCancel(true)
+                .setContentText("Se ha reportado estado de fuerza");
+        return mbuilder;
+
     }
 
     public NotificationCompat.Builder newEdoFuerzaRported() {
@@ -87,10 +104,10 @@ public class AppNotifications {
                 .setContentTitle("Descarga de imagen")
                 .setContentText("Descarga en curso")
                 .setPriority(NotificationCompat.PRIORITY_LOW)
-                .setProgress(getPROGRESS_MAX(),getPROGRESS_CURRENT(),true);
+                .setProgress(getPROGRESS_MAX(), getPROGRESS_CURRENT(), true);
     }
 
-    public NotificationCompat.Builder downloadNotification(){
+    public NotificationCompat.Builder downloadNotification() {
         initDownloadNotification();
         return DownloadNotification;
     }

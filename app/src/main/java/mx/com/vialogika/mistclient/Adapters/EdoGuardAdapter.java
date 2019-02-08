@@ -2,7 +2,10 @@ package mx.com.vialogika.mistclient.Adapters;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.CardView;
@@ -55,10 +58,11 @@ public class EdoGuardAdapter extends RecyclerView.Adapter<EdoGuardAdapter.EdoGua
         Context context = edoGuardViewHolder.elementName.getContext();
         Resources res = context.getResources();
         GuardForceState item = dataset.get(i);
+        edoGuardViewHolder.guardPhoto.setImageDrawable(res.getDrawable(R.drawable.ic_guard));
         if (item.getGuardPhotoPath() != null){
             if (!item.getGuardPhotoPath().equals("null")){
                 if(!item.getGuardPhotoPath().equals("")){
-                    edoGuardViewHolder.guardPhoto.setImageBitmap(BitmapFactory.decodeFile(item.getGuardPhotoPath()));
+                    getGuardPhoto(item.getGuardPhotoPath(),edoGuardViewHolder.guardPhoto);
                 }
             }
         }
@@ -67,6 +71,24 @@ public class EdoGuardAdapter extends RecyclerView.Adapter<EdoGuardAdapter.EdoGua
         edoGuardViewHolder.apostamiento.setText(item.getApName());
         edoGuardViewHolder.tiempo.setText(item.reportHour());
         edoGuardViewHolder.obs.setText(obs);
+    }
+
+    private void getGuardPhoto(final String path,final ImageView imageView){
+        final Handler handler = new Handler(Looper.getMainLooper());
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                final Bitmap profilePhoto = BitmapFactory.decodeFile(path);
+                if(profilePhoto != null){
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                        imageView.setImageBitmap(profilePhoto);
+                        }
+                    });
+                }
+            }
+        }).start();
     }
 
     @Override

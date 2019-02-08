@@ -81,7 +81,7 @@ public class GuardsEdoReports extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuItem calendar = menu.add(Menu.NONE, CALENDAR_MENU_ID, Menu.NONE, "Elije fecha");
-        calendar.setIcon(R.drawable.ic_date_range_black_24dp);
+        calendar.setIcon(R.drawable.ic_date_range_red_24dp);
         calendar.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
         getMenuInflater().inflate(R.menu.edo_settings_menu, menu);
         setupmenu(menu);

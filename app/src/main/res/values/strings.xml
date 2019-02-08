@@ -132,6 +132,8 @@
     <string name="security">Seguridad Patrimonial</string>
     <string name="welcome">Bienvenido</string>
     <string name="news">Noticias</string>
+    <string name="kpis">KPI\'s</string>
+    <string name="edoreport_notif">%1$s Estados de fuerza reportados</string>
     <string-array name="apType">
         <item>Filtro</item>
         <item>Accesos / Aduanas</item>
@@ -160,4 +162,23 @@
     <string name="rs_provider_hint">Razon social</string>
     <string name="alias_provider_hint">Nombre clave del proveedor</string>
     <string name="rfc_provider_hint">RFC del proveedor</string>
+    <string name="title_activity_settings">Settings</string>
+    <string name="pref_sync">Syncronizacion</string>
+    <string name="pref_sync_summ">Description</string>
+    <string name="pref_syncConnectionType">Tipo de conexion</string>
+    <array name="pref_syncConnectionTypes_entries">
+        <item>Hello</item>
+        <item>Hello1</item>
+        <item>Hello2</item>
+        <item>Hello3</item>
+        <item>Hello4</item>
+    </array>
+    <array name="pref_syncConnectionTypes_values">
+        <item>Hello</item>
+        <item>Hello1</item>
+        <item>Hello2</item>
+        <item>Hello3</item>
+        <item>Hello4</item>
+    </array>
+    <string name="pref_syncConnectionTypes_default">Hello</string>
 </resources>

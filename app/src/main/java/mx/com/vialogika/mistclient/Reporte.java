@@ -14,7 +14,8 @@ import java.io.Serializable;
 public class Reporte implements Serializable
 {
 
-
+    @Ignore
+    final public static String REPORT_TOKEN_REQUEST = "REPORT_SHARE";
     @Ignore
     final public static int REPORT_FLAG_RESOLVED = 0;
     @Ignore

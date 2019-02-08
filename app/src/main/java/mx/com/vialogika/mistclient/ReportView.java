@@ -6,11 +6,14 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.support.annotation.NonNull;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.view.Gravity;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -22,6 +25,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.android.volley.VolleyError;
 import com.bogdwellers.pinchtozoom.ImageMatrixTouchHandler;
 import com.google.gson.Gson;
@@ -39,6 +44,7 @@ import java.util.List;
 import mx.com.vialogika.mistclient.Room.AppDatabase;
 import mx.com.vialogika.mistclient.Room.DatabaseOperations;
 import mx.com.vialogika.mistclient.Utils.ChatBubble;
+import mx.com.vialogika.mistclient.Utils.CryptoHash;
 import mx.com.vialogika.mistclient.Utils.DatabaseOperationCallback;
 import mx.com.vialogika.mistclient.Utils.LoadImages;
 import mx.com.vialogika.mistclient.Utils.LoadImagesCallback;
@@ -60,10 +66,6 @@ public class ReportView extends AppCompatActivity {
     private CardView evCard;
     private CardView sigCard;
     private LinearLayout sigContainer;
-    private LinearLayout comContainer;
-    private ChatBubble chatBubble;
-    private EditText commentEditText;
-    private ImageButton sendCommentButton;
 
 
     @Override
@@ -76,6 +78,70 @@ public class ReportView extends AppCompatActivity {
         setValues();
         setListeners();
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        int shareid = 101;
+        MenuItem share  = menu.add(Menu.NONE,shareid,Menu.NONE,"Comparttir");
+        share.setIcon(R.drawable.ic_share_black_24dp);
+        share.setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_WITH_TEXT | MenuItem.SHOW_AS_ACTION_ALWAYS);
+        share.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                new MaterialDialog.Builder(ReportView.this)
+                        .title("Compartir reporte")
+                        .content("¿Seguro que desea compartir el reporte?")
+                        .positiveText("OK")
+                        .negativeText("Cancelar")
+                        .onPositive(new MaterialDialog.SingleButtonCallback() {
+                            @Override
+                            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                                shareReport();
+                            }
+                        }).show();
+                return true;
+            }
+        });
+        return super.onPrepareOptionsMenu(menu);
+    }
+
+    private void shareReport(){
+        Toast.makeText(this, "Obteniendo token de seguridad...", Toast.LENGTH_SHORT).show();
+        NetworkRequest.getSecurityToken(this, Reporte.REPORT_TOKEN_REQUEST,report.getReportId(), new NetworkRequestCallbacks() {
+            @Override
+            public void onNetworkRequestResponse(Object response) {
+                JSONObject mResponse = (JSONObject) response;
+                if (response != null){
+                    try{
+                        if (mResponse.getBoolean("success")){
+                            String token = mResponse.getString("token");
+                            String reportId = CryptoHash.sha256(String.valueOf(report.getReportId()));
+                            openIntentPicker(token,reportId);
+                        }
+                    }catch(JSONException e){
+                        Toast.makeText(ReportView.this, "Failed to get security token. Try again later", Toast.LENGTH_SHORT).show();
+                        e.printStackTrace();
+                    }
+                }
+            }
+            @Override
+            public void onNetworkRequestError(VolleyError error) {
+
+            }
+        });
+    }
+
+    public void openIntentPicker(String token,String reportId){
+        UserSettings settings = new UserSettings(this);
+        Intent intent = new Intent();
+        intent.setAction(Intent.ACTION_SEND);
+        intent.setType("text/plain");
+        //TODO:Define default mail get method
+        intent.putExtra(Intent.EXTRA_SUBJECT,"Nueva incidencia reportada");
+        //TODO: Crear metodo para obtener el token de seguridad del mail
+        intent.putExtra(Intent.EXTRA_TEXT,"Hello this is an sample text check it at "+NetworkRequest.SERVER_URL_PREFIX+"rViewer.php?token=" + token +"&reportId=" + reportId);
+        startActivity(intent);
     }
 
     private void getReport(){
@@ -102,10 +168,6 @@ public class ReportView extends AppCompatActivity {
         evContainer = findViewById(R.id.evidences_container);
         sigCard = findViewById(R.id.signatures_card);
         sigContainer = findViewById(R.id.signatures_container);
-        comContainer = findViewById(R.id.comments_container);
-        chatBubble = new ChatBubble(this,Messages.MESSAGE_INBOUND);
-        commentEditText = findViewById(R.id.comment);
-        sendCommentButton = findViewById(R.id.send_comment);
         noComments = getNoComments();
     }
 
@@ -125,7 +187,6 @@ public class ReportView extends AppCompatActivity {
                             comments.add(com);
                         }
                         dbo.saveComments(comments,null);
-                        loadCommentsToContainer();
                     }
                 }catch(JSONException e){
                     e.printStackTrace();
@@ -134,33 +195,9 @@ public class ReportView extends AppCompatActivity {
 
             @Override
             public void onNetworkRequestError(VolleyError error) {
-                dbo.loadLocalComments(report.getRemReportId(), new DatabaseOperationCallback() {
-                    @Override
-                    public void onOperationSucceded(@Nullable Object response) {
-                        if (response != null){
-                            comments.addAll((List<Comment>) response);
-                            loadCommentsToContainer();
-                        }else{
-                            loadCommentsToContainer();
-                        }
-                    }
-                });
+
             }
         });
-    }
-
-    private void loadCommentsToContainer(){
-        comContainer.removeAllViews();
-        if (comments.size() > 0){
-            for (int i = 0;i < comments.size();i++){
-                Comment cm = comments.get(i);
-                ChatBubble cb = new ChatBubble(this,setCommentType(cm.getUserName()));
-                cb.setMessageTexts(comments.get(i));
-                comContainer.addView(cb);
-            }
-        }else{
-            comContainer.addView(noComments);
-        }
     }
 
     private int setCommentType(String username){
@@ -189,73 +226,12 @@ public class ReportView extends AppCompatActivity {
         whereExp.setText(report.getEventWhere());
         factsExp.setText(report.getReportExplanation());
         loadImages();
-        loadCommentsToContainer();
         loadComments();
         //TODO:Remove testing method
         //bubbleExampleSetup();
     }
 
     private void setListeners(){
-        sendCommentButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                sendComment();
-                clearCommentBox();
-            }
-        });
-    }
-
-    private void clearCommentBox(){
-        commentEditText.setText("");
-    }
-
-    private void sendComment(){
-        String comment = commentEditText.getText().toString();
-        if (!comment.equals("")){
-            getCommentInfo(comment);
-        }else{
-            Toast.makeText(this,R.string.comment_is_empty,Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    private void getCommentInfo(String comment){
-        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-        String now = df.format(new Date());
-        SharedPreferences sp = getSharedPreferences("LogIn", Context.MODE_PRIVATE);
-        String userAlias = sp.getString("user_login","NotValid");
-        int userId = sp.getInt("user_id",0);
-        if(!userAlias.equals("NotValid" )&& userId != 0){
-            ChatBubble message = new ChatBubble(this,Messages.MESSAGE_OUTBOUND);
-            Comment mComment = new Comment(now,report.getRemReportId(),userId,comment,userAlias);
-            message.setMessageTexts(mComment);
-            comContainer.addView(message);
-            processComment(mComment);
-        }
-    }
-
-    private void processComment(final Comment comment){
-        comments.add(comment);
-        loadCommentsToContainer();
-        final Context ctx = this;
-        NetworkRequest.saveComment(this, comment, new NetworkRequestCallbacks() {
-            @Override
-            public void onNetworkRequestResponse(Object response) {
-                DatabaseOperations dbo = new DatabaseOperations(ctx.getApplicationContext());
-                comment.setSent(true);
-            }
-
-            @Override
-            public void onNetworkRequestError(VolleyError error) {
-
-            }
-        });
-    }
-
-    private void bubbleExampleSetup(){
-        ChatBubble example = new ChatBubble(this,Messages.MESSAGE_OUTBOUND);
-        example.setMessageTexts("@someuser","Hello pal, I hope we can going downtown this weekend. Very Nice project by the way","2018-06-11 17:07");
-        comContainer.addView(chatBubble);
-        comContainer.addView(example);
     }
 
     private void setupActionBar(){

@@ -43,6 +43,7 @@ import java.util.List;
 
 import mx.com.vialogika.mistclient.Room.DatabaseOperations;
 import mx.com.vialogika.mistclient.Utils.Color;
+import mx.com.vialogika.mistclient.Utils.CryptoHash;
 import mx.com.vialogika.mistclient.Utils.DatabaseOperationCallback;
 import mx.com.vialogika.mistclient.Utils.Dialogs;
 import mx.com.vialogika.mistclient.Utils.NetworkRequest;
@@ -63,7 +64,7 @@ public class ReportsFragment extends Fragment {
     DatabaseOperations dbo;
 
     private Integer from = 1;
-    private Context ctx = getContext();
+    private Context ctx;
     private int site;
     private int user;
     //TODO:Add Method to update the last id after network call update
@@ -230,8 +231,32 @@ public class ReportsFragment extends Fragment {
             }
 
             @Override
-            public void onReportShare(int position) {
-               Dialogs.shareReportDialog(getContext(),user,position);
+            public void onReportShare(final int position) {
+                Toast.makeText(ctx, "Obteniendo token de seguridad...", Toast.LENGTH_SHORT).show();
+                NetworkRequest.getSecurityToken(getContext(), Reporte.REPORT_TOKEN_REQUEST,position, new NetworkRequestCallbacks() {
+                    @Override
+                    public void onNetworkRequestResponse(Object response) {
+                        JSONObject mResponse = (JSONObject) response;
+                        if (response != null){
+                            try{
+                                if (mResponse.getBoolean("success")){
+                                    String token = mResponse.getString("token");
+                                    String reportId = CryptoHash.sha256(String.valueOf(position));
+                                    openIntentPicker(token,reportId);
+                                }
+                            }catch(JSONException e){
+                                Toast.makeText(ctx, "Failed to get security token. Try again later", Toast.LENGTH_SHORT).show();
+                                e.printStackTrace();
+                            }
+                        }
+
+                    }
+
+                    @Override
+                    public void onNetworkRequestError(VolleyError error) {
+                        
+                    }
+                });
             }
 
             @Override
@@ -278,6 +303,18 @@ public class ReportsFragment extends Fragment {
         }
     }
 
+    public void openIntentPicker(String token,String reportId){
+        UserSettings settings = new UserSettings(getContext());
+        Intent intent = new Intent();
+        intent.setAction(Intent.ACTION_SEND);
+        intent.setType("text/plain");
+        //TODO:Define default mail get method
+        intent.putExtra(Intent.EXTRA_SUBJECT,"Nueva incidencia reportada");
+        //TODO: Crear metodo para obtener el token de seguridad del mail
+        intent.putExtra(Intent.EXTRA_TEXT,"Hello this is an sample text check it at "+NetworkRequest.SERVER_URL_PREFIX+"rViewer.php?token=" + token +"&reportId=" + reportId);
+        startActivity(intent);
+    }
+
     private void removeItem(int position){
         reportes.remove(position);
         rAdapter.notifyItemRemoved(position);
@@ -300,6 +337,7 @@ public class ReportsFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+        ctx = context;
         if (context instanceof OnFragmentInteractionListener) {
             mListener = (OnFragmentInteractionListener) context;
         } else {
@@ -312,17 +350,6 @@ public class ReportsFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-    }
-
-    @Override
-    public void onPause() {
-        dbo.close();
-        super.onPause();
     }
 
     @Override
@@ -528,7 +555,7 @@ public class ReportsFragment extends Fragment {
                 menu.add(REPORT_ACTION_MENU_GROUP,REPORT_ACTION_ARCHIVE, Menu.NONE,"Archivar / Des");
             }
             if (us.isCanShareReports()){
-                menu.add(REPORT_ACTION_MENU_GROUP,REPORT_ACTION_SHARE, Menu.NONE,"Enviar");
+                menu.add(REPORT_ACTION_MENU_GROUP,REPORT_ACTION_SHARE, Menu.NONE,"Compartir");
             }
             if (us.isCanFlagReports()){
                 menu.add(REPORT_ACTION_MENU_GROUP,REPORT_ACTION_FLAG,Menu.NONE,"Marcar");

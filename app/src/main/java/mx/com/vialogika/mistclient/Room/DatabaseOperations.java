@@ -704,10 +704,12 @@ public class DatabaseOperations {
                     for (int i = 0; i < list.size(); i++) {
                         GuardForceState item = list.get(i);
                         Guard guardinfo = appDatabase.guardDao().getGuardByHash(item.getEdoFuerzaGuardId());
-                        Apostamiento apostamiento = appDatabase.apostamientoDao().getApostamientobyId(Integer.valueOf(item.getEdoFuerzaPlaceId()));
-                        item.setGuardName(guardinfo.getGuardFullname());
-                        item.setGuardPhotoPath(guardinfo.getLocalPhotoPath());
-                        item.setApName(apostamiento.getPlantillaPlaceApostamientoAlias());
+                        if (guardinfo != null){
+                            Apostamiento apostamiento = appDatabase.apostamientoDao().getApostamientobyId(Integer.valueOf(item.getEdoFuerzaPlaceId()));
+                            item.setGuardName(guardinfo.getGuardFullname());
+                            item.setGuardPhotoPath(guardinfo.getLocalPhotoPath());
+                            item.setApName(apostamiento.getPlantillaPlaceApostamientoAlias());
+                        }
                     }
                 }
                 dbo.onOperationFinished(list);

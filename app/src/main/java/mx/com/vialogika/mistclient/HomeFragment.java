@@ -100,7 +100,6 @@ public class HomeFragment extends Fragment {
                 case R.id.faqbutton:
                     Uri sampleuri = Uri.parse("mailto:someuser?param1=value1");
                     onButtonPressed(sampleuri);
-                    Toast.makeText(getContext(), "Hello this is the faq button", Toast.LENGTH_SHORT).show();
                     break;
             }
         }
@@ -113,12 +112,21 @@ public class HomeFragment extends Fragment {
     }
 
     private void setSliderViews(){
-        for (int i = 0; i < 3; i++) {
+        String[] urls = new String[]{};
+        if (urls.length > 0){
+            for (int i = 0; i < urls.length; i++) {
+                SliderView sliderView = new DefaultSliderView(getContext());
+                sliderView.setImageUrl("https://picsum.photos/1920/1800/?image=107"+i);
+                sliderView.setImageScaleType(ImageView.ScaleType.CENTER_CROP);
+                sliderLayout.addSliderView(sliderView);
+            }
+        }else{
             SliderView sliderView = new DefaultSliderView(getContext());
-            sliderView.setImageUrl("https://picsum.photos/1920/1800/?image=107"+i);
+            sliderView.setImageDrawable(R.drawable.default_slider);
             sliderView.setImageScaleType(ImageView.ScaleType.CENTER_CROP);
             sliderLayout.addSliderView(sliderView);
         }
+
     }
 
     // TODO: Rename method, update argument and hook method into UI event

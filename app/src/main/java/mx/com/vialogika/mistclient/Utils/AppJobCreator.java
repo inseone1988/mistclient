@@ -14,6 +14,8 @@ public class AppJobCreator implements JobCreator {
         switch (tag){
             case ReportSyncJob.TAG:
                 return new ReportSyncJob();
+            case EdoSyncJob.TAG:
+                return new EdoSyncJob();
             default:
                 return null;
         }

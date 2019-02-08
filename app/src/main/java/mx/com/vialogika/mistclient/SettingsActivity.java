@@ -24,6 +24,10 @@ import java.util.List;
 
 public class SettingsActivity extends AppCompatPreferenceActivity {
 
+    final public static String SOS_CALL_NUMBER_KEY = "pref_SOSCall_phone";
+    final public static String REP_SHARE_KEY = "pref_default_mail_rec";
+    final public static String USERNAME_KEY = "user_name";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

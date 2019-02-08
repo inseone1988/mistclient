@@ -1,15 +1,32 @@
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-    <CheckBoxPreference
-        android:key="pref_sync"
-        android:title="@string/pref_sync"
-        android:summary="@string/pref_sync_summ"
-        android:defaultValue="true" />
-    <ListPreference
-        android:dependency="pref_sync"
-        android:key="pref_syncConnectionType"
-        android:title="@string/pref_syncConnectionType"
-        android:dialogTitle="@string/pref_syncConnectionType"
-        android:entries="@array/pref_syncConnectionTypes_entries"
-        android:entryValues="@array/pref_syncConnectionTypes_values"
-        android:defaultValue="@string/pref_syncConnectionTypes_default" />
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory android:title="@string/pref_user_category">
+
+        <EditTextPreference
+            android:defaultValue="Default value"
+            android:key="user_login"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:summary="@string/pref_user_chg_summ"
+            android:title="@string/pref_user_title" />
+        <ChangePasswordPreference
+            android:defaultValue="Default value"
+            android:key="pref:_user_pwd"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:summary="@string/pref_user_chg_pssw_summ"
+            android:title="@string/password_prompt" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="@string/group_general">
+        <EditTextPreference
+            android:key="pref_default_mail_rec"
+            android:summary="@string/pref_def_mail_summ"
+            android:title="@string/pref_def_mail_title" />
+        <EditTextPreference
+            android:key="pref_SOSCall_phone"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:summary="@string/pref_def_sos_call_summ"
+            android:title="@string/pref_def_sos_call_title" />
+    </PreferenceCategory>
 </PreferenceScreen>

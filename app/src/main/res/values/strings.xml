@@ -180,5 +180,19 @@
         <item>Hello3</item>
         <item>Hello4</item>
     </array>
+    <string name="group_general">General</string>
     <string name="pref_syncConnectionTypes_default">Hello</string>
+    <string name="pref_def_mail_title">Destinatarios predeterminados</string>
+    <string name="pref_def_mail_summ">Destinos predeterminados para reporte de emergencia</string>
+    <string name="pref_def_sos_call_title">Llamada de auxilio</string>
+    <string name="pref_def_sos_call_summ">Numero de auxilio</string>
+    <string name="pref_def_sos_phone"></string>
+    <string name="pref_user_category">Usuario</string>
+    <string name="pref_user_title">Nombre de usuario</string>
+    <string name="pref_user_chg_summ">Cambiar nombre de usuario</string>
+    <string name="pref_user_chg_pssw_title">Contraseña</string>
+    <string name="pref_user_chg_pssw_summ">Cambiar contraseña</string>
+    <string name="current_passw_prompt">Contraseña actual</string>
+    <string name="new_passw_prompt">Nueva contraseña</string>
+    <string name="new_passw_prompt_confirm">Confirme nueva contraseña</string>
 </resources>

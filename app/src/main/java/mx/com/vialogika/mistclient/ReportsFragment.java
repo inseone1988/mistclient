@@ -8,6 +8,7 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
@@ -305,11 +306,14 @@ public class ReportsFragment extends Fragment {
 
     public void openIntentPicker(String token,String reportId){
         UserSettings settings = new UserSettings(getContext());
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getContext());
+        String[] dest = sp.getString(SettingsActivity.REP_SHARE_KEY,"").split(";");
         Intent intent = new Intent();
         intent.setAction(Intent.ACTION_SEND);
         intent.setType("text/plain");
         //TODO:Define default mail get method
-        intent.putExtra(Intent.EXTRA_SUBJECT,"Nueva incidencia reportada");
+        intent.putExtra(Intent.EXTRA_EMAIL,dest);
+        intent.putExtra(Intent.EXTRA_SUBJECT,"Nueva incidencia");
         //TODO: Crear metodo para obtener el token de seguridad del mail
         intent.putExtra(Intent.EXTRA_TEXT,"Hello this is an sample text check it at "+NetworkRequest.SERVER_URL_PREFIX+"rViewer.php?token=" + token +"&reportId=" + reportId);
         startActivity(intent);

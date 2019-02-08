@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
@@ -259,8 +260,10 @@ public class DscMainActivity extends AppCompatActivity
 
     private void SOSCall(){
         //TODO: Get phone number dinamically
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+        String SOSNumber = "tel:" + sharedPref.getString(SettingsActivity.SOS_CALL_NUMBER_KEY,"tel:30044435");
         Intent intent = new Intent(Intent.ACTION_CALL);
-        intent.setData(Uri.parse("tel:5546056613"));
+        intent.setData(Uri.parse(SOSNumber));
         startActivity(intent);
     }
 

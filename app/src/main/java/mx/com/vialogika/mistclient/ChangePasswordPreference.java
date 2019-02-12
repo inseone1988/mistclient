@@ -1,9 +1,11 @@
 package mx.com.vialogika.mistclient;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.CountDownTimer;
 import android.preference.DialogPreference;
+import android.support.v7.app.AlertDialog;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.Button;
@@ -29,8 +31,9 @@ public class ChangePasswordPreference extends DialogPreference {
     private String   hPass;
     private int      userId;
     private boolean  oldPassMatch = false;
-    private boolean  nPassMatch = false;
+    private boolean  nPassMatch   = false;
     private Button   positiveButton;
+    private boolean  isChanged;
 
     public ChangePasswordPreference(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -50,7 +53,8 @@ public class ChangePasswordPreference extends DialogPreference {
 
 
 
-    private void getItems(View rootView){
+
+    private void getItems(View rootView) {
         cPassword = rootView.findViewById(R.id.cPass);
         cPassword.setOnFocusChangeListener(changeListener);
         nPassword = rootView.findViewById(R.id.npass);
@@ -59,32 +63,25 @@ public class ChangePasswordPreference extends DialogPreference {
         errorView = rootView.findViewById(R.id.dError);
     }
 
-    private void disablePositive(){
-        positiveButton.setEnabled(false);
-    }
-
-    private void enablePositive(){
-        positiveButton.setEnabled(true);
-    }
-
-    private void getUserHP(){
+    private void getUserHP() {
         NetworkRequest.getUserHashedpassword(userId, getContext(), new NetworkRequestCallbacks() {
             @Override
             public void onNetworkRequestResponse(Object response) {
-                if (response != null){
+                if (response != null) {
                     JSONObject r = (JSONObject) response;
-                    try{
-                        if (r.getBoolean("success")){
+                    try {
+                        if (r.getBoolean("success")) {
                             hPass = r.getString("hp");
-                        }else{
+                        } else {
                             Toast.makeText(getContext(), "No es posible cambiar la cotraseña.", Toast.LENGTH_SHORT).show();
                         }
-                    }catch(JSONException e){
+                    } catch (JSONException e) {
                         e.printStackTrace();
                     }
 
                 }
             }
+
             @Override
             public void onNetworkRequestError(VolleyError error) {
 
@@ -95,14 +92,14 @@ public class ChangePasswordPreference extends DialogPreference {
     private View.OnFocusChangeListener changeListener = new View.OnFocusChangeListener() {
         @Override
         public void onFocusChange(View v, boolean hasFocus) {
-            switch (v.getId()){
+            switch (v.getId()) {
                 case R.id.cPass:
-                    if (!hasFocus){
+                    if (!hasFocus) {
                         checkOldPasswordMatch();
                     }
                     break;
                 case R.id.cnpass:
-                    if (!hasFocus){
+                    if (!hasFocus) {
                         checkNPasswordsMatch();
                     }
             }
@@ -110,12 +107,19 @@ public class ChangePasswordPreference extends DialogPreference {
     };
 
 
+    private void restartOnSucccesfulChangesPassword() {
+        final Context context = getContext();
+        Toast.makeText(context, "Contraseña actualizada", Toast.LENGTH_SHORT).show();
+        isChanged = true;
+        Intent intent = new Intent(context, DscMainActivity.class);
+        intent.putExtra("cleanAndExit", true);
+        ((SettingsActivity)context).startActivity(intent);
+    }
 
-
-    private void checkOldPasswordMatch(){
-        if (!cPasswordMatch()){
+    private void checkOldPasswordMatch() {
+        if (!cPasswordMatch()) {
             errorView.setText(R.string.passwords_doesntmatch);
-            new CountDownTimer(5000,1000){
+            new CountDownTimer(5000, 1000) {
                 @Override
                 public void onTick(long millisUntilFinished) {
 
@@ -126,10 +130,10 @@ public class ChangePasswordPreference extends DialogPreference {
                     errorView.setText("");
                 }
             }.start();
-        }else{
+        } else {
             errorView.setText(R.string.dsc_text_ok);
             oldPassMatch = true;
-            new CountDownTimer(5000,1000){
+            new CountDownTimer(5000, 1000) {
                 @Override
                 public void onTick(long millisUntilFinished) {
 
@@ -144,32 +148,36 @@ public class ChangePasswordPreference extends DialogPreference {
     }
 
     @Override
-    protected void onDialogClosed(boolean positiveResult) {
-        checkNPasswordsMatch();
-        if (positiveResult){
-            if (oldPassMatch && nPassMatch){
-                saveNewPassword();
-            }else{
-                Toast.makeText(getContext(), "Las contraseñas no coinciden", Toast.LENGTH_SHORT).show();
-            }
+    public void onClick(DialogInterface dialog, int which) {
+        switch (which) {
+            case DialogInterface.BUTTON_POSITIVE:
+                checkNPasswordsMatch();
+                if (oldPassMatch && nPassMatch) {
+                    saveNewPassword();
+                } else {
+                    Toast.makeText(getContext(), "Las contraseñas no coinciden", Toast.LENGTH_SHORT).show();
+                }
+                break;
         }
     }
 
-    private void saveNewPassword(){
-        int uid = User.userId(getContext());
+    @Override
+    protected void onDialogClosed(boolean positiveResult) {
+
+    }
+
+    private void saveNewPassword() {
+        int    uid    = User.userId(getContext());
         String pwHash = CryptoHash.sha1(nPassword.getText().toString());
         NetworkRequest.saveNewUserPassword(getContext(), uid, pwHash, new NetworkRequestCallbacks() {
             @Override
             public void onNetworkRequestResponse(Object response) {
                 JSONObject r = (JSONObject) response;
-                try{
-                    if (r.getBoolean("success")){
-                        Toast.makeText(getContext(), "Contraseña actualizada", Toast.LENGTH_SHORT).show();
-                        Intent intent = new Intent(getContext(),DscMainActivity.class);
-                        intent.putExtra("cleanAndExit",true);
-                        getContext().startActivity(intent);
-                    }  
-                }catch(JSONException e){
+                try {
+                    if (r.getBoolean("success")) {
+                        restartOnSucccesfulChangesPassword();
+                    }
+                } catch (JSONException e) {
                     Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
                 }
             }
@@ -181,25 +189,25 @@ public class ChangePasswordPreference extends DialogPreference {
         });
     }
 
-    private void checkNPasswordsMatch(){
-        if (!nPasswordMatch()){
+    private void checkNPasswordsMatch() {
+        if (!nPasswordMatch()) {
             nPassMatch = false;
-        }else{
+        } else {
             nPassMatch = true;
         }
     }
 
-    private String getCPasswordText(){
+    private String getCPasswordText() {
         return cPassword.getText().toString();
     }
 
-    private boolean cPasswordMatch(){
-        String cp = getCPasswordText();
+    private boolean cPasswordMatch() {
+        String cp        = getCPasswordText();
         String userInput = CryptoHash.sha1(cp);
         return userInput.equals(hPass);
     }
 
-    private boolean nPasswordMatch(){
+    private boolean nPasswordMatch() {
         String npass1 = nPassword.getText().toString();
         String npass2 = cNPassword.getText().toString();
         return npass1.equals(npass2);

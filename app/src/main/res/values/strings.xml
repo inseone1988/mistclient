@@ -3,12 +3,12 @@
     <string name="title_activity_log_in">DSC Security</string>
     <string name="user_prompt">Usuario</string>
     <string name="password_prompt">Contraseña</string>
-    <string name="open_sesion_checkbox">Recordar credenciales</string>
+    <string name="open_sesion_checkbox">Mantener sesion abierta</string>
     <string name="log_in_prompt">Ingresar</string>
     <string name="dsc_copy">©DSC 2019 </string>
-    <string name="sesion_opened_advice_title">Session advice</string>
-    <string name="sesion_opened_advice">Session wil stay open until you manually close it.</string>
-    <string name="dsc_text_ok">Ok</string>
+    <string name="sesion_opened_advice_title">Sesion abierta</string>
+    <string name="sesion_opened_advice">Se mantendra la sincronizacion, notificaciones y datos mientras la sesion estee abierta.</string>
+    <string name="dsc_text_ok">OK</string>
     <string name="should_auto_open">should_auto_open</string>
     <string name="image_description">Image description</string>
     <string name="field_cannot_be_empty">Este campo no puede estar vacio</string>
@@ -162,7 +162,7 @@
     <string name="rs_provider_hint">Razon social</string>
     <string name="alias_provider_hint">Nombre clave del proveedor</string>
     <string name="rfc_provider_hint">RFC del proveedor</string>
-    <string name="title_activity_settings">Settings</string>
+    <string name="title_activity_settings">Configuracion</string>
     <string name="pref_sync">Syncronizacion</string>
     <string name="pref_sync_summ">Description</string>
     <string name="pref_syncConnectionType">Tipo de conexion</string>

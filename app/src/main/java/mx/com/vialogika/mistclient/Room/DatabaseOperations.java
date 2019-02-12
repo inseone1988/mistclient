@@ -494,6 +494,7 @@ public class DatabaseOperations {
                     final Guard guard = new Guard(g.getJSONObject(i));
                     final int counter = i + 1;
                     if (downloadProfilePhotos){
+                        dNotif.setContentTitle("Imagenes descargadas");
                         nManager.notify(NOTIF_ID, dNotif.build());
                         if (guard.hasProfilePhoto()){
                             ImageRequest ir = NetworkRequest.getProfileImage(ctx, guard.getPersonProfilePhotoPath(), new NetworkRequestCallbacks() {
@@ -519,8 +520,6 @@ public class DatabaseOperations {
                         saveGuard(guard);
                     }
                 }
-                dNotif.setContentTitle("Imagenes descargadas");
-                nManager.notify(NOTIF_ID,dNotif.build());
                 //syncGuards(guards);
                 for (int i = 0; i < c.length();i++){
                     clients.add(new Client(c.getJSONObject(i)));

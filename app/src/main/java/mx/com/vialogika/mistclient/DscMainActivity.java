@@ -118,7 +118,8 @@ public class DscMainActivity extends AppCompatActivity
         }
         if (intent.hasExtra("cleanAndExit")){
             clearBeforeExit();
-            finish();
+            Intent intetn = new Intent(this,LogIn.class);
+            startActivity(intetn);
         }
     }
 
@@ -211,13 +212,12 @@ public class DscMainActivity extends AppCompatActivity
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
+        switch (id){
+            //TODO; This handles Activity context menu events
+            default:
+                break;
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            sampleToast();
-            return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
 

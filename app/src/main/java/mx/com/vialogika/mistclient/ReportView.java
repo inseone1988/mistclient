@@ -31,7 +31,8 @@ import com.android.volley.VolleyError;
 import com.bogdwellers.pinchtozoom.ImageMatrixTouchHandler;
 import com.google.gson.Gson;
 
-import org.jetbrains.annotations.Nullable;
+
+import android.support.annotation.Nullable;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;

@@ -2,16 +2,19 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:layout_margin="10dp"
+    android:orientation="vertical"
+    android:padding="10dp">
 
     <TextView
         android:id="@+id/textView36"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
         android:text="@string/current_passw_prompt" />
 
     <EditText
-        android:id="@+id/editText"
+        android:id="@+id/cPass"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
@@ -24,7 +27,7 @@
         android:text="@string/new_passw_prompt" />
 
     <EditText
-        android:id="@+id/editText3"
+        android:id="@+id/npass"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
@@ -37,19 +40,18 @@
         android:text="@string/new_passw_prompt_confirm" />
 
     <EditText
-        android:id="@+id/editText4"
+        android:id="@+id/cnpass"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
         android:inputType="textPassword" />
 
     <TextView
-        android:id="@+id/textView39"
+        android:id="@+id/dError"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="15dp"
         android:layout_marginBottom="15dp"
         android:gravity="center"
-        android:text="TextView"
         android:textSize="18sp" />
 </LinearLayout>

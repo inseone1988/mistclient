@@ -38,7 +38,8 @@ import net.gotev.uploadservice.UploadInfo;
 import net.gotev.uploadservice.UploadNotificationConfig;
 import net.gotev.uploadservice.UploadStatusDelegate;
 
-import org.jetbrains.annotations.Nullable;
+
+import android.support.annotation.Nullable;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -437,6 +438,33 @@ public class NetworkRequest {
         rq.add(jor);
     }
 
+    public static void saveNewUserPassword(final Context context,int uid,String pwHash,final NetworkRequestCallbacks cb){
+        String handler = "raw.php";
+        String url = SERVER_URL_PREFIX + handler;
+        JSONObject params = new JSONObject();
+        try{
+            params.put("function","savePwHash");
+            params.put("uid",uid);
+            params.put("pwdHash",pwHash);
+        }catch(JSONException e){
+            e.printStackTrace();
+        }
+        RequestQueue rq = Volley.newRequestQueue(context);
+        JsonObjectRequest jor = new JsonObjectRequest(Request.Method.POST, url, params, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                cb.onNetworkRequestResponse(response);
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                cb.onNetworkRequestError(error);
+                displayErrorDialog(context,error);
+            }
+        });
+        rq.add(jor);
+    }
+
     public static void getSecurityToken(final Context context, String type,int identifier,final  NetworkRequestCallbacks cb){
         String handler = "raw.php";
         String url = SERVER_URL_PREFIX + handler;
@@ -774,6 +802,33 @@ public class NetworkRequest {
             }
         }catch(Exception e){
             Log.e("AndroidUploadService",e.getMessage(),e);
+        }
+    }
+
+    public static void getUserHashedpassword(int userId,final Context context,final NetworkRequestCallbacks cb){
+        String handler = "raw.php";
+        String url = SERVER_URL_PREFIX + handler;
+        JSONObject params = new JSONObject();
+        RequestQueue rq = Volley.newRequestQueue(context);
+        try{
+            params.put("function","hp");
+            params.put("userId",userId);
+            JsonObjectRequest jor = new JsonObjectRequest(Request.Method.POST, url, params, new Response.Listener<JSONObject>() {
+                @Override
+                public void onResponse(JSONObject response) {
+                    cb.onNetworkRequestResponse(response);
+
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    cb.onNetworkRequestError(error);
+                    displayErrorDialog(context,error);
+                }
+            });
+            rq.add(jor);
+        }catch(JSONException e){
+            e.printStackTrace();
         }
     }
 

@@ -116,6 +116,10 @@ public class DscMainActivity extends AppCompatActivity
         if (intent.hasExtra("loadReportsFragment")) {
             loadFragment(new ReportsFragment());
         }
+        if (intent.hasExtra("cleanAndExit")){
+            clearBeforeExit();
+            finish();
+        }
     }
 
     private void setupActionListeners() {
@@ -240,7 +244,7 @@ public class DscMainActivity extends AppCompatActivity
         toolbar.setTitle(appBarTitle);
     }
 
-    private void clearBeforeExit() {
+    public void clearBeforeExit() {
         enableLogin();
         dbo.deleteAllTables();
         JobManager.instance().cancelAll();
@@ -265,6 +269,14 @@ public class DscMainActivity extends AppCompatActivity
         Intent intent = new Intent(Intent.ACTION_CALL);
         intent.setData(Uri.parse(SOSNumber));
         startActivity(intent);
+    }
+
+    private void exitAfterPasswordChange(){
+        Intent intent = getIntent();
+        if (intent.hasExtra("cleanAndExit")){
+            clearBeforeExit();
+            finish();
+        }
     }
 
     @SuppressWarnings("StatementWithEmptyBody")

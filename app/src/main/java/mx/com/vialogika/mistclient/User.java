@@ -14,7 +14,8 @@ import android.util.Log;
 
 import com.android.volley.VolleyError;
 
-import org.jetbrains.annotations.NotNull;
+
+import android.support.annotation.Nullable;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -62,12 +63,12 @@ public class User {
         }
     }
 
-    public static void saveUserSites(Context context,final @NotNull JSONArray sites){
+    public static void saveUserSites(Context context,final @NonNull JSONArray sites){
         final List<Site> lSites = new ArrayList<>();
         final DatabaseOperations dbo = new DatabaseOperations(context);
         dbo.emptySitesTable(new DatabaseOperationCallback() {
             @Override
-            public void onOperationSucceded(@org.jetbrains.annotations.Nullable Object response) {
+            public void onOperationSucceded(@Nullable Object response) {
                 for (int i = 0;i < sites.length();i++){
                     try{
                         lSites.add(new Site(sites.getJSONObject(i)));

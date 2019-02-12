@@ -542,10 +542,10 @@ public class DatabaseOperations {
     public void syncGuards(final List<Guard> guards){
         emptyGuardsTable(new DatabaseOperationCallback() {
             @Override
-            public void onOperationSucceded(@org.jetbrains.annotations.Nullable Object response) {
+            public void onOperationSucceded(@Nullable Object response) {
                 saveGuards(guards, new DatabaseOperationCallback() {
                     @Override
-                    public void onOperationSucceded(@org.jetbrains.annotations.Nullable Object response) {
+                    public void onOperationSucceded(@Nullable Object response) {
                         long[] affected = (long[]) response;
                         Log.d(Depuracion.DEBUG_ROOM_MESSAGE,"Saved guards " + affected.length);
                     }
@@ -557,10 +557,10 @@ public class DatabaseOperations {
     public void syncClients(final List<Client> clients){
         emptyClientsTable(new DatabaseOperationCallback() {
             @Override
-            public void onOperationSucceded(@org.jetbrains.annotations.Nullable Object response) {
+            public void onOperationSucceded(@Nullable Object response) {
                 saveClients(clients, new DatabaseOperationCallback() {
                     @Override
-                    public void onOperationSucceded(@org.jetbrains.annotations.Nullable Object response) {
+                    public void onOperationSucceded(@Nullable Object response) {
                         long[] affected = (long[]) response;
                         Log.d(Depuracion.DEBUG_ROOM_MESSAGE,"Saved clients " + affected.length);
                     }
@@ -572,10 +572,10 @@ public class DatabaseOperations {
     public void syncApostamientos(final List<Apostamiento> apostamientos){
         emptyApostamientosTable(new DatabaseOperationCallback() {
             @Override
-            public void onOperationSucceded(@org.jetbrains.annotations.Nullable Object response) {
+            public void onOperationSucceded(@Nullable Object response) {
                 saveApostamientos(apostamientos, new DatabaseOperationCallback() {
                     @Override
-                    public void onOperationSucceded(@org.jetbrains.annotations.Nullable Object response) {
+                    public void onOperationSucceded(@Nullable Object response) {
                         long[] affectde = (long[]) response;
                         Log.d(Depuracion.DEBUG_ROOM_MESSAGE,"Saved apostamientos " + affectde.length);
                     }

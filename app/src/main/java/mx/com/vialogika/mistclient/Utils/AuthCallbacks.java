@@ -2,7 +2,8 @@ package mx.com.vialogika.mistclient.Utils;
 
 import android.content.Context;
 
-import org.jetbrains.annotations.Nullable;
+
+import android.support.annotation.Nullable;
 
 public interface AuthCallbacks {
     void onAuthenticated();

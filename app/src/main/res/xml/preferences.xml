@@ -9,7 +9,7 @@
             android:singleLine="true"
             android:summary="@string/pref_user_chg_summ"
             android:title="@string/pref_user_title" />
-        <ChangePasswordPreference
+        <mx.com.vialogika.mistclient.ChangePasswordPreference
             android:defaultValue="Default value"
             android:key="pref:_user_pwd"
             android:selectAllOnFocus="true"

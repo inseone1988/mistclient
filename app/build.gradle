@@ -1,8 +1,14 @@
-
 apply plugin: 'com.android.application'
-apply from: 'auto-version.gradle'
+apply plugin: "eu.davidea.grabver"
 //apply plugin: 'kotlin-android'
 //apply plugin: 'kotlin-android-extensions'
+
+versioning {
+    major 0
+    minor 0
+    patch 1
+    preRelease "Beta-"
+}
 
 android {
     compileSdkVersion 28
@@ -11,13 +17,15 @@ android {
         minSdkVersion 21
         targetSdkVersion 28
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        versionName versioning.name
+        versionCode versioning.code
     }
     buildTypes {
         debug {
             versionNameSuffix "-SNAPSHOT"
             android.applicationVariants.all{ variant ->
                 variant.outputs.all{
-                    outputFileName = "${calculateVersionName()}.apk"
+                    outputFileName = "${versioning.fullVersionName}.apk"
                 }
             }
         }
@@ -53,5 +61,3 @@ dependencies {
     implementation "net.gotev:uploadservice:$uploadServiceVersion"
     implementation 'com.github.smarteist:autoimageslider:1.2.0'
 }
-
-println "config code: ${calculateVersionCode()}, name: ${calculateVersionName()}"

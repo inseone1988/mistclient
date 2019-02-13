@@ -1,6 +1,8 @@
 package mx.com.vialogika.mistclient.Utils;
 
 import android.content.Context;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -118,6 +120,21 @@ public class Dialogs {
                 .content("No se ha podido obtener uno o mas datos necesarios. Error : " + error)
                 .positiveText(R.string.dsc_text_ok)
                 .show();
+    }
+
+    public static  MaterialDialog aboutDialog(Context context){
+        try{
+            PackageInfo pInfo = context.getPackageManager().getPackageInfo(context.getPackageName(),0);
+            String cont = "Version de la aplicacion : " + pInfo.versionName;
+            return new MaterialDialog.Builder(context)
+                    .title("Sobre la aplicacion")
+                    .content(cont)
+                    .positiveText(R.string.dsc_text_ok)
+                    .show();
+        }catch(PackageManager.NameNotFoundException e){
+            e.printStackTrace();
+        }
+        return null;
     }
 
     public interface GenericDialogCallback{

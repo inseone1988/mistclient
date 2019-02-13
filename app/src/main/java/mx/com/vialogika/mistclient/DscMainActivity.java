@@ -316,6 +316,9 @@ public class DscMainActivity extends AppCompatActivity
                     }
                 });
                 break;
+            case R.id.nav_about:
+                showAboutDialog();
+                break;
         }
 
         updateAppBarTitle(id);
@@ -337,6 +340,10 @@ public class DscMainActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    private void showAboutDialog(){
+        Dialogs.aboutDialog(this);
     }
 
     public interface runTaskCallback {

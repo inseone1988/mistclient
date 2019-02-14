@@ -51,6 +51,9 @@ public class DscMainActivity extends AppCompatActivity
     private TextView       usernamefield;
     private TextView       mailfield;
     private ImageView      profileImage;
+    private DrawerLayout mDrawer;
+    private NavigationView mNavView;
+    private View headView;
 
     private String username;
     private String userd;
@@ -88,20 +91,15 @@ public class DscMainActivity extends AppCompatActivity
     }
 
     private void setupDrawer() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mNavView = mDrawer.findViewById(R.id.nav_view);
+        headView = mNavView.getHeaderView(0);
+        usernamefield = headView.findViewById(R.id.drawer_user_name);
+        mailfield = headView.findViewById(R.id.drawer_user_mail);
+        updateUserData();
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close) {
-            @Override
-            public void onDrawerOpened(View drawerView) {
-                super.onDrawerOpened(drawerView);
-                NavigationView navview    = (NavigationView) findViewById(R.id.nav_view);
-                View           headerView = navview.getHeaderView(0);
-                usernamefield = headerView.findViewById(R.id.drawer_user_name);
-                mailfield = findViewById(R.id.drawer_user_mail);
-                updateUserData();
-            }
-        };
-        drawer.addDrawerListener(toggle);
+                this, mDrawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        mDrawer.addDrawerListener(toggle);
         toggle.syncState();
     }
 
@@ -154,9 +152,9 @@ public class DscMainActivity extends AppCompatActivity
     }
 
     private void getSPValues() {
-        SharedPreferences sp = getSharedPreferences("LogIn", Context.MODE_PRIVATE);
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
         username = sp.getString("user_fullname", "Supply Security User");
-        userd = sp.getString("user_login", "@someuser");
+        userd = sp.getString(SettingsActivity.USERNAME_KEY, "@someuser");
     }
 
     private void enableLogin() {

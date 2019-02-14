@@ -31,7 +31,7 @@
         <item
             android:id="@+id/nav_settings"
             android:checkable="true"
-            android:icon="@drawable/ic_action_settings"
+            android:icon="@drawable/ic_settings_red_24dp"
             android:title="@string/action_settings" />
         <item
             android:id="@+id/nav_exit_app"
@@ -48,7 +48,7 @@
                 android:title="@string/bug_report" />
             <item
                 android:id="@+id/nav_about"
-                android:icon="@android:drawable/ic_menu_info_details"
+                android:icon="@drawable/ic_info_red_24dp"
                 android:title="@string/about" />
         </menu>
     </item>

@@ -3,7 +3,6 @@
     <PreferenceCategory android:title="@string/pref_user_category">
 
         <EditTextPreference
-            android:defaultValue="Default value"
             android:key="user_login"
             android:selectAllOnFocus="true"
             android:singleLine="true"

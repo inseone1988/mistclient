@@ -1,5 +1,6 @@
 apply plugin: 'com.android.application'
 apply plugin: "eu.davidea.grabver"
+apply plugin: 'io.fabric'
 //apply plugin: 'kotlin-android'
 //apply plugin: 'kotlin-android-extensions'
 
@@ -7,7 +8,6 @@ versioning {
     major 0
     minor 0
     patch 1
-    preRelease "Beta-"
 }
 
 android {
@@ -22,7 +22,7 @@ android {
     }
     buildTypes {
         debug {
-            versionNameSuffix "-SNAPSHOT"
+            versionNameSuffix "-build-${versioning.build}"
             android.applicationVariants.all{ variant ->
                 variant.outputs.all{
                     outputFileName = "${versioning.fullVersionName}.apk"
@@ -60,4 +60,7 @@ dependencies {
     implementation 'com.github.esafirm.android-image-picker:imagepicker:1.13.1'
     implementation "net.gotev:uploadservice:$uploadServiceVersion"
     implementation 'com.github.smarteist:autoimageslider:1.2.0'
+    implementation 'com.google.firebase:firebase-core:16.0.7'
+    implementation 'com.crashlytics.sdk.android:crashlytics:2.9.9'
 }
+apply plugin: 'com.google.gms.google-services'

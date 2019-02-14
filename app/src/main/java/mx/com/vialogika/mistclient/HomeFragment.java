@@ -11,11 +11,14 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.crashlytics.android.Crashlytics;
 import com.smarteist.autoimageslider.DefaultSliderView;
 import com.smarteist.autoimageslider.IndicatorAnimations;
 import com.smarteist.autoimageslider.SliderAnimations;
 import com.smarteist.autoimageslider.SliderLayout;
 import com.smarteist.autoimageslider.SliderView;
+
+import io.fabric.sdk.android.Fabric;
 
 
 /**
@@ -30,6 +33,7 @@ public class HomeFragment extends Fragment {
 
     private SliderLayout sliderLayout;
     private FloatingActionButton fab;
+    private FloatingActionButton news;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -87,10 +91,12 @@ public class HomeFragment extends Fragment {
     private void getItems(View v){
         sliderLayout = v.findViewById(R.id.newsslider);
         fab = v.findViewById(R.id.faqbutton);
+        news = v.findViewById(R.id.news);
     }
 
     private void setListeners(){
         fab.setOnClickListener(onClickListener);
+        news.setOnClickListener(onClickListener);
     }
 
     private View.OnClickListener onClickListener = new View.OnClickListener() {
@@ -101,9 +107,15 @@ public class HomeFragment extends Fragment {
                     Uri sampleuri = Uri.parse("mailto:someuser?param1=value1");
                     onButtonPressed(sampleuri);
                     break;
+                case R.id.news:
+                    break;
             }
         }
     };
+
+    private static void forceCrash(){
+        Crashlytics.getInstance().crash();
+    }
 
     private void initSlider(){
         sliderLayout.setIndicatorAnimation(IndicatorAnimations.FILL);

@@ -108,6 +108,7 @@ public class HomeFragment extends Fragment {
                     onButtonPressed(sampleuri);
                     break;
                 case R.id.news:
+                    forceCrash();
                     break;
             }
         }

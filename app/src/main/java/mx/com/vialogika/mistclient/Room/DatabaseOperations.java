@@ -705,9 +705,10 @@ public class DatabaseOperations {
                         Guard guardinfo = appDatabase.guardDao().getGuardByHash(item.getEdoFuerzaGuardId());
                         if (guardinfo != null){
                             Apostamiento apostamiento = appDatabase.apostamientoDao().getApostamientobyId(Integer.valueOf(item.getEdoFuerzaPlaceId()));
-                            item.setGuardName(guardinfo.getGuardFullname());
-                            item.setGuardPhotoPath(guardinfo.getLocalPhotoPath());
-                            item.setApName(apostamiento.getPlantillaPlaceApostamientoAlias());
+                            String apname = apostamiento != null ? apostamiento.getPlantillaPlaceApostamientoAlias() : "Apostamiento desconocido";
+                                item.setGuardName(guardinfo.getGuardFullname());
+                                item.setGuardPhotoPath(guardinfo.getLocalPhotoPath());
+                                item.setApName(apname);
                         }
                     }
                 }

@@ -108,15 +108,16 @@ public class HomeFragment extends Fragment {
                     onButtonPressed(sampleuri);
                     break;
                 case R.id.news:
-                    forceCrash();
+                    //forceCrash();
                     break;
             }
         }
     };
 
-    private static void forceCrash(){
-        Crashlytics.getInstance().crash();
-    }
+    //Crashlytics method
+    //private static void forceCrash(){
+    //    Crashlytics.getInstance().crash();
+    //}
 
     private void initSlider(){
         sliderLayout.setIndicatorAnimation(IndicatorAnimations.FILL);

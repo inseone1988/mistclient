@@ -1,18 +1,23 @@
 package mx.com.vialogika.mistclient;
 
+import android.Manifest;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.NotificationManagerCompat;
+import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -26,6 +31,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.evernote.android.job.JobManager;
 
 import org.json.JSONObject;
@@ -44,16 +51,18 @@ public class DscMainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
         ReportsFragment.OnFragmentInteractionListener,
         EmergencyReport.OnFragmentInteractionListener,
-        HomeFragment.OnFragmentInteractionListener{
+        HomeFragment.OnFragmentInteractionListener,
+        EdoFragment.OnFragmentInteractionListener {
 
-    private Toolbar        toolbar;
-    private NavigationView navigationView;
-    private TextView       usernamefield;
-    private TextView       mailfield;
-    private ImageView      profileImage;
-    private DrawerLayout mDrawer;
-    private NavigationView mNavView;
-    private View headView;
+    public static final int            REQUEST_PHONE_PERMISSION = 16412;
+    private             Toolbar        toolbar;
+    private             NavigationView navigationView;
+    private             TextView       usernamefield;
+    private             TextView       mailfield;
+    private             ImageView      profileImage;
+    private             DrawerLayout   mDrawer;
+    private             NavigationView mNavView;
+    private             View           headView;
 
     private String username;
     private String userd;
@@ -73,7 +82,7 @@ public class DscMainActivity extends AppCompatActivity
         setSupportActionBar(toolbar);
         setupActionListeners();
         setupDrawer();
-        Fragment hf = HomeFragment.newInstance("","");
+        Fragment hf = HomeFragment.newInstance("", "");
         loadFragment(hf);
         navigationView.setNavigationItemSelectedListener(this);
         handleIntent();
@@ -104,7 +113,7 @@ public class DscMainActivity extends AppCompatActivity
     }
 
     private void showSampleNotification() {
-        AppNotifications mNotifs = new AppNotifications(this);
+        AppNotifications          mNotifs             = new AppNotifications(this);
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
         notificationManager.notify(AppNotifications.TESTIN_NOTIFICATION_HANDLE, mNotifs.testingNotofication().build());
     }
@@ -114,9 +123,9 @@ public class DscMainActivity extends AppCompatActivity
         if (intent.hasExtra("loadReportsFragment")) {
             loadFragment(new ReportsFragment());
         }
-        if (intent.hasExtra("cleanAndExit")){
+        if (intent.hasExtra("cleanAndExit")) {
             clearBeforeExit();
-            Intent intetn = new Intent(this,LogIn.class);
+            Intent intetn = new Intent(this, LogIn.class);
             startActivity(intetn);
         }
     }
@@ -125,19 +134,37 @@ public class DscMainActivity extends AppCompatActivity
 
     }
 
-    private void shwFaqsDialog (){
-        FragmentManager fm = getSupportFragmentManager();
-        FaqsDialogFragment faqsDialogFragment = FaqsDialogFragment.newInstance();
-        FragmentTransaction transaction = fm.beginTransaction();
+    private void shwFaqsDialog() {
+        FragmentManager     fm                 = getSupportFragmentManager();
+        FaqsDialogFragment  faqsDialogFragment = FaqsDialogFragment.newInstance();
+        FragmentTransaction transaction        = fm.beginTransaction();
         transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-        transaction.add(android.R.id.content,faqsDialogFragment)
+        transaction.add(android.R.id.content, faqsDialogFragment)
                 .addToBackStack(null).commit();
         //faqsDialogFragment.show(fm,"FAQS_DIALOG");
+    }
+
+    private void showCentralDialog() {
+        FragmentManager fm = getSupportFragmentManager();
+        CentralFragment centralFragment = CentralFragment.newInstance("","");
+        FragmentTransaction transaction = fm.beginTransaction();
+        transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+        transaction.add(android.R.id.content,centralFragment)
+                .addToBackStack(null).commit();
     }
 
     @Override
     public void onFragmentInteraction(Uri uri) {
         shwFaqsDialog();
+    }
+
+    @Override
+    public void onFragmentInteraction(int buttonId) {
+        switch(buttonId){
+            case R.id.central_view:
+                showCentralDialog();
+                break;
+        }
     }
 
     private void updateUserData() {
@@ -210,7 +237,7 @@ public class DscMainActivity extends AppCompatActivity
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-        switch (id){
+        switch (id) {
             //TODO; This handles Activity context menu events
             default:
                 break;
@@ -260,18 +287,51 @@ public class DscMainActivity extends AppCompatActivity
         }).start();
     }
 
-    private void SOSCall(){
+    private void SOSCall() {
         //TODO: Get phone number dinamically
-        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-        String SOSNumber = "tel:" + sharedPref.getString(SettingsActivity.SOS_CALL_NUMBER_KEY,"tel:30044435");
-        Intent intent = new Intent(Intent.ACTION_CALL);
-        intent.setData(Uri.parse(SOSNumber));
-        startActivity(intent);
+        if (hasPhonePermission()) {
+            SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+            String            SOSNumber  = "tel:" + sharedPref.getString(SettingsActivity.SOS_CALL_NUMBER_KEY, "30044435");
+            Intent            intent     = new Intent(Intent.ACTION_CALL);
+            intent.setData(Uri.parse(SOSNumber));
+            startActivity(intent);
+        } else {
+            new MaterialDialog.Builder(this)
+                    .title("Permisos")
+                    .content("Esta funcion requiere el permiso de realizar llamadas telefonicas, porfavor otorgue el permiso para continuar.")
+                    .positiveText("OK")
+                    .onPositive(new MaterialDialog.SingleButtonCallback() {
+                        @Override
+                        public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                            askPermission();
+                        }
+                    })
+                    .show();
+        }
     }
 
-    private void exitAfterPasswordChange(){
+    private void askPermission() {
+        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CALL_PHONE}, REQUEST_PHONE_PERMISSION);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case REQUEST_PHONE_PERMISSION:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    SOSCall();
+                }
+                break;
+        }
+    }
+
+    private boolean hasPhonePermission() {
+        return ContextCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_GRANTED;
+    }
+
+    private void exitAfterPasswordChange() {
         Intent intent = getIntent();
-        if (intent.hasExtra("cleanAndExit")){
+        if (intent.hasExtra("cleanAndExit")) {
             clearBeforeExit();
             finish();
         }
@@ -284,11 +344,11 @@ public class DscMainActivity extends AppCompatActivity
         int id = item.getItemId();
         switch (id) {
             case R.id.home:
-                Fragment hf = HomeFragment.newInstance("","");
+                Fragment hf = HomeFragment.newInstance("", "");
                 loadFragment(hf);
                 break;
             case R.id.nav_reports:
-                Fragment edoRepFragment = ReportsFragment.newInstance("","");
+                Fragment edoRepFragment = ReportsFragment.newInstance("", "");
                 loadFragment(edoRepFragment);
                 break;
             case R.id.nav_em_report:
@@ -299,11 +359,11 @@ public class DscMainActivity extends AppCompatActivity
                 SOSCall();
                 break;
             case R.id.nav_edo:
-                Fragment edoFragment = EdoFragment.newInstance("","");
+                Fragment edoFragment = EdoFragment.newInstance("", "");
                 loadFragment(edoFragment);
                 break;
             case R.id.nav_settings:
-                Intent intent = new Intent(this,SettingsActivity.class);
+                Intent intent = new Intent(this, SettingsActivity.class);
                 startActivity(intent);
                 break;
             case R.id.nav_exit_app:
@@ -340,7 +400,7 @@ public class DscMainActivity extends AppCompatActivity
         return true;
     }
 
-    private void showAboutDialog(){
+    private void showAboutDialog() {
         Dialogs.aboutDialog(this);
     }
 

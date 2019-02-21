@@ -41,6 +41,7 @@ public class EdoFragment extends Fragment {
     private DatabaseOperations dbo;
 
     private FloatingActionButton fab;
+    private FloatingActionButton centralView;
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -50,7 +51,7 @@ public class EdoFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    //private OnFragmentInteractionListener mListener;
+    private OnFragmentInteractionListener mListener;
 
     public EdoFragment() {
         // Required empty public constructor
@@ -98,7 +99,20 @@ public class EdoFragment extends Fragment {
         edoConfig = rootview.findViewById(R.id.edo_admin_trigger);
         edoReports = rootview.findViewById(R.id.edo_report_trigger);
         fab = rootview.findViewById(R.id.edo_perc_ad);
+        centralView = rootview.findViewById(R.id.central_view);
+        centralView.setOnClickListener(listener);
     }
+
+    private View.OnClickListener listener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            switch(v.getId()){
+                case R.id.central_view:
+                    onButtonPressed(R.id.central_view);
+                    break;
+            }
+        }
+    };
 
     private void setlisteners(){
         edoConfig.setOnClickListener(new View.OnClickListener() {
@@ -168,21 +182,21 @@ public class EdoFragment extends Fragment {
     }
 
     // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        /**if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }*/
+    public void onButtonPressed(int buttonId) {
+        if (mListener != null) {
+            mListener.onFragmentInteraction(buttonId);
+        }
     }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        /**if (context instanceof OnFragmentInteractionListener) {
+        if (context instanceof OnFragmentInteractionListener) {
             mListener = (OnFragmentInteractionListener) context;
         } else {
             throw new RuntimeException(context.toString()
                     + " must implement OnFragmentInteractionListener");
-        }*/
+        }
     }
 
     @Override
@@ -203,6 +217,6 @@ public class EdoFragment extends Fragment {
      */
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
+        void onFragmentInteraction(int buttonId);
     }
 }

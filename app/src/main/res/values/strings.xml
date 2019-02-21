@@ -197,4 +197,5 @@
     <string name="new_passw_prompt_confirm">Confirme nueva contraseña</string>
     <string name="invalid_password">Contraseña invalida</string>
     <string name="passwords_doesntmatch">Las contraseñas no coinciden. Verifique.</string>
+    <string name="central">Central</string>
 </resources>

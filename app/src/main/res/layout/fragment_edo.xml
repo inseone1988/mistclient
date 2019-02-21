@@ -158,7 +158,27 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="0.25"
-                    android:orientation="vertical"></LinearLayout>
+                    android:orientation="vertical">
+
+                    <android.support.design.widget.FloatingActionButton
+                        android:id="@+id/central_view"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="5dp"
+                        android:clickable="true"
+                        android:foregroundGravity="center"
+                        android:src="@drawable/ic_walkie_talkie_red"
+                        app:backgroundTint="@color/colorPrimary"
+                        app:fabSize="normal" />
+
+                    <TextView
+                        android:id="@+id/textView39"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:text="@string/central" />
+                </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="0dp"
@@ -174,6 +194,7 @@
                         android:layout_margin="5dp"
                         android:layout_weight="0.7"
                         android:clickable="true"
+                        android:foregroundGravity="center"
                         android:src="@drawable/ic_security_black_24dp"
                         app:backgroundTint="@color/colorPrimary"
                         app:fabSize="normal" />

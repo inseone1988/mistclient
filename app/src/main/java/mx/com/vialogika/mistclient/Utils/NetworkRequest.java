@@ -62,6 +62,7 @@ import mx.com.vialogika.mistclient.GuardForceState;
 import mx.com.vialogika.mistclient.Incident;
 import mx.com.vialogika.mistclient.Notif.AppNotifications;
 import mx.com.vialogika.mistclient.Room.DatabaseOperations;
+import mx.com.vialogika.mistclient.UserSettings;
 
 public class NetworkRequest {
 
@@ -101,12 +102,13 @@ public class NetworkRequest {
         String handler = "raw.php";
         String url = SERVER_URL_PREFIX + handler;
         JSONObject params = new JSONObject();
+        UserSettings us = new UserSettings(context);
         try{
             if (mode.equals("FETCH")){
                 params.put("function","getIncidents")
                         .put("from",from)
                         .put("user",user)
-                        .put("site",TextUtils.join(",",sites));
+                        .put("site",us.getManagesSites());
             }else{
                 DatabaseOperations dbo = new DatabaseOperations(context);
                 int[] toUpdate = dbo.repToUpdate();

@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -43,6 +44,9 @@ public class LogIn extends AppCompatActivity {
     private CheckBox checkBox;
     private Button loginbutton;
     private EditText username,password;
+
+    private UserSettings us;
+    private boolean canContinue = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -122,26 +126,55 @@ public class LogIn extends AppCompatActivity {
     }
 
     private void loadAppData(final Callback cb){
-        UserSettings us = new UserSettings(this);
-        NetworkRequest.getSiteEdoInfo(this, null, null, us.getManagesSites(), new NetworkRequestCallbacks() {
-            @Override
-            public void onNetworkRequestResponse(Object response) {
-                try{
-                    JSONObject resp = new JSONObject(response.toString());
-                    if (resp.getBoolean("success")){
-                        cb.onDataLoaded();
+        us = new UserSettings(this);
+        String manageSites = us.getManagesSites();
+        if(!manageSites.equals("undefined")){
+            NetworkRequest.getSiteEdoInfo(this, null, null, us.getManagesSites(), new NetworkRequestCallbacks() {
+                @Override
+                public void onNetworkRequestResponse(Object response) {
+                    try{
+                        JSONObject resp = new JSONObject(response.toString());
+                        if (resp.getBoolean("success")){
+                            cb.onDataLoaded();
+                        }
+                    }catch(JSONException e){
+                        e.printStackTrace();
                     }
-                }catch(JSONException e){
-                    e.printStackTrace();
+
                 }
 
-            }
+                @Override
+                public void onNetworkRequestError(VolleyError error) {
 
-            @Override
-            public void onNetworkRequestError(VolleyError error) {
+                }
+            });
+        }else{
+            new CountDownTimer(3000,1000){
+                @Override
+                public void onTick(long millisUntilFinished) {
+                    us = new UserSettings(getContext());
+                    if(!us.getManagesSites().equals("undefined")){
+                        canContinue = true;
+                    }
+                }
+                @Override
+                public void onFinish() {
+                    if(canContinue){
+                        loadAppData(new Callback() {
+                            @Override
+                            public void onDataLoaded() {
+                                startMainActivity();
+                            }
+                        });
+                    }
+                }
+            };
+        }
 
-            }
-        });
+    }
+
+    private Context getContext(){
+        return this;
     }
 
     private boolean validateFields(){

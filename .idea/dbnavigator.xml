@@ -41,28 +41,28 @@
     <connection id="08c0b568-769d-463c-8f16-d70b6d59f331" />
   </component>
   <component name="DBNavigator.Project.DatasetFilterManager">
-    <filter-list connection-id="08c0b568-769d-463c-8f16-d70b6d59f331" dataset="main.GuardsForceState" active-filter-id="EMPTY_FILTER" />
-    <filter-list connection-id="08c0b568-769d-463c-8f16-d70b6d59f331" dataset="main.Reports" active-filter-id="EMPTY_FILTER">
+    <filter-actions connection-id="08c0b568-769d-463c-8f16-d70b6d59f331" dataset="main.GuardsForceState" active-filter-id="EMPTY_FILTER" />
+    <filter-actions connection-id="08c0b568-769d-463c-8f16-d70b6d59f331" dataset="main.Reports" active-filter-id="EMPTY_FILTER">
       <filter id="df0aef67-1750-4cdb-a0e2-8a2a51bf3492" name="1" temporary="false" custom-name="false" type="basic" join-type="AND">
         <condition column="reportId" operator="&gt;" value="1" active="true" />
       </filter>
-    </filter-list>
-    <filter-list connection-id="08c0b568-769d-463c-8f16-d70b6d59f331" dataset="main.Sites" active-filter-id="EMPTY_FILTER" />
-    <filter-list connection-id="08c0b568-769d-463c-8f16-d70b6d59f331" dataset="main.Comments" active-filter-id="EMPTY_FILTER" />
-    <filter-list connection-id="08c0b568-769d-463c-8f16-d70b6d59f331" dataset="main.Providers" active-filter-id="EMPTY_FILTER" />
-    <filter-list connection-id="08c0b568-769d-463c-8f16-d70b6d59f331" dataset="main.Apostamientos" active-filter-id="EMPTY_FILTER" />
-    <filter-list connection-id="08c0b568-769d-463c-8f16-d70b6d59f331" dataset="main.Guards" active-filter-id="EMPTY_FILTER" />
-    <filter-list connection-id="08c0b568-769d-463c-8f16-d70b6d59f331" dataset="main.Clients" active-filter-id="EMPTY_FILTER" />
-    <filter-list connection-id="6b7d6789-6cc3-4f8f-93c8-695c73c4f026" dataset="vialogik_dscic.site_events" active-filter-id="EMPTY_FILTER" />
-    <filter-list connection-id="6b7d6789-6cc3-4f8f-93c8-695c73c4f026" dataset="vialogik_dscic.edo_fuerza" active-filter-id="8a24991e-4ca6-4df5-aca5-fa0a6fc0d5c4">
+    </filter-actions>
+    <filter-actions connection-id="08c0b568-769d-463c-8f16-d70b6d59f331" dataset="main.Sites" active-filter-id="EMPTY_FILTER" />
+    <filter-actions connection-id="08c0b568-769d-463c-8f16-d70b6d59f331" dataset="main.Comments" active-filter-id="EMPTY_FILTER" />
+    <filter-actions connection-id="08c0b568-769d-463c-8f16-d70b6d59f331" dataset="main.Providers" active-filter-id="EMPTY_FILTER" />
+    <filter-actions connection-id="08c0b568-769d-463c-8f16-d70b6d59f331" dataset="main.Apostamientos" active-filter-id="EMPTY_FILTER" />
+    <filter-actions connection-id="08c0b568-769d-463c-8f16-d70b6d59f331" dataset="main.Guards" active-filter-id="EMPTY_FILTER" />
+    <filter-actions connection-id="08c0b568-769d-463c-8f16-d70b6d59f331" dataset="main.Clients" active-filter-id="EMPTY_FILTER" />
+    <filter-actions connection-id="6b7d6789-6cc3-4f8f-93c8-695c73c4f026" dataset="vialogik_dscic.site_events" active-filter-id="EMPTY_FILTER" />
+    <filter-actions connection-id="6b7d6789-6cc3-4f8f-93c8-695c73c4f026" dataset="vialogik_dscic.edo_fuerza" active-filter-id="8a24991e-4ca6-4df5-aca5-fa0a6fc0d5c4">
       <filter id="fb959669-9e4e-4c0d-af62-7ad389aff949" name="1" temporary="false" custom-name="false" type="basic" join-type="AND">
         <condition column="edo_fuerza_site_id" operator="=" value="1" active="true" />
       </filter>
       <filter id="8a24991e-4ca6-4df5-aca5-fa0a6fc0d5c4" name="15" temporary="false" custom-name="false" type="basic" join-type="AND">
         <condition column="edo_fuerza_site_id" operator="=" value="15" active="true" />
       </filter>
-    </filter-list>
-    <filter-list connection-id="6b7d6789-6cc3-4f8f-93c8-695c73c4f026" dataset="vialogik_dscic.users" active-filter-id="EMPTY_FILTER" />
+    </filter-actions>
+    <filter-actions connection-id="6b7d6789-6cc3-4f8f-93c8-695c73c4f026" dataset="vialogik_dscic.users" active-filter-id="EMPTY_FILTER" />
   </component>
   <component name="DBNavigator.Project.EditorStateManager">
     <last-used-providers>
@@ -103,10 +103,9 @@
           <host value="www.vialogika.com.mx" />
           <port value="3306" />
           <database value="vialogik_dscic" />
-          <os-authentication value="false" />
-          <empty-password value="false" />
+          <type value="USER_PASSWORD" />
           <user value="vialogik_admin" />
-          <password value="NipjSkRTNkNLenkt" />
+          <deprecated-pwd value="NipjSkRTNkNLenkt" />
         </database>
         <properties>
           <auto-commit value="false" />
@@ -116,7 +115,7 @@
           <proxy-host value="" />
           <proxy-port value="22" />
           <proxy-user value="" />
-          <proxy-password value="" />
+          <deprecated-proxy-pwd value="" />
           <auth-type value="PASSWORD" />
           <key-file value="" />
           <key-passphrase value="" />
@@ -138,11 +137,11 @@
           <environment-type value="default" />
           <idle-time-to-disconnect value="30" />
           <idle-time-to-disconnect-pool value="5" />
-          <password-expiry-time value="10" />
+          <credential-expiry-time value="10" />
           <max-connection-pool-size value="7" />
           <alternative-statement-delimiter value="" />
         </details>
-        <object-filters hide-empty-schemas="false">
+        <object-filters hide-empty-schemas="false" hide-pseudo-columns="false">
           <object-type-filter use-master-settings="true">
             <object-type name="SCHEMA" enabled="true" />
             <object-type name="USER" enabled="true" />
@@ -184,16 +183,15 @@
           <driver-library value="" />
           <driver value="" />
           <url-type value="FILE" />
-          <host value="" />
-          <port value="" />
-          <database value="" />
+          <host value="localhost" />
+          <port value="1234" />
+          <database value="database" />
           <files>
             <file path="C:\Users\Javier Ramirez\Documents\AndroidStudio\DeviceExplorer\motorola-moto_e5-192.168.2.2_5555\data\data\mx.com.vialogika.mistclient\databases\Database" schema="main" />
           </files>
-          <os-authentication value="false" />
-          <empty-password value="false" />
+          <type value="NONE" />
           <user value="" />
-          <password value="" />
+          <deprecated-pwd value="" />
         </database>
         <properties>
           <auto-commit value="true" />
@@ -203,7 +201,7 @@
           <proxy-host value="" />
           <proxy-port value="22" />
           <proxy-user value="" />
-          <proxy-password value="" />
+          <deprecated-proxy-pwd value="" />
           <auth-type value="PASSWORD" />
           <key-file value="" />
           <key-passphrase value="" />
@@ -225,11 +223,11 @@
           <environment-type value="default" />
           <idle-time-to-disconnect value="30" />
           <idle-time-to-disconnect-pool value="5" />
-          <password-expiry-time value="10" />
+          <credential-expiry-time value="10" />
           <max-connection-pool-size value="7" />
           <alternative-statement-delimiter value="" />
         </details>
-        <object-filters hide-empty-schemas="false">
+        <object-filters hide-empty-schemas="false" hide-pseudo-columns="false">
           <object-type-filter use-master-settings="true">
             <object-type name="SCHEMA" enabled="true" />
             <object-type name="USER" enabled="true" />
@@ -364,11 +362,11 @@
         <data-length-threshold value="100" />
         <popup-delay value="1000" />
       </text-editor-popup>
-      <values-list-popup>
+      <values-actions-popup>
         <show-popup-button value="true" />
         <element-count-threshold value="1000" />
         <data-length-threshold value="250" />
-      </values-list-popup>
+      </values-actions-popup>
       <general>
         <fetch-block-size value="100" />
         <fetch-timeout value="30" />

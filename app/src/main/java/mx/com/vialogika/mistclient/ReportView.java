@@ -33,6 +33,7 @@ import com.google.gson.Gson;
 
 
 import android.support.annotation.Nullable;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -56,16 +57,16 @@ import mx.com.vialogika.mistclient.Utils.NetworkRequestCallbacks;
 
 public class ReportView extends AppCompatActivity {
 
-    private Reporte report;
+    private Reporte       report;
     private List<Comment> comments = new ArrayList<>();
-    private int color;
-    private int userId;
+    private int           color;
+    private int           userId;
 
-    private TextView editorName,dateTime,exp,whatExp,howExp,whereExp,factsExp,noComments;
-    private ImageView riskLevel;
+    private TextView editorName, dateTime, exp, whatExp, howExp, whereExp, factsExp, noComments;
+    private ImageView    riskLevel;
     private LinearLayout evContainer;
-    private CardView evCard;
-    private CardView sigCard;
+    private CardView     evCard;
+    private CardView     sigCard;
     private LinearLayout sigContainer;
 
 
@@ -83,8 +84,8 @@ public class ReportView extends AppCompatActivity {
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        int shareid = 101;
-        MenuItem share  = menu.add(Menu.NONE,shareid,Menu.NONE,"Comparttir");
+        int      shareid = 101;
+        MenuItem share   = menu.add(Menu.NONE, shareid, Menu.NONE, "Comparttir");
         share.setIcon(R.drawable.ic_share_black_24dp);
         share.setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_WITH_TEXT | MenuItem.SHOW_AS_ACTION_ALWAYS);
         share.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
@@ -107,25 +108,26 @@ public class ReportView extends AppCompatActivity {
         return super.onPrepareOptionsMenu(menu);
     }
 
-    private void shareReport(){
+    private void shareReport() {
         Toast.makeText(this, "Obteniendo token de seguridad...", Toast.LENGTH_SHORT).show();
-        NetworkRequest.getSecurityToken(this, Reporte.REPORT_TOKEN_REQUEST,report.getReportId(), new NetworkRequestCallbacks() {
+        NetworkRequest.getSecurityToken(this, Reporte.REPORT_TOKEN_REQUEST, report.getReportId(), new NetworkRequestCallbacks() {
             @Override
             public void onNetworkRequestResponse(Object response) {
                 JSONObject mResponse = (JSONObject) response;
-                if (response != null){
-                    try{
-                        if (mResponse.getBoolean("success")){
-                            String token = mResponse.getString("token");
+                if (response != null) {
+                    try {
+                        if (mResponse.getBoolean("success")) {
+                            String token    = mResponse.getString("token");
                             String reportId = CryptoHash.sha256(String.valueOf(report.getReportId()));
-                            openIntentPicker(token,reportId);
+                            openIntentPicker(token, reportId);
                         }
-                    }catch(JSONException e){
+                    } catch (JSONException e) {
                         Toast.makeText(ReportView.this, "Failed to get security token. Try again later", Toast.LENGTH_SHORT).show();
                         e.printStackTrace();
                     }
                 }
             }
+
             @Override
             public void onNetworkRequestError(VolleyError error) {
 
@@ -133,29 +135,29 @@ public class ReportView extends AppCompatActivity {
         });
     }
 
-    public void openIntentPicker(String token,String reportId){
+    public void openIntentPicker(String token, String reportId) {
         UserSettings settings = new UserSettings(this);
-        Intent intent = new Intent();
+        Intent       intent   = new Intent();
         intent.setAction(Intent.ACTION_SEND);
         intent.setType("text/plain");
         //TODO:Define default mail get method
-        intent.putExtra(Intent.EXTRA_SUBJECT,"Nueva incidencia reportada");
+        intent.putExtra(Intent.EXTRA_SUBJECT, "Nueva incidencia reportada");
         //TODO: Crear metodo para obtener el token de seguridad del mail
-        intent.putExtra(Intent.EXTRA_TEXT,"Hello this is an sample text check it at "+NetworkRequest.SERVER_URL_PREFIX+"rViewer.php?token=" + token +"&reportId=" + reportId);
+        intent.putExtra(Intent.EXTRA_TEXT, "Hello this is an sample text check it at " + NetworkRequest.SERVER_URL_PREFIX + "rViewer.php?token=" + token + "&reportId=" + reportId);
         startActivity(intent);
     }
 
-    private void getReport(){
-        Intent intent  = getIntent();
-        if(intent.hasExtra("Reporte")){
+    private void getReport() {
+        Intent intent = getIntent();
+        if (intent.hasExtra("Reporte")) {
             report = (Reporte) intent.getSerializableExtra("Reporte");
             color = Color.parseColor(getResources().getString(mx.com.vialogika.mistclient.Utils.Color.reportIconColor(report.getReportGrade())));
-        }else{
+        } else {
             finish();
         }
     }
 
-    private void getItems(){
+    private void getItems() {
         userId = User.userId(this);
         riskLevel = findViewById(R.id.imageView3);
         editorName = findViewById(R.id.editor_name);
@@ -172,24 +174,24 @@ public class ReportView extends AppCompatActivity {
         noComments = getNoComments();
     }
 
-    private void loadComments(){
-        final Context ctx = this;
+    private void loadComments() {
+        final Context            ctx = this;
         final DatabaseOperations dbo = new DatabaseOperations(ctx);
         NetworkRequest.getEventComments(ctx, report.getRemReportId(), new NetworkRequestCallbacks() {
             @Override
             public void onNetworkRequestResponse(Object response) {
-                try{
-                    Gson gson = new Gson();
-                    JSONObject resp = new JSONObject(response.toString());
-                    JSONArray comms = resp.getJSONArray("comments");
-                    if (comms.length() > 0){
-                        for (int i = 0;i < comms.length();i++){
-                            Comment com = gson.fromJson(comms.getJSONObject(i).toString(),Comment.class);
+                try {
+                    Gson       gson  = new Gson();
+                    JSONObject resp  = new JSONObject(response.toString());
+                    JSONArray  comms = resp.getJSONArray("comments");
+                    if (comms.length() > 0) {
+                        for (int i = 0; i < comms.length(); i++) {
+                            Comment com = gson.fromJson(comms.getJSONObject(i).toString(), Comment.class);
                             comments.add(com);
                         }
-                        dbo.saveComments(comments,null);
+                        dbo.saveComments(comments, null);
                     }
-                }catch(JSONException e){
+                } catch (JSONException e) {
                     e.printStackTrace();
                 }
             }
@@ -201,13 +203,13 @@ public class ReportView extends AppCompatActivity {
         });
     }
 
-    private int setCommentType(String username){
+    private int setCommentType(String username) {
         return User.userName(this).equals(username) ? Messages.MESSAGE_OUTBOUND : Messages.MESSAGE_INBOUND;
     }
 
-    private TextView getNoComments(){
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.MATCH_PARENT);
-        params.setMargins(0,25,0,0);
+    private TextView getNoComments() {
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        params.setMargins(0, 25, 0, 0);
         TextView tv = new TextView(this);
         tv.setLayoutParams(params);
         tv.setText(R.string.be_the_first_to_comment);
@@ -217,7 +219,7 @@ public class ReportView extends AppCompatActivity {
         return tv;
     }
 
-    private void setValues(){
+    private void setValues() {
         riskLevel.setColorFilter(color);
         editorName.setText(report.getUsername());
         dateTime.setText(report.getReportTimeStamp());
@@ -232,84 +234,92 @@ public class ReportView extends AppCompatActivity {
         //bubbleExampleSetup();
     }
 
-    private void setListeners(){
+    private void setListeners() {
     }
 
-    private void setupActionBar(){
+    private void setupActionBar() {
         ActionBar bar = getSupportActionBar();
         bar.setDisplayHomeAsUpEnabled(false);
         bar.setTitle(report.getReportTitle());
     }
 
-    private void loadImages(){
-        if(report.hasEvidences()){
+    private void loadImages() {
+        if (report.hasEvidences()) {
             evCard.setVisibility(View.VISIBLE);
             loadNext(0);
         }
     }
 
-    private void displaySignatures(){
-        if (report.hasSignatures()){
+    private void displaySignatures() {
+        if (report.hasSignatures()) {
             sigCard.setVisibility(View.VISIBLE);
             loadSignatures(0);
         }
     }
 
-    private void loadNext(int mPosition){
+    private void loadNext(int mPosition) {
         String[] evidences = report.getEvidences();
-        //TODO: Consider server will change
-        String prefix = "https://www.vialogika.com.mx";
-        if(mPosition < evidences.length){
-            String url = prefix + evidences[mPosition];
-            new LoadImages(new LoadImagesCallback() {
-                @Override
-                public void onImagesLoaded(Bitmap image, int position) {
-                    if (image != null){
-                        ImageView holder = evidenceImageView(image);
-                        holder.setOnTouchListener(new ImageMatrixTouchHandler(holder.getContext()));
-                        evContainer.addView(holder);
-                        loadNext(position);
+        String   prefix    = NetworkRequest.SERVER_DOMAIN;
+        if (mPosition < evidences.length) {
+            if(!evidences[mPosition].equals("null")){
+                String url = prefix + evidences[mPosition];
+                new LoadImages(new LoadImagesCallback() {
+                    @Override
+                    public void onImagesLoaded(Bitmap image, int position) {
+                        if (image != null) {
+                            ImageView holder = evidenceImageView(image);
+                            holder.setOnTouchListener(new ImageMatrixTouchHandler(holder.getContext()));
+                            evContainer.addView(holder);
+                            loadNext(position);
+                        }
                     }
-                }
-            },mPosition).execute(url);
-        }else{
+                }, mPosition).execute(url);
+            }
+        } else {
             displaySignatures();
         }
+
     }
 
-    private void loadSignatures(final int Position){
-        String[] signatures = report.getSignatures();
-        final String[] sroles = report.getSignaturesRoles();
-        final String[] signNames = report.getSigantureNames();
+    private void loadSignatures(final int Position) {
+        String[]       signatures = report.getSignatures();
+        final String[] sroles     = report.getSignaturesRoles();
+        final String[] signNames  = report.getSigantureNames();
         //TODO:Consider server will change later
         String urlPrefix = "https://www.vialogika.com.mx";
-        if(Position < signatures.length){
+        if (Position < signatures.length) {
             String url = urlPrefix + signatures[Position];
             new LoadSignatures(new LoadImagesCallback() {
                 @Override
                 public void onImagesLoaded(Bitmap image, int position) {
-                    if(image != null){
-                        addSignature(Position,image,signNames[Position],sroles[Position]);
-                        loadSignatures(position);
+                    if (image != null) {
+                        try {
+                            addSignature(Position, image, signNames[Position], sroles[Position]);
+                            loadSignatures(position);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        } finally {
+
+                        }
                     }
                 }
-            },Position).execute(url);
+            }, Position).execute(url);
         }
     }
 
-    private void addSignature(int position,Bitmap image,String signaturename,String srole){
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,LinearLayout.LayoutParams.MATCH_PARENT,0.8f);
-        LinearLayout.LayoutParams contParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,LinearLayout.LayoutParams.MATCH_PARENT,0.5f);
-        LinearLayout ll;
-        ImageView iv = evidenceImageView(image);
+    private void addSignature(int position, Bitmap image, String signaturename, String srole) {
+        LinearLayout.LayoutParams params     = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT, 0.8f);
+        LinearLayout.LayoutParams contParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT, 0.5f);
+        LinearLayout              ll;
+        ImageView                 iv         = evidenceImageView(image);
         //iv.setLayoutParams(params);
         int numChilds = (sigCard.getChildCount() - 1);
-        if(numChilds < 1){
+        if (numChilds < 1) {
             ll = setupLLayout();
             sigContainer.addView(ll);
-        }else{
+        } else {
             ll = (LinearLayout) sigCard.getChildAt(Math.round(position / 2));
-            if (ll == null){
+            if (ll == null) {
                 ll = setupLLayout();
                 sigContainer.addView(ll);
             }
@@ -321,35 +331,35 @@ public class ReportView extends AppCompatActivity {
         ll.addView(srole(srole));
     }
 
-    private LinearLayout setupLLayout(){
+    private LinearLayout setupLLayout() {
         LinearLayout ll = new LinearLayout(this);
         ll.setOrientation(LinearLayout.VERTICAL);
         return ll;
     }
 
-    private TextView signatureName(String name){
-        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,LinearLayout.LayoutParams.MATCH_PARENT,0.1f);
-        TextView  mName = new TextView(this);
+    private TextView signatureName(String name) {
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT, 0.1f);
+        TextView                  mName        = new TextView(this);
         mName.setGravity(View.TEXT_ALIGNMENT_CENTER);
         mName.setLayoutParams(layoutParams);
         mName.setText(name);
         return mName;
     }
 
-    private TextView srole(String srole){
-        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.MATCH_PARENT,0.1f);
-        TextView sRole = new TextView(this);
+    private TextView srole(String srole) {
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 0.1f);
+        TextView                  sRole        = new TextView(this);
         sRole.setGravity(View.TEXT_ALIGNMENT_CENTER);
         sRole.setLayoutParams(layoutParams);
         sRole.setText(srole);
         return sRole;
     }
 
-    private ImageView evidenceImageView(Bitmap image){
+    private ImageView evidenceImageView(Bitmap image) {
         ImageView evidenceGraphic = new ImageView(this);
         evidenceGraphic.setScaleType(ImageView.ScaleType.FIT_CENTER);
         evidenceGraphic.setAdjustViewBounds(true);
-        evidenceGraphic.setPadding(0,10,0,10);
+        evidenceGraphic.setPadding(0, 10, 0, 10);
         evidenceGraphic.setImageBitmap(image);
         return evidenceGraphic;
     }

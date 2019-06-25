@@ -38,6 +38,8 @@ public class User {
     public int UID;
 
     public String APUUID = UUID.randomUUID().toString();
+    public static String API_KEY = "ak";
+    public static String DEVICE_ID = "did";
     public String firstName;
     public String middleName;
     public String lastname;
@@ -79,7 +81,6 @@ public class User {
                 dbo.saveSites(lSites);
             }
         });
-
     }
 
     public static int userId(Context context){
@@ -128,6 +129,30 @@ public class User {
             return sitesString.split(",");
         }
         return new String[]{};
+    }
+
+    public static void saveDeviceIdentifier(String deviceIdentifier){
+        SharedPreferences p8references = PreferenceManager.getDefaultSharedPreferences(Initializer.getAppContext());
+        SharedPreferences.Editor editor = p8references.edit();
+        editor.putString(DEVICE_ID,deviceIdentifier);
+        editor.apply();
+    }
+
+    public static void saveDeviceAPIKey(String apiKey){
+        SharedPreferences p8references = PreferenceManager.getDefaultSharedPreferences(Initializer.getAppContext());
+        SharedPreferences.Editor editor = p8references.edit();
+        editor.putString(API_KEY,apiKey);
+        editor.apply();
+    }
+
+    public static String getAPIKEY(){
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(Initializer.getAppContext());
+        return preferences.getString(API_KEY,"");
+    }
+
+    public static String getDeviceId(){
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(Initializer.getAppContext());
+        return preferences.getString(DEVICE_ID,"");
     }
 
     public interface onUserDataSaved{

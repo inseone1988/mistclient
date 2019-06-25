@@ -242,7 +242,7 @@ public class ReportsFragment extends Fragment {
                             try{
                                 if (mResponse.getBoolean("success")){
                                     String token = mResponse.getString("token");
-                                    String reportId = CryptoHash.sha256(String.valueOf(position));
+                                    String reportId = CryptoHash.sha1(String.valueOf(position));
                                     openIntentPicker(token,reportId);
                                 }
                             }catch(JSONException e){
@@ -313,9 +313,9 @@ public class ReportsFragment extends Fragment {
         intent.setType("text/plain");
         //TODO:Define default mail get method
         intent.putExtra(Intent.EXTRA_EMAIL,dest);
-        intent.putExtra(Intent.EXTRA_SUBJECT,"Nueva incidencia");
+        intent.putExtra(Intent.EXTRA_SUBJECT,"Reporte incidencia");
         //TODO: Crear metodo para obtener el token de seguridad del mail
-        intent.putExtra(Intent.EXTRA_TEXT,"Hello this is an sample text check it at "+NetworkRequest.SERVER_URL_PREFIX+"rViewer.php?token=" + token +"&reportId=" + reportId);
+        intent.putExtra(Intent.EXTRA_TEXT,"DHL Seguridad Patrimonial: \n Reporte de incidencia \n "+NetworkRequest.SERVER_URL_PREFIX+"rViewer.php?token=" + token +"&reportId=" + reportId);
         startActivity(intent);
     }
 

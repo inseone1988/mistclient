@@ -30,8 +30,10 @@ public class LoadImages extends AsyncTask<String,Void,Bitmap> {
     protected Bitmap doInBackground(String... strings) {
         Bitmap bitmap = null;
         try{
-            URL url = new URL(strings[0]);
-            bitmap = BitmapFactory.decodeStream((InputStream)url.getContent());
+            if (!strings[0].equals("null") && !strings[0].equals("")){
+                URL url = new URL(strings[0]);
+                bitmap = BitmapFactory.decodeStream((InputStream)url.getContent());
+            }
         }catch (IOException e){
             e.printStackTrace();
         }

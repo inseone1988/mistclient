@@ -1,34 +1,24 @@
 package mx.com.vialogika.mistclient.Utils;
 
 
-import android.app.DownloadManager;
-import android.arch.persistence.room.Database;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.v4.app.NotificationManagerCompat;
-import android.support.v4.content.ContextCompat;
-import android.text.TextUtils;
 import android.util.Log;
 import android.widget.ImageView;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.android.volley.NetworkError;
-import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
-import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageRequest;
-import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.JsonRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
 
@@ -40,6 +30,8 @@ import net.gotev.uploadservice.UploadStatusDelegate;
 
 
 import android.support.annotation.Nullable;
+import android.widget.Toast;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -60,14 +52,49 @@ import mx.com.vialogika.mistclient.Client;
 import mx.com.vialogika.mistclient.Comment;
 import mx.com.vialogika.mistclient.GuardForceState;
 import mx.com.vialogika.mistclient.Incident;
+import mx.com.vialogika.mistclient.Initializer;
+import mx.com.vialogika.mistclient.Network.ServerRequest;
 import mx.com.vialogika.mistclient.Notif.AppNotifications;
 import mx.com.vialogika.mistclient.Room.DatabaseOperations;
+import mx.com.vialogika.mistclient.User;
 import mx.com.vialogika.mistclient.UserSettings;
 
 public class NetworkRequest {
 
     public static final String SERVER_URL_PREFIX = "https://www.vialogika.com.mx/dscic/";
+    public static final String SERVER_DOMAIN = "https://www.vialogika.com.mx";
     public static final String SERVER_URL_PHOTO_PREFIX = "https://www.vialogika.com.mx/";
+
+    public static void getApiKey(final NetworkRequestCallbacks cb){
+        final Context context = Initializer.getAppContext();
+        String url = SERVER_URL_PREFIX + "raw.php";
+        ServerRequest request = new ServerRequest(Request.Method.POST, url, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                try{
+                    if (response.getBoolean("success")){
+                        String auth = response.getString("auth");
+                        if (!auth.equals("")){
+                            User.saveDeviceAPIKey(auth);
+                            System.out.println("Got apikey");
+                            cb.onNetworkRequestResponse(response);
+                        }
+                    }else{
+                        Toast.makeText(context, response.getString("message"), Toast.LENGTH_SHORT).show();
+                    }
+
+                }catch(JSONException e){
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                cb.onNetworkRequestError(error);
+            }
+        });
+        Volley.newRequestQueue(context).add(request);
+    }
 
     public static void authenticateUser(final Context context , String user, String password,final NetworkRequestCallbacks cb){
         //TODO: Consider server will change later
@@ -82,7 +109,7 @@ public class NetworkRequest {
             e.printStackTrace();
         }
         RequestQueue rq = Volley.newRequestQueue(context);
-        JsonObjectRequest jor = new JsonObjectRequest(Request.Method.POST, url, params,new Response.Listener<JSONObject>(){
+        ServerRequest jor = new ServerRequest(Request.Method.POST, url, params,new Response.Listener<JSONObject>(){
             @Override
             public void onResponse(JSONObject response) {
                 cb.onNetworkRequestResponse(response);
@@ -120,7 +147,7 @@ public class NetworkRequest {
             e.printStackTrace();
         }
         RequestQueue rq = Volley.newRequestQueue(context);
-        JsonObjectRequest jor = new JsonObjectRequest(Request.Method.POST, url, params, new Response.Listener<JSONObject>() {
+        ServerRequest jor = new ServerRequest(Request.Method.POST, url, params, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 cb.onNetworkRequestResponse(response);
@@ -147,7 +174,7 @@ public class NetworkRequest {
             params.put("function","saveComment");
             params.put("data",desComment);
             RequestQueue rq = Volley.newRequestQueue(context);
-            JsonObjectRequest jor = new JsonObjectRequest(Request.Method.POST, url, params, new Response.Listener<JSONObject>() {
+            ServerRequest jor = new ServerRequest(Request.Method.POST, url, params, new Response.Listener<JSONObject>() {
                 @Override
                 public void onResponse(JSONObject response) {
                     cb.onNetworkRequestResponse(response);
@@ -176,7 +203,7 @@ public class NetworkRequest {
         }catch(JSONException e){
             e.printStackTrace();
         }
-        JsonObjectRequest jor = new JsonObjectRequest(Request.Method.POST, url, params, new Response.Listener<JSONObject>() {
+        ServerRequest jor = new ServerRequest(Request.Method.POST, url, params, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 cb.onNetworkRequestResponse(response);
@@ -204,7 +231,7 @@ public class NetworkRequest {
         }catch(JSONException e ){
             e.printStackTrace();
         }
-        JsonObjectRequest jor = new JsonObjectRequest(Request.Method.POST, url, params, new Response.Listener<JSONObject>() {
+        ServerRequest jor = new ServerRequest(Request.Method.POST, url, params, new Response.Listener<JSONObject>() {
             @Override
                 public void onResponse(JSONObject response) {
 
@@ -228,7 +255,7 @@ public class NetworkRequest {
             params.put("function","userAutocomplete");
             params.put("term",term);
             RequestQueue rq = Volley.newRequestQueue(context);
-            JsonObjectRequest jor = new JsonObjectRequest(Request.Method.POST, url, params, new Response.Listener<JSONObject>() {
+            ServerRequest jor = new ServerRequest(Request.Method.POST, url, params, new Response.Listener<JSONObject>() {
                 @Override
                 public void onResponse(JSONObject response) {
                     cb.onNetworkRequestResponse(response);
@@ -255,7 +282,7 @@ public class NetworkRequest {
             params.put("reportid",reportid);
             params.put("userid",userid);
             RequestQueue rq = Volley.newRequestQueue(context);
-            JsonObjectRequest jor = new JsonObjectRequest(Request.Method.POST, url, params, new Response.Listener<JSONObject>() {
+            ServerRequest jor = new ServerRequest(Request.Method.POST, url, params, new Response.Listener<JSONObject>() {
                 @Override
                 public void onResponse(JSONObject response) {
                     cb.onNetworkRequestResponse(response);
@@ -289,7 +316,7 @@ public class NetworkRequest {
             params.put("to",to);
             params.put("siteid",sites);
             RequestQueue rq = Volley.newRequestQueue(context);
-            JsonObjectRequest jor = new JsonObjectRequest(Request.Method.POST, url, params, new Response.Listener<JSONObject>() {
+            ServerRequest jor = new ServerRequest(Request.Method.POST, url, params, new Response.Listener<JSONObject>() {
                 @Override
                 public void onResponse(final JSONObject response) {
                     final DatabaseOperations dbo = new DatabaseOperations(context);
@@ -330,7 +357,7 @@ public class NetworkRequest {
             params.put("function","getProviderName");
             params.put("searchterm",serachterm);
             RequestQueue rq = Volley.newRequestQueue(context);
-            JsonObjectRequest jor = new JsonObjectRequest(Request.Method.POST, url, params, new Response.Listener<JSONObject>() {
+            ServerRequest jor = new ServerRequest(Request.Method.POST, url, params, new Response.Listener<JSONObject>() {
                 @Override
                 public void onResponse(JSONObject response) {
                     cb.onNetworkRequestResponse(response);
@@ -357,7 +384,7 @@ public class NetworkRequest {
         try{
             params.put("function","saveProvider");
             params.put("data",provider.mapData());
-            JsonObjectRequest jor = new JsonObjectRequest(Request.Method.POST, url, params, new Response.Listener<JSONObject>() {
+            ServerRequest jor = new ServerRequest(Request.Method.POST, url, params, new Response.Listener<JSONObject>() {
                 @Override
                 public void onResponse(JSONObject response) {
                     cb.onNetworkRequestResponse(response);
@@ -388,7 +415,7 @@ public class NetworkRequest {
             e.printStackTrace();
         }
         RequestQueue rq = Volley.newRequestQueue(context);
-        JsonObjectRequest jor = new JsonObjectRequest(Request.Method.POST, url, params, new Response.Listener<JSONObject>() {
+        ServerRequest jor = new ServerRequest(Request.Method.POST, url, params, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 try{
@@ -452,7 +479,7 @@ public class NetworkRequest {
             e.printStackTrace();
         }
         RequestQueue rq = Volley.newRequestQueue(context);
-        JsonObjectRequest jor = new JsonObjectRequest(Request.Method.POST, url, params, new Response.Listener<JSONObject>() {
+        ServerRequest jor = new ServerRequest(Request.Method.POST, url, params, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 cb.onNetworkRequestResponse(response);
@@ -479,7 +506,7 @@ public class NetworkRequest {
         }catch(JSONException e){
             e.printStackTrace();
         }
-        JsonObjectRequest jor = new JsonObjectRequest(Request.Method.POST, url, params, new Response.Listener<JSONObject>() {
+        ServerRequest jor = new ServerRequest(Request.Method.POST, url, params, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 if (response != null){
@@ -520,7 +547,7 @@ public class NetworkRequest {
         }catch(JSONException e){
             e.printStackTrace();
         }
-        JsonObjectRequest jor = new JsonObjectRequest(Request.Method.POST, url, params, new Response.Listener<JSONObject>() {
+        ServerRequest jor = new ServerRequest(Request.Method.POST, url, params, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 try{
@@ -559,7 +586,7 @@ public class NetworkRequest {
             e.printStackTrace();
         }
         RequestQueue rq = Volley.newRequestQueue(context);
-        JsonObjectRequest jor = new JsonObjectRequest(Request.Method.POST, url, params, new Response.Listener<JSONObject>() {
+        ServerRequest jor = new ServerRequest(Request.Method.POST, url, params, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 try{
@@ -601,7 +628,7 @@ public class NetworkRequest {
             e.printStackTrace();
         }
         RequestQueue rq = Volley.newRequestQueue(context);
-        JsonObjectRequest jor = new JsonObjectRequest(Request.Method.POST, url, params, new Response.Listener<JSONObject>() {
+        ServerRequest jor = new ServerRequest(Request.Method.POST, url, params, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 try{
@@ -644,7 +671,7 @@ public class NetworkRequest {
             e.printStackTrace();
         }
         RequestQueue rq = Volley.newRequestQueue(context);
-        JsonObjectRequest jor = new JsonObjectRequest(Request.Method.POST, url, params, new Response.Listener<JSONObject>() {
+        ServerRequest jor = new ServerRequest(Request.Method.POST, url, params, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 try{
@@ -815,7 +842,7 @@ public class NetworkRequest {
         try{
             params.put("function","hp");
             params.put("userId",userId);
-            JsonObjectRequest jor = new JsonObjectRequest(Request.Method.POST, url, params, new Response.Listener<JSONObject>() {
+            ServerRequest jor = new ServerRequest(Request.Method.POST, url, params, new Response.Listener<JSONObject>() {
                 @Override
                 public void onResponse(JSONObject response) {
                     cb.onNetworkRequestResponse(response);
